@@ -1,0 +1,107 @@
+.container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.boardTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.boardTable th,
+.boardTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.boardTable thead {
+  background-color: lightblue;
+}
+
+.titleLink {
+  text-decoration: none;
+  color: black;
+}
+
+.titleLink:hover {
+  text-decoration: underline;
+  color: dodgerblue;
+}
+
+.button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: dodgerblue;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: deepskyblue;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-title {
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.detail {
+  text-align: center;
+}
+
+.detail img {
+  width: 400px;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 20px;
+}
