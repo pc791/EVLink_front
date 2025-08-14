@@ -6,10 +6,10 @@ export type ChargingStation = {
   cpStat: string;
   cpTp: string;
 //   cpNm: string;
-  // ... 기타 상세 정보
+  // ... 기타 상세 정보adasddasdasdasdsadadas
 };
 
-// addr 충전기주소
+// addr 충전기주소ddd
 // chargeTp 충전기타입 1:완속, 2:급속
 // cpStat 충전기 상태코드	STRING	1:충전가능 2:충전중 3:고장/점검 4:통신장애 5:통신미연결
 // cpTp 충전방식	STRING	1:B타입(5핀) 2:C타입(5핀) 3:BC타입(5핀) 4:BC타입(7핀) 5:C차 데모 6:AC3상 7:DC콤보 8:DC차데모+DC콤보

@@ -12,7 +12,7 @@ interface ChargerStatusItem {
 const NAVER_MAP_API_KEY = 'hvhbhpsxn3';
 const KEPCO_API_KEY = '5F1cIB0v88jck3w9aeiJbF849KB6XDDlK334sXn3';
 const KEPCO_API_URL = '/openapi/v1/EVchargeManage.do';
-
+// dddd
 const Map: React.FC = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const naverRef = useRef<any>(null);
