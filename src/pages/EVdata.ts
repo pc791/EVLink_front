@@ -6,7 +6,7 @@ export type ChargingStation = {
   cpStat: string;
   cpTp: string;
 //   cpNm: string;
-  // ... 기타 상세 정보
+  // ... 기타 상세 정보adasddasdasdasdsadadas
 };
 
 // addr 충전기주소ddd
