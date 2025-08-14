@@ -8,7 +8,7 @@ export type ChargingStation = {
 //   cpNm: string;
   // ... 기타 상세 정보
 };
-
+//테스트
 // addr 충전기주소
 // chargeTp 충전기타입 1:완속, 2:급속
 // cpStat 충전기 상태코드	STRING	1:충전가능 2:충전중 3:고장/점검 4:통신장애 5:통신미연결
