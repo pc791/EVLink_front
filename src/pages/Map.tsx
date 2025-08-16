@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DUMMY_STATIONS, ChargingStation } from './EVdata';
 import './Map.css';
 import ReservationModal from './ReservationModal'; // 모달 컴포넌트 임포트
-
+//ㅇㅇ
 // 현재 날짜를 YYYY-MM-DD 형식으로 반환하는 헬퍼 함수
 const getTodayDate = () => {
   const today = new Date();
