@@ -4,6 +4,7 @@ import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
 
+const NAVER_MAP_API_KEY = 'hvhbhpsxn3';
 const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -11,6 +12,13 @@ const getTodayDate = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
+// interface TransCoordResponse {
+//     result: {
+//         x: number;
+//         y: number;
+//     };
+//     // 필요한 다른 속성이 있다면 여기에 추가할 수 있습니다.
+// }
 
 const Map: React.FC = () => {
     const mapRef = useRef<HTMLDivElement | null>(null);
@@ -141,7 +149,7 @@ const Map: React.FC = () => {
         if (!existingScript) {
             const script = document.createElement('script');
             script.id = scriptId;
-            script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=hvhbhpsxn3&submodules=geocoder';
+            script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_API_KEY}&submodules=geocoder`;
             script.async = true;
             script.onload = loadMap;
             document.head.appendChild(script);
@@ -181,6 +189,59 @@ const Map: React.FC = () => {
             );
         }
     };
+
+    // const handleSearch = () => {
+    //     if (searchKeyword.trim() !== '' && mapInstance) {       
+    //         const CLIENT_ID = 'VZDweLJfznylsIvzK3r7';
+    //         const CLIENT_SECRET = 'dUEPQGCJ9y';
+
+    //         // 2. 지역 검색 API URL을 정의하고, 검색어를 URL 인코딩합니다.
+    //         const apiUrl = `https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent(searchKeyword)}`;
+
+    //         fetch(apiUrl, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'X-Naver-Client-Id': CLIENT_ID,
+    //                 'X-Naver-Client-Secret': CLIENT_SECRET
+    //             }
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 // 3. 검색 결과가 있는지 확인합니다.
+    //                 if (data.items && data.items.length > 0) {
+    //                     // 첫 번째 검색 결과의 좌표(mapx, mapy)를 가져옵니다.
+    //                     const { mapx, mapy } = data.items[0];
+
+    //                     // 4. 네이버 좌표 변환 서비스를 사용하여 WGS84 좌표로 변환합니다.
+    //                     const naver = (window as any).naver;
+    //                     naver.maps.Service.transCoord(
+    //                         {
+    //                             x: parseFloat(mapx),
+    //                             y: parseFloat(mapy),
+    //                             fromCoord: naver.maps.TransCoord.FROM_NAVER,
+    //                             toCoord: naver.maps.TransCoord.TO_EPSG4326
+    //                         },
+    //                         (status: string, response: TransCoordResponse) => {
+    //                             if (status === naver.maps.Service.Status.OK) {
+    //                                 const { x, y } = response.result;
+    //                                 const centerLocation = new naver.maps.LatLng(y, x);
+    //                                 mapInstance.setCenter(centerLocation);
+    //                                 updateMarkersInViewport(mapInstance);
+    //                             } else {
+    //                                 alert('좌표 변환에 실패했습니다.');
+    //                             }
+    //                         }
+    //                     );
+    //                 } else {
+    //                     alert('검색 결과가 없습니다.');
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 console.error('API 호출 중 오류 발생:', error);
+    //                 alert('검색 기능을 사용할 수 없습니다.');
+    //             });
+    //     }
+    // };
 
     const availableTimeSlots = Array.from({ length: 24 }, (_, i) => {
         const hour = String(i).padStart(2, '0');
@@ -268,8 +329,17 @@ const Map: React.FC = () => {
                         if (e.key === 'Enter') handleSearch();
                     }}
                 />
-                <select>
+                <select defaultValue={"충전 타입"}>
+                    <option>충전 타입</option>
+                    <option>급속</option>
+                    <option>완속</option>
+                </select>
+                <select defaultValue={"충전기 타입"}>
                     <option>충전기 타입</option>
+                    <option>B타입(5핀)</option>
+                    <option>C타입(5핀)</option>
+                    <option>BC타입(5핀)</option>
+                    <option>BC타입(7핀)</option>
                 </select>
                 <button onClick={handleSearch}>검색</button>
             </div>
