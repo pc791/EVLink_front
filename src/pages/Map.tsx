@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DUMMY_STATIONS, ChargingStation } from './EVdata';
+import { DUMMY_STATIONS, ChargingStation, fetchEvStations, ChargingStations } from './EVdata';
 import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
 
-const NAVER_MAP_API_KEY = 'hvhbhpsxn3';
 const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -12,23 +11,15 @@ const getTodayDate = () => {
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 };
-// interface TransCoordResponse {
-//     result: {
-//         x: number;
-//         y: number;
-//     };
-//     // 필요한 다른 속성이 있다면 여기에 추가할 수 있습니다.
-// }
 
 const Map: React.FC = () => {
     const mapRef = useRef<HTMLDivElement | null>(null);
-    const [address, setAddress] = useState('서울특별시 강남구 테헤란로 152');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isReservationPanelVisible, setIsReservationPanelVisible] = useState(false);
     const [selectedStationAddress, setSelectedStationAddress] = useState('');
     const [selectedDate, setSelectedDate] = useState(getTodayDate());
     const [selectedTimeRange, setSelectedTimeRange] = useState<string[]>([]);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isDragging, setIsDragging] = useState(false);
     const [dragStartIndex, setDragStartIndex] = useState<number | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -38,10 +29,44 @@ const Map: React.FC = () => {
 
     const [displayedStations, setDisplayedStations] = useState<ChargingStation[]>([]);
 
+    const [stations, setStations] = useState<ChargingStations[]>([]);
+/*
+const cpTpMap: Record<string, string> = {
+  "01": "B타입(5핀)",
+  "02": "C타입(5핀)",
+  "03": "BC타입(5핀)",
+  "04": "BC타입(7핀)",
+  "05": "DC차데모",
+  "06": "AC3상",
+  "07": "DC콤보",
+  "08": "DC차데모+DC콤보",
+  "09": "DC차데모+AC3상",
+  "10": "DC차데모+DC콤보+AC3상"
+};
+*/
+    const imageFile = (type : string) => {
+        if(type === "B타입(5핀)") {
+            return '/images/ac5.png';
+        }else if(type === "C타입(5핀)") {
+            return '/images/ac5.png';
+        }else if(type === "BC타입(5핀)") {
+            return '/images/ac5.png';
+        }else if(type === "BC타입(7핀)"){
+            return '/images/ac7.png';
+        }else if(type === "DC차데모"){
+            return '/images/dc_cha.png';
+        }else if(type === "AC3상"){
+            return '/images/ac5.png';
+        }else if(type === "DC콤보"){
+            return '/images/dc_cha.png';
+        }else if(type === "DC차데모+DC콤보"){
+            return '/images/dc_cha.png';
+        }else {return '/images/ac5.png'}
+    }
+
     const updateMarkersInViewport = (map: any) => {
         if (!map) return;
 
-        // 기존 지도 상 마커 제거
         markersRef.current.forEach(marker => marker.setMap(null));
         markersRef.current = [];
 
@@ -56,33 +81,59 @@ const Map: React.FC = () => {
         const mapBounds = map.getBounds();
 
         DUMMY_STATIONS.forEach(station => {
-            const markerPosition = new (window as any).naver.maps.LatLng(station.position.lat, station.position.lng);
+            const markerPosition = new (window as any).naver.maps.LatLng(
+                station.position.lat,
+                station.position.lng
+            );
+
             if (mapBounds.hasLatLng(markerPosition)) {
                 stationsInView.push(station);
+
+                // ✅ 더미데이터 마커와 실제 데이터 마커 구분
+                const isDummy = DUMMY_STATIONS.some(dummy => dummy.addr === station.addr);
+
                 const marker = new (window as any).naver.maps.Marker({
                     position: markerPosition,
                     map: map,
                     title: station.addr,
+                    icon: isDummy
+                        ? {
+                            content: `
+      <div style="position: relative; width: 36px; height: 36px; background: #3bf654ff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transform: translate(-50%, -100%); margin-top: 25px;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; background: white; border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #3bf654ff;"></div>
+        ${station.chargeTp === "급속" ? `<span style="position:absolute; top:-6px; right:-6px; font-size:18px;"><img style="width : 40px" src="https://www.gscev.com/images/common/ev/marker/marker_lightning.png" /></span>` : ""}
+      </div>
+    `,
+                            anchor: new (window as any).naver.maps.Point(0, 100),
+                        }
+                        : undefined // 실제 API 데이터는 기본 마커
                 });
+
                 newMarkers.push(marker);
 
+                const infoWindow = new (window as any).naver.maps.InfoWindow({
+                    anchorSkew: true,
+                    maxWidth: 200,
+                });
+
                 (window as any).naver.maps.Event.addListener(marker, 'click', () => {
-                    const infoWindow = new (window as any).naver.maps.InfoWindow({
-                        content: `
-                            <div style="padding: 10px; font-size: 14px;">
-                                <h4>${station.addr}</h4>
+                    const content = `<div style="padding: 10px; font-size: 14px;">
+                                <h4>${station.csNm}</h4>
                                 <p>충전기 타입: ${station.chargeTp}</p>
                                 <p>충전기 상태: ${station.cpStat}</p>
-                                <p>충전방식: ${station.cpTp}</p>
+                                <div><p>충전방식: ${station.cpTp}</p><div style={{backgroundColor:'#f1f1f1', borderRadius:'8px',padding:'1vh'}}><img src="${imageFile(station.cpTp)}" style="width: 40px"/></div></div>
                                 <button id="reserve-btn-${station.id}" style="
-                                    background-color: #4285F4;
+                                    background-color: #0033A0;
                                     color: white;
                                     border: none;
                                     padding: 5px 10px;
                                     border-radius: 4px;
                                     cursor: pointer;
-                                    margin-top: 5px;
-                                ">예약하기</button>
+                                    margin-top: 5px;"
+                                    onmouseover="this.style.background='#4285F4'"
+                                    onmouseout="this.style.background='#0033A0'"
+                                    >예약하기</button>
                                 <button id="cancel-btn-${station.id}" style="
                                     background-color: #ccc;
                                     color: black;
@@ -90,29 +141,103 @@ const Map: React.FC = () => {
                                     padding: 5px 10px;
                                     border-radius: 4px;
                                     cursor: pointer;
-                                    margin-left: 5px;
-                                ">닫기</button>
-                            </div>
-                        `,
-                        maxWidth: 200,
-                    });
+                                    margin-left: 5px;"
+                                    onmouseover="this.style.background='#9b9b9bff'"
+                                    onmouseout="this.style.background='#ccccccff'"
+                                    >닫기</button>
+                                </div>`;
+                    infoWindow.setContent(content);
+                    map.panTo(marker.getPosition());
                     infoWindow.open(map, marker);
                     setTimeout(() => {
-                        document.getElementById(`reserve-btn-${station.id}`)?.addEventListener('click', () => {
-                            setIsReservationPanelVisible(true);
-                            setSelectedStationAddress(station.addr);
-                            infoWindow.close();
-                        });
-                        document.getElementById(`cancel-btn-${station.id}`)?.addEventListener('click', () => {
-                            infoWindow.close();
-                        });
+                        const btn = document.getElementById(`reserve-btn-${station.id}`);
+                        if (btn) {
+                            btn.addEventListener("click", () => {
+                                setSelectedStationAddress(station.addr);
+                                setIsReservationPanelVisible(true);
+                                centerMapOnStation(station);
+                            });
+                        }
+                        const cbtn = document.getElementById(`cancel-btn-${station.id}`);
+                        if (cbtn) {
+                            cbtn.addEventListener("click", () => {
+                                infoWindow.close();
+                            })
+                        }
                     }, 0);
+                });
+
+                (window as any).naver.maps.Event.addListener(map, 'click', () => {
+                    infoWindow.close();
                 });
             }
         });
+
+        stations.forEach(station => {
+            const markerPosition = new (window as any).naver.maps.LatLng(
+                station.position.lat,
+                station.position.lng
+            );
+
+            if (mapBounds.hasLatLng(markerPosition)) {
+                // Extract charger info for compatibility with ChargingStation type
+                const charger = station.chargers[0] || { chargeTp: '', cpStat: '', cpTp: '' };
+                stationsInView.push({
+                    ...station,
+                    chargeTp: charger.chargeTp,
+                    cpStat: charger.cpStat,
+                    cpTp: charger.cpTp,
+                });
+
+                // ✅ 더미데이터 마커와 실제 데이터 마커 구분
+                const isDummy = DUMMY_STATIONS.some(dummy => dummy.addr === station.addr);
+
+                const marker = new (window as any).naver.maps.Marker({
+                    position: markerPosition,
+                    map: map,
+                    title: station.addr,
+                    icon: isDummy
+                        ? {
+                            content: `
+      <div style="position: relative; width: 36px; height: 36px; background: #3bf654ff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transform: translate(-50%, -100%);">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; background: white; border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #3bf654ff;"></div>
+        ${(charger.chargeTp === "급속") ? `<span style="position:absolute; top:-6px; right:-6px; font-size:18px;">⚡</span>` : ""}
+      </div>
+    `,
+                            anchor: new (window as any).naver.maps.Point(15, 15),
+                        }
+                        : undefined // 실제 API 데이터는 기본 마커
+                });
+
+                newMarkers.push(marker);
+
+                const infoWindow = new (window as any).naver.maps.InfoWindow({
+                    anchorSkew: true,
+                    maxWidth: 200,
+                });
+
+                (window as any).naver.maps.Event.addListener(marker, 'click', () => {
+                    const content = `<div style="padding: 10px; font-size: 14px;">
+                                <h4>${station.csNm}</h4>
+                                <p>충전기 타입: ${charger.chargeTp}</p>
+                                <p>충전기 상태: ${charger.cpStat}</p>
+                                <p>충전방식: ${charger.cpTp}</p>
+                                </div>`;
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, marker);
+                });
+
+                (window as any).naver.maps.Event.addListener(map, 'click', () => {
+                    infoWindow.close();
+                });
+            }
+        });
+
         markersRef.current = newMarkers;
         setDisplayedStations(stationsInView);
     };
+
 
     const centerMapOnStation = (station: ChargingStation) => {
         if (mapInstance && station) {
@@ -126,7 +251,11 @@ const Map: React.FC = () => {
     useEffect(() => {
         const scriptId = 'naver-map-script';
         const existingScript = document.getElementById(scriptId);
-
+        const loadStations = async () => {
+            const data = await fetchEvStations();
+            setStations(data);
+        };
+        loadStations();
         const loadMap = () => {
             const naver = (window as any).naver;
             if (!naver || !naver.maps || !naver.maps.Service) {
@@ -149,7 +278,7 @@ const Map: React.FC = () => {
         if (!existingScript) {
             const script = document.createElement('script');
             script.id = scriptId;
-            script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_API_KEY}&submodules=geocoder`;
+            script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=hvhbhpsxn3&submodules=geocoder';
             script.async = true;
             script.onload = loadMap;
             document.head.appendChild(script);
@@ -169,7 +298,7 @@ const Map: React.FC = () => {
             (window as any).naver.maps.Event.addListener(mapInstance, 'idle', () => updateMarkersInViewport(mapInstance));
             updateMarkersInViewport(mapInstance);
         }
-    }, [mapInstance]);
+    }, [mapInstance, stations]);
 
     const handleSearch = () => {
         if (searchKeyword.trim() !== '' && mapInstance) {
@@ -190,60 +319,6 @@ const Map: React.FC = () => {
         }
     };
 
-    // const handleSearch = () => {
-    //     if (searchKeyword.trim() !== '' && mapInstance) {       
-    //         const CLIENT_ID = 'VZDweLJfznylsIvzK3r7';
-    //         const CLIENT_SECRET = 'dUEPQGCJ9y';
-
-    //         // 2. 지역 검색 API URL을 정의하고, 검색어를 URL 인코딩합니다.
-    //         const apiUrl = `https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent(searchKeyword)}`;
-
-    //         fetch(apiUrl, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'X-Naver-Client-Id': CLIENT_ID,
-    //                 'X-Naver-Client-Secret': CLIENT_SECRET
-    //             }
-    //         })
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 // 3. 검색 결과가 있는지 확인합니다.
-    //                 if (data.items && data.items.length > 0) {
-    //                     // 첫 번째 검색 결과의 좌표(mapx, mapy)를 가져옵니다.
-    //                     const { mapx, mapy } = data.items[0];
-
-    //                     // 4. 네이버 좌표 변환 서비스를 사용하여 WGS84 좌표로 변환합니다.
-    //                     const naver = (window as any).naver;
-    //                     naver.maps.Service.transCoord(
-    //                         {
-    //                             x: parseFloat(mapx),
-    //                             y: parseFloat(mapy),
-    //                             fromCoord: naver.maps.TransCoord.FROM_NAVER,
-    //                             toCoord: naver.maps.TransCoord.TO_EPSG4326
-    //                         },
-    //                         (status: string, response: TransCoordResponse) => {
-    //                             if (status === naver.maps.Service.Status.OK) {
-    //                                 const { x, y } = response.result;
-    //                                 const centerLocation = new naver.maps.LatLng(y, x);
-    //                                 mapInstance.setCenter(centerLocation);
-    //                                 updateMarkersInViewport(mapInstance);
-    //                             } else {
-    //                                 alert('좌표 변환에 실패했습니다.');
-    //                             }
-    //                         }
-    //                     );
-    //                 } else {
-    //                     alert('검색 결과가 없습니다.');
-    //                 }
-    //             })
-    //             .catch(error => {
-    //                 console.error('API 호출 중 오류 발생:', error);
-    //                 alert('검색 기능을 사용할 수 없습니다.');
-    //             });
-    //     }
-    // };
-
-    //예약 시간
     const availableTimeSlots = Array.from({ length: 24 }, (_, i) => {
         const hour = String(i).padStart(2, '0');
         const status = (i === 15 || i === 23) ? 'unavailable' : 'available';
@@ -330,17 +405,8 @@ const Map: React.FC = () => {
                         if (e.key === 'Enter') handleSearch();
                     }}
                 />
-                <select defaultValue={"충전 타입"}>
-                    <option>충전 타입</option>
-                    <option>급속</option>
-                    <option>완속</option>
-                </select>
-                <select defaultValue={"충전기 타입"}>
+                <select>
                     <option>충전기 타입</option>
-                    <option>B타입(5핀)</option>
-                    <option>C타입(5핀)</option>
-                    <option>BC타입(5핀)</option>
-                    <option>BC타입(7핀)</option>
                 </select>
                 <button onClick={handleSearch}>검색</button>
             </div>
@@ -352,23 +418,16 @@ const Map: React.FC = () => {
                         {displayedStations.length > 0 ? (
                             displayedStations.map((station, index) => (
                                 <li key={index} className="station-item">
-                                    <h4 className="station-title">{station.addr}</h4>
+                                    <h4 className="station-title">{station.csNm}</h4>
+                                    <hr />
+                                    <p className="station-title">{station.addr}</p>
                                     <p>상태: <strong>{station.cpStat}</strong></p>
                                     <p>타입: {station.chargeTp}, {station.cpTp}</p>
-                                    <button
-                                        className="reserve-button-small"
-                                        onClick={() => {
-                                            setSelectedStationAddress(station.addr);
-                                            setIsReservationPanelVisible(true);
-                                            centerMapOnStation(station);
-                                        }}
-                                    >
-                                        예약
-                                    </button>
+                                    <div style={{backgroundColor:'#f1f1f1', borderRadius:'8px',padding:'1vh'}}><img alt='타입 이미지' src={imageFile(station.cpTp)} width={40}/></div>
                                 </li>
                             ))
                         ) : (
-                            <p>현재 지도에 보이는 충전소가 없습니다.</p>
+                            <p>현재 지도에 보이는 충전소가 없습니다. 지도를 더 확대해서 장소를 찾아보세요!</p>
                         )}
                     </ul>
                 </div>
