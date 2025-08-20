@@ -5,6 +5,7 @@
   height: 100vh;
   padding: 10px;
   box-sizing: border-box;
+  width: 100%;
 }
 
 /* 검색바 */
@@ -56,6 +57,9 @@
   padding-bottom: 20px;
   /* 푸터와 겹치지 않게 여백 추가 */
 }
+.details-panel::-webkit-scrollbar {
+  display: none;
+}
 
 /* 패널 열기 */
 .details-panel.open {
@@ -66,7 +70,7 @@
 /* 버튼 위치 조정 */
 .toggle-btn {
   position: absolute;
-  top: 20px;
+  top: 50%;
   left: 0;
   /* 기본 닫힘 위치 */
   width: 25px;
@@ -80,7 +84,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
+  z-index: 1000;
   transition: left 0.3s ease;
 }
 
@@ -253,7 +257,7 @@
 }
 
 .reserve-button {
-  background-color: #4285F4;
+  background-color: #0033A0;
   color: #fff;
 }
 
