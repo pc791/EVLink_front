@@ -1,13 +1,24 @@
 export type ChargingStation = {
-  id: string; // 각 충전소를 식별할 고유 ID
+  id: string; // 각 개인 충전소를 식별할 고유 ID
   position: { lat: number; lng: number };
   addr: string;
   chargeTp: string;
   cpStat: string;
   cpTp: string;
-  //   cpNm: string;
+  csNm: string;
   // ... 기타 상세 정보
 };
+export interface ChargingStations {
+  id: string;
+  position: { lat: number; lng: number };
+  addr: string;
+  csNm: string;
+  chargers: {
+    chargeTp: string;
+    cpStat: string;
+    cpTp: string;
+  }[];
+}
 // addr 충전기주소
 // chargeTp 충전기타입 1:완속, 2:급속
 // cpStat 충전기 상태코드  STRING  1:충전가능 2:충전중 3:고장/점검 4:통신장애 5:통신미연결
@@ -23,12 +34,38 @@ const streetList = [
   '테헤란로', '서초대로', '마포대로', '동호로', '월드컵북로', '양재대로',
   '경인로', '노원로', '성북로', '강변북로', '올림픽대로', '남부순환로'
 ];
+
+// 매핑 테이블
+const chargeTpMap: Record<string, string> = {
+  "1": "완속",
+  "2": "급속",
+};
+
+const cpStatMap: Record<string, string> = {
+  "1": "충전가능",
+  "2": "충전중",
+  "3": "고장/점검",
+  "4": "통신장애",
+  "5": "통신미연결",
+};
+
+const cpTpMap: Record<string, string> = {
+  "01": "B타입(5핀)",
+  "02": "C타입(5핀)",
+  "03": "BC타입(5핀)",
+  "04": "BC타입(7핀)",
+  "05": "DC차데모",
+  "06": "AC3상",
+  "07": "DC콤보",
+  "08": "DC차데모+DC콤보",
+  "09": "DC차데모+AC3상",
+  "10": "DC차데모+DC콤보+AC3상"
+};
+
 // 더미 데이터
+
 export const DUMMY_STATIONS: ChargingStation[] = [
-  { id: 'cs1', position: { lat: 37.5009, lng: 127.0366 }, addr: '서울 강남구 테헤란로 100', chargeTp: '급속', cpStat: '충전가능', cpTp: 'B타입(5핀)' },
-  { id: 'cs2', position: { lat: 37.5020, lng: 127.0420 }, addr: '서울 강남구 테헤란로 200', chargeTp: '완속', cpStat: '충전중', cpTp: 'C타입(5핀)' },
-  { id: 'cs3', position: { lat: 37.5055, lng: 127.0390 }, addr: '서울 강남구 봉은사로 10', chargeTp: '급속', cpStat: '고장/점검', cpTp: 'BC타입(5핀)' },
-  { id: 'cs4', position: { lat: 37.5050, lng: 127.0400 }, addr: '서울 강남구 논현로 50', chargeTp: '완속', cpStat: '통신장애', cpTp: 'DC콤보' },
+  
   ...Array.from({ length: 500 }, (_, i) => {
     const lat = 37.45 + Math.random() * 0.1;
     const lng = 126.90 + Math.random() * 0.15;
@@ -39,7 +76,7 @@ export const DUMMY_STATIONS: ChargingStation[] = [
       'C타입(5핀)',
       'BC타입(5핀)',
       'BC타입(7핀)',
-      'C차 데모',
+      'AC5핀',
       'AC3상',
       'DC콤보',
       'DC차데모+DC콤보'
@@ -54,6 +91,64 @@ export const DUMMY_STATIONS: ChargingStation[] = [
       chargeTp: chargeTpList[Math.floor(Math.random() * chargeTpList.length)],
       cpStat: cpStatList[Math.floor(Math.random() * cpStatList.length)],
       cpTp: cpTpList[Math.floor(Math.random() * cpTpList.length)],
+      csNm: '건물명'
     };
   }),
 ];
+// evApi.ts
+
+// KEPCO API 기본값
+const KEPCO_API_KEY = "5F1cIB0v88jck3w9aeiJbF849KB6XDDlK334sXn3";
+const KEPCO_API_URL = "/openapi/v1/EVchargeManage.do";
+
+// 실제 데이터를 가져오는 함수
+export const fetchEvStations = async (): Promise<ChargingStations[]> => {
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append("apiKey", KEPCO_API_KEY);
+    queryParams.append("returnType", "json");
+
+    const response = await fetch(`${KEPCO_API_URL}?${queryParams.toString()}`);
+    if (!response.ok) {
+      throw new Error(`HTTP Error! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    if (responseData && Array.isArray(responseData.data)) {
+      // ✅ 좌표별 충전소 묶기
+      const stationMap = new Map<string, ChargingStations>();
+
+      responseData.data.forEach((item: any, index: number) => {
+        const lat = parseFloat(item.lat);
+        const lng = parseFloat(item.longi);
+        const key = `${lat},${lng}`;
+
+        if (!stationMap.has(key)) {
+          stationMap.set(key, {
+            id: item.csId || `cs${index}`,
+            position: { lat, lng },
+            addr: item.addr || "주소 없음",
+            csNm: item.csNm || "정보 없음",
+            chargers: [], // ← 여러 충전기 정보 들어갈 배열
+          });
+        }
+
+        // 기존 station 가져와서 chargers에 push
+        const station = stationMap.get(key)!;
+        station.chargers.push({
+          chargeTp: chargeTpMap[item.chargeTp] || "정보 없음",
+          cpStat: cpStatMap[item.cpStat] || "정보 없음",
+          cpTp: cpTpMap[item.cpTp] || "정보 없음",
+        });
+      });
+
+      return Array.from(stationMap.values());
+    } else {
+      return [];
+    }
+  } catch (err) {
+    console.error("EV 충전소 데이터 가져오기 실패:", err);
+    return [];
+  }
+};

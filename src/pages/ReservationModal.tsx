@@ -58,7 +58,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
               <span>{reservationDetails.station}</span>
             </div>
           </div>
-
+          <hr/>
           {/* 예약자 정보 섹션 */}
           <div className="user-info-section">
             <h3 className="required-title">예약자 정보 <span className="required-text">*필수입력</span></h3>
@@ -73,14 +73,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
             <div className="form-group">
               <label>이메일*</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>사용목적</label>
-              <input type="text" value={purpose} onChange={(e) => setPurpose(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>요청사항</label>
-              <textarea value={request} onChange={(e) => setRequest(e.target.value)} />
             </div>
           </div>
         </div>
