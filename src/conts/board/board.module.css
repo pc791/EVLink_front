@@ -1,0 +1,45 @@
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+  }
+  
+  .boardTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .boardTable th,
+  .boardTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  
+  .boardTable thead {
+    background-color: lightblue;
+  }
+  
+  .titleLink {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .titleLink:hover {
+    text-decoration: underline;
+    color: dodgerblue;
+  }
+  
+  .button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: dodgerblue;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .button:hover {
+    background-color: deepskyblue;
+  }

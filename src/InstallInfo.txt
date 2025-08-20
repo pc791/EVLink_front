@@ -1,0 +1,16 @@
+InstallInfo.txt
+//라우팅을 위한 모듈 
+//myreact폴더 안에서 설치 해야 함.
+yarn add react-router-dom
+yarn add --dev @types/react-router-dom
+// slick & carousel
+// https://react-slick.neostack.com/docs/example
+yarn add react-slick
+yarn add slick-carousel
+yarn add --dev @types/react-slick
+
+//react-pageflip
+yarn add react-pageflip
+
+//axios : ajax를 사용하기 위한 모듈
+yarn add axios
