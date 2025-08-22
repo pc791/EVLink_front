@@ -6,6 +6,7 @@
   padding: 10px;
   box-sizing: border-box;
   width: 100%;
+  max-width: none
 }
 
 /* 검색바 */

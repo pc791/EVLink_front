@@ -4,6 +4,10 @@ import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
 
+// (window as any).naver.maps.Event.addListener(mapInstance, 'idle', () => {
+//                     infoWindow.close();
+//                 });
+
 const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -13,6 +17,7 @@ const getTodayDate = () => {
 };
 
 const Map: React.FC = () => {
+    const [aiAnswer, setAiAnswer] = useState("");
     const mapRef = useRef<HTMLDivElement | null>(null);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isReservationPanelVisible, setIsReservationPanelVisible] = useState(false);
@@ -23,45 +28,60 @@ const Map: React.FC = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [dragStartIndex, setDragStartIndex] = useState<number | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-
     const [mapInstance, setMapInstance] = useState<any>(null);
     const markersRef = useRef<any[]>([]);
 
     const [displayedStations, setDisplayedStations] = useState<ChargingStation[]>([]);
 
     const [stations, setStations] = useState<ChargingStations[]>([]);
-/*
-const cpTpMap: Record<string, string> = {
-  "01": "B타입(5핀)",
-  "02": "C타입(5핀)",
-  "03": "BC타입(5핀)",
-  "04": "BC타입(7핀)",
-  "05": "DC차데모",
-  "06": "AC3상",
-  "07": "DC콤보",
-  "08": "DC차데모+DC콤보",
-  "09": "DC차데모+AC3상",
-  "10": "DC차데모+DC콤보+AC3상"
-};
-*/
-    const imageFile = (type : string) => {
-        if(type === "B타입(5핀)") {
-            return '/images/ac5.png';
-        }else if(type === "C타입(5핀)") {
-            return '/images/ac5.png';
-        }else if(type === "BC타입(5핀)") {
-            return '/images/ac5.png';
-        }else if(type === "BC타입(7핀)"){
-            return '/images/ac7.png';
-        }else if(type === "DC차데모"){
-            return '/images/dc_cha.png';
-        }else if(type === "AC3상"){
-            return '/images/ac5.png';
-        }else if(type === "DC콤보"){
-            return '/images/dc_cha.png';
-        }else if(type === "DC차데모+DC콤보"){
-            return '/images/dc_cha.png';
-        }else {return '/images/ac5.png'}
+    const imageFileHtml = (type: string): string => {
+        if (!type) return "";
+        if (type === "B타입(5핀)" || type === "C타입(5핀)" || type === "BC타입(5핀)") {
+            return `<img src="/images/ac5.png" alt="타입" width="40" />`;
+        } else if (type === "BC타입(7핀)") {
+            return `<img src="/images/ac7.png" alt="타입" width="40" />`;
+        } else if (type === "DC차데모") {
+            return `<img src="/images/dc_cha.png" alt="타입" width="40" />`;
+        } else if (type === "AC3상") {
+            return `<img src="/images/dc_combo2.png" alt="타입" width="40" />`;
+        } else if (type === "AC5핀") {
+            return `<img src='/images/ac5.png' width="40" alt='타입' width={40} />`;
+        } else if (type === "DC콤보") {
+            return `<img src="/images/dc_combo1.png" alt="타입" width="40" />`;
+        } else if (type === "DC차데모+DC콤보") {
+            return `<img src="/images/dc_cha.png" alt="차데모" width="40" /><img src="/images/dc_combo1.png" alt="콤보" width="40" />`;
+        } else if (type === "DC차데모+AC3상") {
+            return `<img src="/images/dc_cha.png" alt="차데모" width="40" /><img src="/images/dc_combo2.png" alt="AC3상" width="40" />`;
+        } else if (type === "DC차데모+DC콤보+AC3상") {
+            return `<img src="/images/dc_cha.png" alt="차데모" width="40" /><img src="/images/dc_combo1.png" alt="콤보" width="40" /><img src="/images/dc_combo2.png" alt="AC3상" width="40" />`;
+        }
+        // fallback
+        return `<span>${type}</span>`;
+    };
+    const imageFile = (type: string) => {
+        if (type === "B타입(5핀)") {
+            return <img src='/images/ac5.png' alt='타입' width={40} />;
+        } else if (type === "C타입(5핀)") {
+            return <img src='/images/ac5.png' alt='타입' width={40} />;
+        } else if (type === "BC타입(5핀)") {
+            return <img src='/images/ac5.png' alt='타입' width={40} />;
+        } else if (type === "BC타입(7핀)") {
+            return <img src='/images/ac7.png' alt='타입' width={40} />;
+        } else if (type === "DC차데모") {
+            return <img src='/images/dc_cha.png' alt='타입' width={40} />;
+        } else if (type === "AC3상") {
+            return <img src='/images/dc_combo2.png' alt='타입' width={40} />;
+        } else if (type === "AC5핀") {
+            return <img src='/images/ac5.png' alt='타입' width={40} />;
+        } else if (type === "DC콤보") {
+            return <img src='/images/dc_combo1.png' alt='타입' width={40} />;
+        } else if (type === "DC차데모+DC콤보") {
+            return <><img src='/images/dc_cha.png' alt='타입' width={40} /><img src='/images/dc_combo1.png' alt='타입' width={40} /></>;
+        } else if (type === "DC차데모+AC3상") {
+            return <><img src='/images/dc_cha.png' alt='타입' width={40} /><img src='/images/dc_combo2.png' alt='타입' width={40} /></>;
+        } else if (type === "DC차데모+DC콤보+AC3상") {
+            return <><img src='/images/dc_cha.png' alt='타입' width={40} /><img src='/images/dc_combo1.png' alt='타입' width={40} /><img src='/images/dc_combo2.png' alt='타입' width={40} /></>;
+        }
     }
 
     const updateMarkersInViewport = (map: any) => {
@@ -73,6 +93,7 @@ const cpTpMap: Record<string, string> = {
         const currentZoom = map.getZoom();
         if (currentZoom < 15) {
             setDisplayedStations([]);
+            console.log(currentZoom,displayedStations);
             return;
         }
 
@@ -88,7 +109,7 @@ const cpTpMap: Record<string, string> = {
 
             if (mapBounds.hasLatLng(markerPosition)) {
                 stationsInView.push(station);
-
+                
                 // ✅ 더미데이터 마커와 실제 데이터 마커 구분
                 const isDummy = DUMMY_STATIONS.some(dummy => dummy.addr === station.addr);
 
@@ -99,9 +120,9 @@ const cpTpMap: Record<string, string> = {
                     icon: isDummy
                         ? {
                             content: `
-      <div style="position: relative; width: 36px; height: 36px; background: #3bf654ff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transform: translate(-50%, -100%); margin-top: 25px;">
+      <div style="position: relative; width: 36px; height: 36px; background: ${station.cpStat === "충전가능" ? '#3bf654ff;' : '#6e6e6eff;'} border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transform: translate(-50%, -100%); margin-top: 25px;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; background: white; border-radius: 50%;"></div>
-        <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #3bf654ff;"></div>
+        <div style="position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid ${station.cpStat === "충전가능" ? '#3bf654ff;' : '#6e6e6eff;'}"></div>
         ${station.chargeTp === "급속" ? `<span style="position:absolute; top:-6px; right:-6px; font-size:18px;"><img style="width : 40px" src="https://www.gscev.com/images/common/ev/marker/marker_lightning.png" /></span>` : ""}
       </div>
     `,
@@ -122,7 +143,7 @@ const cpTpMap: Record<string, string> = {
                                 <h4>${station.csNm}</h4>
                                 <p>충전기 타입: ${station.chargeTp}</p>
                                 <p>충전기 상태: ${station.cpStat}</p>
-                                <div><p>충전방식: ${station.cpTp}</p><div style={{backgroundColor:'#f1f1f1', borderRadius:'8px',padding:'1vh'}}><img src="${imageFile(station.cpTp)}" style="width: 40px"/></div></div>
+                                <div><p>충전방식: ${station.cpTp}</p><div style=" background-color: #f1f1f1; border-radius:8px; padding: 1vh; display: flex; justify-content: center; align-items: center;">${imageFileHtml(station.cpTp)}</div></div>
                                 <button id="reserve-btn-${station.id}" style="
                                     background-color: #0033A0;
                                     color: white;
@@ -297,7 +318,9 @@ const cpTpMap: Record<string, string> = {
         if (mapInstance) {
             (window as any).naver.maps.Event.addListener(mapInstance, 'idle', () => updateMarkersInViewport(mapInstance));
             updateMarkersInViewport(mapInstance);
+
         }
+
     }, [mapInstance, stations]);
 
     const handleSearch = () => {
@@ -319,6 +342,27 @@ const cpTpMap: Record<string, string> = {
         }
     };
 
+    const askAI = async () => {
+        try {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o-mini",
+                    messages: [{ role: "user", content: "아니, 브라우저에 있는 회색 마커들은 뭐냐구." }],
+                }),
+            });
+
+            const data = await response.json();
+            setAiAnswer(data.choices[0].message.content);
+        } catch (error) {
+            console.error("AI 호출 실패:", error);
+            setAiAnswer("오류 발생 😢");
+        }
+    };
     const availableTimeSlots = Array.from({ length: 24 }, (_, i) => {
         const hour = String(i).padStart(2, '0');
         const status = (i === 15 || i === 23) ? 'unavailable' : 'available';
@@ -423,7 +467,7 @@ const cpTpMap: Record<string, string> = {
                                     <p className="station-title">{station.addr}</p>
                                     <p>상태: <strong>{station.cpStat}</strong></p>
                                     <p>타입: {station.chargeTp}, {station.cpTp}</p>
-                                    <div style={{backgroundColor:'#f1f1f1', borderRadius:'8px',padding:'1vh'}}><img alt='타입 이미지' src={imageFile(station.cpTp)} width={40}/></div>
+                                    <div style={{ backgroundColor: '#f1f1f1', borderRadius: '8px', padding: '1vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{imageFile(station.cpTp)}</div>
                                 </li>
                             ))
                         ) : (
@@ -491,7 +535,17 @@ const cpTpMap: Record<string, string> = {
                     onClose={() => setIsModalVisible(false)}
                     reservationDetails={reservationDetails}
                 />
+
             )}
+            {/* <button onClick={askAI} style={{ margin: "10px 0", padding: "8px 16px" }}>
+                AI에게 질문하기
+            </button>
+            {aiAnswer && (
+                <div style={{ marginTop: "10px", padding: "10px", border: "1px solid #ccc" }}>
+                    <strong>AI 응답:</strong>
+                    <p>{aiAnswer}</p>
+                </div>
+            )} */}
         </div>
     );
 };
