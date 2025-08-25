@@ -1,0 +1,211 @@
+/* Footer Styles - Clean and Organized */
+
+/* 푸터 메인 컨테이너 */
+.footer {
+  background: #1a1a2e;
+  color: #fff;
+  width: 100%;
+  font-family: 'Noto Sans KR', 'Pretendard', sans-serif;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1000;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* 푸터 내부 컨테이너 */
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* 푸터 상단 영역 */
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* 푸터 로고 영역 */
+.footerLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* 푸터 로고 아이콘 */
+.footerLogoIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* 푸터 로고 이미지 */
+.footerLogoIcon img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+/* 푸터 브랜드명 */
+.footerBrandName {
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: #fff;
+  font-family: 'Orbitron', 'Arial', sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* 소셜 미디어 아이콘 그룹 */
+.socialMediaIcons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* 소셜 미디어 아이콘 */
+.socialIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 소셜 미디어 아이콘 호버 */
+.socialIcon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* 소셜 미디어 아이콘 SVG */
+.socialIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 푸터 구분선 */
+.footerDivider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  margin: 1.5rem 0;
+}
+
+/* 푸터 하단 영역 */
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* 저작권 텍스트 */
+.copyright {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* 푸터 링크 그룹 */
+.footerLinks {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* 푸터 링크 */
+.footerLink {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* 푸터 링크 호버 */
+.footerLink:hover {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* 푸터 링크 호버 시 밑줄 효과 */
+.footerLink::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.footerLink:hover::after {
+  width: 100%;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .footerTop {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .footerLinks {
+    justify-content: center;
+  }
+
+  .socialMediaIcons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerContainer {
+    padding: 0 1rem;
+  }
+
+  .footerBrandName {
+    font-size: 1.5rem;
+  }
+
+  .footerLinks {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .socialMediaIcons {
+    gap: 0.75rem;
+  }
+
+  .socialIcon {
+    width: 35px;
+    height: 35px;
+  }
+}
