@@ -49,5 +49,6 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
     "@types/react-slick": "^0.23.13"
-  }
+  },
+  "proxy": "http://bigdata.kepco.co.kr"
 }

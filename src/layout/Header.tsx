@@ -34,11 +34,11 @@ const Header: React.FC = () => {
             <header className={styles.header}>
                 <div className={styles['navbar-container']}>
                     {/* Logo and Brand */}
-                    <div className={styles['logo-section']}>
+                    <NavLink to='/' className={styles['logo-section']}>
                         <img src='/images/logo.png' alt="EVLink Logo" style={{width:'40px', height:'40px'}} />
                         <h1 className={styles['brand-name']}>EVLink</h1>
                          {/* <NavLink to="/" className={styles['brand-name']}>EVLink</NavLink> */}
-                    </div>
+                    </NavLink>
 
                     {/* Right Section - Login, User Info, and Hamburger Menu */}
                     <div className={styles['right-section']}>
@@ -86,7 +86,7 @@ const Header: React.FC = () => {
                             <h3 className={styles['secondary-nav-title']}>EV 충전소 찾기</h3>
                             <div className={styles['secondary-nav-links']}>
                                 <a href="#" className={styles['secondary-nav-item']}>서비스안내</a>
-                                <a href="#" className={styles['secondary-nav-item']}>충전소찾기</a>
+                                <NavLink to="/map" className={styles['secondary-nav-item']}>충전소찾기</NavLink>
                             </div>
                         </div>
 

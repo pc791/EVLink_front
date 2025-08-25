@@ -1,0 +1,508 @@
+/* 전체 레이아웃 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none
+}
+
+/* 검색바 */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+.search-bar input,
+.search-bar select,
+.search-bar button {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* 메인 컨텐츠 (지도, 상세 정보, 예약 패널) */
+.main-content {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 상세 정보 패널 (왼쪽 슬라이드) */
+.details-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100%;
+  background-color: #fff;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  /* 내용이 많아지면 스크롤 가능하도록 */
+  padding-bottom: 20px;
+  /* 푸터와 겹치지 않게 여백 추가 */
+}
+.details-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* 패널 열기 */
+.details-panel.open {
+  transform: translateX(0);
+  /* 화면 안으로 이동 */
+}
+
+/* 버튼 위치 조정 */
+.toggle-btn {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  /* 기본 닫힘 위치 */
+  width: 25px;
+  height: 25px;
+  border: none;
+  background-color: #4285F4;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: left 0.3s ease;
+}
+
+.details-panel.open+.toggle-btn {
+  left: 300px;
+  /* 패널 열렸을 때 버튼 이동 */
+}
+
+.details-panel h2 {
+  margin-bottom: 10px;
+}
+
+.details-panel p {
+  color: #555;
+  font-size: 14px;
+}
+
+.station-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0;
+  flex-grow: 1;
+  /* 스크롤 영역 확보 */
+}
+
+.station-item {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.station-item h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+.station-item p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.reserve-button-small {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.reserve-button-small:hover {
+  background-color: #0056b3;
+}
+
+/* 지도 컨테이너 */
+.map-container {
+  flex: 1;
+  height: 100%;
+}
+
+/* 예약 패널 (오른쪽 슬라이드) */
+.reservation-panel {
+  position: absolute;
+  top: 0;
+  right: -350px;
+  /* 초기에는 화면 밖으로 숨김 */
+  width: 350px;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.reservation-panel.visible {
+  right: 0;
+  /* visible 클래스가 추가되면 안으로 슬라이드 */
+}
+
+.panel-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.panel-header .station-title {
+  margin: 5px 0 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.panel-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reservation-input label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.reservation-input input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.time-slot {
+  padding: 10px 5px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.time-slot:hover {
+  background-color: #eee;
+}
+
+.time-slot.selected {
+  background-color: #4285F4;
+  color: #fff;
+  border-color: #4285F4;
+}
+
+.panel-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.reserve-button,
+.cancel-button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.reserve-button {
+  background-color: #0033A0;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+/* 예약 패널 내부 섹션 */
+.reservation-panel .panel-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reservation-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-header {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-time {
+  font-weight: normal;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 시간 선택 그리드 (가로 스크롤 가능) */
+.time-selector-container {
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+}
+
+.time-selector-container::-webkit-scrollbar {
+  display: none;
+  /* WebKit */
+}
+
+.time-grid-scroller {
+  display: flex;
+  gap: 5px;
+  padding-bottom: 10px;
+}
+
+.time-slot {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 60px;
+  height: 60px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 5px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.time-slot.available {
+  background-color: #fff9e6;
+  /* 이미지의 노란색 계열 */
+  border-color: #ffc107;
+  cursor: pointer;
+}
+
+.time-slot.selected {
+  background-color: #5d3fd3;
+  /* 이미지의 보라색 */
+  color: #fff;
+  border-color: #5d3fd3;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.time-slot.unavailable {
+  background-color: #f0f0f0;
+  border-color: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.time-slot .time-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.time-slot .price-label {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* 시간 선택 범례 */
+.time-legend {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.time-legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.time-legend-item span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+}
+
+.unavailable-box {
+  background-color: #f0f0f0;
+}
+
+.available-box {
+  background-color: #fff9e6;
+}
+
+.selected-box {
+  background-color: #5d3fd3;
+}
+
+.custom-calendar {
+  width: 280px;
+  user-select: none;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  background: white;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 6px;
+}
+
+.year-month {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.calendar-day,
+.calendar-empty {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.calendar-empty {
+  cursor: default;
+}
+
+.calendar-day.unavailable {
+  background-color: #f0f0f0;
+  color: #898989;
+  cursor: default;
+}
+
+.calendar-day.today {
+  background-color: #ffe66d;
+  font-weight: bold;
+}
+
+.calendar-day.selected {
+  background-color: #5c2cc9;
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-legend {
+  margin-top: 12px;
+  font-size: 12px;
+  display: flex;
+  gap: 15px;
+  user-select: none;
+  justify-content: center;
+}
+
+.legend {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+
+.legend.unavailable {
+  background-color: #f0f0f0;
+}
+
+.legend.today {
+  background-color: #ffe66d;
+}
+
+.legend.selected {
+  background-color: #5c2cc9;
+}

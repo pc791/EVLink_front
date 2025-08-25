@@ -10,6 +10,7 @@ import EVhome from '../components/home/EVhome'
 import Login from '../components/login/Login';
 import FAQ from '../components/community/faq/FAQ'
 import Event from '../components/community/event/Event';
+import Map from '../components/map/Map'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 // import Notice from '../components/notice/Notice';
@@ -24,7 +25,7 @@ const AppRoutes: React.FC = () => {
     const routeList = [ 
         { path: '/', element: <EVhome />},
         { path: '/Login', element: <Login /> },// 로그인
-        // { path: '/map', element: <Map />  }, // 충전소 찾기 (맵)
+        { path: '/map', element: <Map />  }, // 충전소 찾기 (맵)
         // { path: '/mypage', element: <Mypage /> }, // 마이페이지
         // { path: '/notice', element: <Notice /> }, // 공지사항
         { path: '/faq', element: <FAQ /> }, // FAQ
