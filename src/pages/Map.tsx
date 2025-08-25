@@ -94,6 +94,7 @@ const Map: React.FC = () => {
         if (currentZoom < 15) {
             setDisplayedStations([]);
             console.log(currentZoom,displayedStations);
+
             return;
         }
 
