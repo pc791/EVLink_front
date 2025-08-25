@@ -1,20 +1,24 @@
-import React from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Layout from './comp/Layout';
-import AppRoutes from './router/AppRoutes';
-import { AuthProvider } from './comp/AuthProvider';
+import { NavLink, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import './App.css';
+import EVhome from "./components/home/EVhome";
+import Layout from "./layout/Layout";
+import { AuthProvider } from "./auth/AuthProvider"; 
+import AppRouter from "./router/AppRoutes";
 
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        {/* <Layout> */}
-          <AppRoutes />
-        {/* </Layout> */}
-      </Router>
-    </AuthProvider>
+
+    <div className="App">
+      <AuthProvider>
+        <Router>
+          <Layout>
+            <AppRouter />
+          </Layout>
+        </Router>
+      </AuthProvider>
+    </div>
   );
 }
-
+  
 export default App;
