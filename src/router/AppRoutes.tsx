@@ -11,6 +11,7 @@ import FAQ from '../components/community/faq/FAQ'
 import Event from '../components/community/event/Event';
 import Notice from '../components/community/notice/Notice';
 import NoticeDetail from '../components/community/notice/NoticeDetail';
+import Map from '../components/map/Map'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -25,7 +26,7 @@ const AppRoutes: React.FC = () => {
     const routeList = [ 
         { path: '/', element: <EVhome />},
         { path: '/Login', element: <Login /> },// 로그인
-        // { path: '/map', element: <Map />  }, // 충전소 찾기 (맵)
+        { path: '/map', element: <Map />  }, // 충전소 찾기 (맵)
         // { path: '/mypage', element: <Mypage /> }, // 마이페이지
         { path: '/notice', element: <Notice /> }, // 공지사항
         { path: '/notice/:id', element: <NoticeDetail /> }, // 공지사항
