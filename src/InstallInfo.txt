@@ -1,13 +1,11 @@
-Install Information. //라우팅을 위한 모듈
 
-//terminal에서 모듈 설치.
 yarn add react-router-dom
 yarn add --dev @types/react-router-dom
 
-//https://react-slick.neostack.com/docs/get-started
-yarn add react-slick
-yarn add slick-carousel
-yarn add --dev @types/react-slick
+//
+yarn add axios
 
-//react-pageflip
-yarn add react-pageflip
+//
+yarn add @mui/material @emotion/react @emotion/styled @mui/lab @mui/x-date-pickers @mui/x-data-grid @mui/icons-material @mui/joy @mui/styled-engine
+yarn add recharts
+yarn add date-fns
