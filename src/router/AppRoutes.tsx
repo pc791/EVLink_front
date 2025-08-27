@@ -12,6 +12,9 @@ import Event from '../components/community/event/Event';
 import Notice from '../components/community/notice/Notice';
 import NoticeDetail from '../components/community/notice/NoticeDetail';
 import Map from '../components/map/Map'
+import UserInfoTabs from '../components/mypage/UserInfoTabs'
+import UserStatTab from '../components/history/analysis/UserStatTab'
+import ReservationTab from '../components/history/reservation/ReservationTab'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -27,14 +30,15 @@ const AppRoutes: React.FC = () => {
         { path: '/', element: <EVhome />},
         { path: '/Login', element: <Login /> },// 로그인
         { path: '/map', element: <Map />  }, // 충전소 찾기 (맵)
-        // { path: '/mypage', element: <Mypage /> }, // 마이페이지
+        { path: '/mypage', element: <UserInfoTabs /> }, // 마이페이지
         { path: '/notice', element: <Notice /> }, // 공지사항
         { path: '/notice/:id', element: <NoticeDetail /> }, // 공지사항
         { path: '/faq', element: <FAQ /> }, // FAQ
         { path: '/event', element: <Event /> }, // 이벤트
-        // { path: '/analysis', element: <Analysis /> }, // 통계
+        { path: '/analysis', element: <UserStatTab /> }, // 이용현황
         // { path: '/service', element: <Service /> }, // 서비스안내
-
+        // { path: '/reserveform', element: <Reserveform />}, // 예약 폼
+        { path: '/reservelist', element: <ReservationTab />}, // 예약 리스트
     ]
     
     
