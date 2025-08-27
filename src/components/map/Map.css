@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100vh;
   padding: 10px;
+  padding-top: 80px;
   box-sizing: border-box;
   width: 100%;
   max-width: none
@@ -11,6 +12,8 @@
 
 /* 검색바 */
 .search-bar {
+  background-color: lightcoral;
+  height: 60px;
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
