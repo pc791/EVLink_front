@@ -123,13 +123,13 @@ const ChargerInfoSection: React.FC = () => {
                 label="시작시간"
                 name = "charUseSTime"
                 value={chargerInfo.charUseSTime}
-                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue ? format(newValue, 'HH:mm:ss') : format('00:00:00', 'HH:mm:ss') }))}
+                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue instanceof Date ? format(newValue, 'HH:mm:ss') : format('00:00:00', 'HH:mm:ss') }))}
               />
               <TimePicker
                 label="종료시간"
                 name = "charUseETime"
                 value={chargerInfo.charUseETime}
-                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue ? format(newValue, 'HH:mm:ss') : format('23:59:59', 'HH:mm:ss') }))}
+                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue instanceof Date ? format(newValue, 'HH:mm:ss') : format('23:59:59', 'HH:mm:ss') }))}
               />
             </DemoContainer>
         </LocalizationProvider>
