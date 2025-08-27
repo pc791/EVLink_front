@@ -30,6 +30,8 @@ const Map: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [mapInstance, setMapInstance] = useState<any>(null);
     const markersRef = useRef<any[]>([]);
+    const [selectedChargerType, setSelectedChargerType] = useState('충전기 타입'); // '급속', '완속'
+    const [selectedChargerSocket, setSelectedChargerSocket] = useState('충전기 소켓'); // 'AC5핀', 'DC차', 등
 
     const [displayedStations, setDisplayedStations] = useState<ChargingStation[]>([]);
 
@@ -93,7 +95,7 @@ const Map: React.FC = () => {
         const currentZoom = map.getZoom();
         if (currentZoom < 15) {
             setDisplayedStations([]);
-            console.log(currentZoom,displayedStations);
+            console.log(currentZoom, displayedStations);
 
             return;
         }
@@ -110,7 +112,7 @@ const Map: React.FC = () => {
 
             if (mapBounds.hasLatLng(markerPosition)) {
                 stationsInView.push(station);
-                
+
                 // ✅ 더미데이터 마커와 실제 데이터 마커 구분
                 const isDummy = DUMMY_STATIONS.some(dummy => dummy.addr === station.addr);
 
@@ -450,8 +452,19 @@ const Map: React.FC = () => {
                         if (e.key === 'Enter') handleSearch();
                     }}
                 />
-                <select>
+                <select value={selectedChargerType} onChange={(e) => setSelectedChargerType(e.target.value)}>
                     <option>충전기 타입</option>
+                    <option>완속</option>
+                    <option>급속</option>
+                </select>
+                <select value={selectedChargerSocket} onChange={(e) => setSelectedChargerSocket(e.target.value)}>
+                    <option>충전기 소켓</option>
+                    <option>AC5핀</option>
+                    <option>AC7핀</option>
+                    <option>DC차데모</option>
+                    <option>DC콤보1</option>
+                    <option>DC콤보2</option>
+                    <option>테슬라</option>
                 </select>
                 <button onClick={handleSearch}>검색</button>
             </div>

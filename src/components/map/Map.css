@@ -1,5 +1,6 @@
 /* 전체 레이아웃 */
 .container {
+  /* background-color: #c7cddf; */
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -12,13 +13,13 @@
 
 /* 검색바 */
 .search-bar {
-  background-color: lightcoral;
   height: 60px;
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: hsl(225, 35%, 78%);
+  /* opacity: 0.3; */
   border-radius: 8px;
 }
 
