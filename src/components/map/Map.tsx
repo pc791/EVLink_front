@@ -4,6 +4,7 @@ import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
 import DigitalClockValue from './Timetable';
+import CloseIcon from '@mui/icons-material/Close';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -151,15 +152,16 @@ const Map: React.FC = () => {
                                 <p>충전기 상태: ${station.cpStat}</p>
                                 <div><p>충전방식: ${station.cpTp}</p><div style=" background-color: #f1f1f1; border-radius:8px; padding: 1vh; display: flex; justify-content: center; align-items: center;">${imageFileHtml(station.cpTp)}</div></div>
                                 <button id="reserve-btn-${station.id}" style="
-                                    background-color: #0033A0;
+                                    background-color:${station.cpStat !== "충전가능" ? "#d3d3d3ff;": "#0033A0;"}
                                     color: white;
                                     border: none;
                                     padding: 5px 10px;
                                     border-radius: 4px;
                                     cursor: pointer;
                                     margin-top: 5px;"
-                                    onmouseover="this.style.background='#4285F4'"
-                                    onmouseout="this.style.background='#0033A0'"
+                                    ${station.cpStat === "충전가능" ? "" : "disabled"}
+                                    onmouseover="if(!this.disabled) this.style.background='#4285F4'"
+                                    onmouseout="if(!this.disabled) this.style.background='#0033A0'"
                                     >예약하기</button>
                                 <button id="cancel-btn-${station.id}" style="
                                     background-color: #ccc;
@@ -403,8 +405,8 @@ const Map: React.FC = () => {
     };
 
     const totalReservationHours = selectedTimeRange.length;
-    const reservationTimeDisplay = totalReservationHours > 0
-        ? `${selectedTimeRange[0].padStart(2, '0')}시~${(parseInt(selectedTimeRange[totalReservationHours - 1]) + 1).toString().padStart(2, '0')}시, ${totalReservationHours}시간`
+    const reservationTimeDisplay = (endChargeTime || startChargeTime)
+        ? `${parseInt(startChargeTime).toString().padStart(2, '0')}시~${(parseInt(endChargeTime)).toString().padStart(2, '0')}시, ${parseInt(endChargeTime) - parseInt(startChargeTime)}시간`
         : '시간 선택';
 
     const formatSelectedDate = () => {
@@ -519,9 +521,12 @@ const Map: React.FC = () => {
                     {isSidebarOpen ? '◀' : '▶'}
                 </button>
                 <div className={`reservation-panel ${isReservationPanelVisible ? 'visible' : ''}`}>
+                    
                     <div className="reservation-panel-select">
                         <div className="panel-header">
-                            <h3>예약하기</h3>
+                            <div style={{display:'flex', justifyContent:'space-between'}}>
+                            <h3>예약하기</h3><CloseIcon style={{cursor:'pointer'}} onClick={() => setIsReservationPanelVisible(false)}></CloseIcon>
+                            </div>
                             <p className="station-title">{selectedStationAddress}</p>
                         </div>
                         <div className={`panel-body ${timetoselect ? 'time' : ''}`}>
@@ -570,7 +575,7 @@ const Map: React.FC = () => {
                                     {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
                                     {'  '}
                                     <span style={{ color: '#666', marginLeft: 8 }}>
-                                        (스케일: {timelineScale === 1440 ? '24시간' : '48시간'})
+                                    (이용시간: {(toMinutes(endChargeTime) - toMinutes(startChargeTime)) / 60}시간)
                                     </span>
                                 </div>
                             </div>

@@ -81,7 +81,7 @@ body{
 .toggle-btn {
   position: absolute;
   top: 50%;
-  left: 0;
+  left: 10px;
   /* 기본 닫힘 위치 */
   width: 25px;
   height: 25px;
@@ -99,7 +99,7 @@ body{
 }
 
 .details-panel.open+.toggle-btn {
-  left: 300px;
+  left: 340px;
   /* 패널 열렸을 때 버튼 이동 */
 }
 
