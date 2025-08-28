@@ -1,6 +1,7 @@
-body {
-    overflow: hidden;
+body{
+  overflow: hidden;
 }
+
 /* 전체 레이아웃 */
 .container {
   /* background-color: #c7cddf; */
@@ -8,7 +9,7 @@ body {
   flex-direction: column;
   height: 100vh;
   padding: 10px;
-  padding-top: 80px;
+  padding-top: 90px;
   box-sizing: border-box;
   width: 100%;
   max-width: none
@@ -22,7 +23,7 @@ body {
   margin-bottom: 10px;
   padding: 10px;
   /* background-color: hsl(225, 35%, 78%); */
-  background-color: #1976d2;
+  background-color: #93beff;
   /* opacity: 0.5; */
   border-radius: 8px;
 }
@@ -80,7 +81,7 @@ body {
 .toggle-btn {
   position: absolute;
   top: 50%;
-  left: 0;
+  left: 10px;
   /* 기본 닫힘 위치 */
   width: 25px;
   height: 25px;
@@ -98,7 +99,7 @@ body {
 }
 
 .details-panel.open+.toggle-btn {
-  left: 300px;
+  left: 340px;
   /* 패널 열렸을 때 버튼 이동 */
 }
 
@@ -176,26 +177,31 @@ body {
   flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .reservation-panel.visible {
   right: 0;
+  padding-top: 0;
   /* visible 클래스가 추가되면 안으로 슬라이드 */
 }
 
-.reservation-panel-select{
-  transform: translateY(0);
+.panel-body{
+  transform: translateY(0%);
   transition: transform 0.5s ease-in-out;
 }
-.reservation-panel-select.time{
-  transition: transform 0.5s ease-in-out;
-  transform: translateY(-50%);
+.panel-body.time{
+  transform: translateY(-43%);
 }
 
 .panel-header {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
   margin-bottom: 20px;
+  position: relative;
+  background-color: rgb(255, 255, 255);
+  padding-top: 30px;
+  z-index: 5;
 }
 
 .panel-header h3 {
@@ -292,9 +298,9 @@ body {
 }
 
 .time-slot.selected {
-  background-color: #1976d2;
+  background-color: #4285F4;
   color: #fff;
-  border-color: #1976d2;
+  border-color: #4285F4;
 }
 
 .panel-footer {
@@ -398,10 +404,10 @@ body {
 }
 
 .time-slot.selected {
-  background-color: #1976d2;
+  background-color: #5d3fd3;
   /* 이미지의 보라색 */
   color: #fff;
-  border-color: #1976d2;
+  border-color: #5d3fd3;
   transform: translateY(-2px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -454,7 +460,7 @@ body {
 }
 
 .selected-box {
-  background-color: #1976d2;
+  background-color: #5d3fd3;
 }
 
 .custom-calendar {
@@ -531,7 +537,7 @@ body {
 }
 
 .calendar-day.selected {
-  background-color: #1976d2;;
+  background-color: #5c2cc9;
   color: white;
   font-weight: bold;
 }
@@ -562,5 +568,5 @@ body {
 }
 
 .legend.selected {
-  background-color: #1976d2;
+  background-color: #5c2cc9;
 }

@@ -4,6 +4,7 @@ import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
 import DigitalClockValue from './Timetable';
+import CloseIcon from '@mui/icons-material/Close';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -29,8 +30,6 @@ const Map: React.FC = () => {
     const [startChargeTime, setStartChargeTime] = useState(''); // "HH:mm"
     const [endChargeTime, setEndChargeTime] = useState(''); // "HH:mm"
     const markersRef = useRef<any[]>([]);
-    const [selectedChargerType, setSelectedChargerType] = useState('충전기 타입'); // '급속', '완속'
-    const [selectedChargerSocket, setSelectedChargerSocket] = useState('충전기 소켓'); // 'AC5핀', 'DC차', 등
 
     const [displayedStations, setDisplayedStations] = useState<ChargingStation[]>([]);
 
@@ -153,15 +152,16 @@ const Map: React.FC = () => {
                                 <p>충전기 상태: ${station.cpStat}</p>
                                 <div><p>충전방식: ${station.cpTp}</p><div style=" background-color: #f1f1f1; border-radius:8px; padding: 1vh; display: flex; justify-content: center; align-items: center;">${imageFileHtml(station.cpTp)}</div></div>
                                 <button id="reserve-btn-${station.id}" style="
-                                    background-color: #0033A0;
+                                    background-color:${station.cpStat !== "충전가능" ? "#d3d3d3ff;": "#0033A0;"}
                                     color: white;
                                     border: none;
                                     padding: 5px 10px;
                                     border-radius: 4px;
                                     cursor: pointer;
                                     margin-top: 5px;"
-                                    onmouseover="this.style.background='#4285F4'"
-                                    onmouseout="this.style.background='#0033A0'"
+                                    ${station.cpStat === "충전가능" ? "" : "disabled"}
+                                    onmouseover="if(!this.disabled) this.style.background='#4285F4'"
+                                    onmouseout="if(!this.disabled) this.style.background='#0033A0'"
                                     >예약하기</button>
                                 <button id="cancel-btn-${station.id}" style="
                                     background-color: #ccc;
@@ -389,18 +389,6 @@ const Map: React.FC = () => {
         setDragStartIndex(null);
     };
 
-    // const handleReserve = () => {
-    //     if (selectedTimeRange.length > 0) {
-    //         const selectedStation = DUMMY_STATIONS.find(station => station.addr === selectedStationAddress);
-    //         if (selectedStation) {
-    //             centerMapOnStation(selectedStation);
-    //         }
-    //         setIsModalVisible(true);
-    //     } else {
-    //         alert('시간을 선택해주세요.');
-    //     }
-    // };
-
     const handleReserve = () => {
         // startChargeTime과 endChargeTime이 모두 존재하고 비어있지 않은지 확인합니다.
         if (startChargeTime && endChargeTime) {
@@ -417,8 +405,8 @@ const Map: React.FC = () => {
     };
 
     const totalReservationHours = selectedTimeRange.length;
-    const reservationTimeDisplay = totalReservationHours > 0
-        ? `${selectedTimeRange[0].padStart(2, '0')}시~${(parseInt(selectedTimeRange[totalReservationHours - 1]) + 1).toString().padStart(2, '0')}시, ${totalReservationHours}시간`
+    const reservationTimeDisplay = (endChargeTime || startChargeTime)
+        ? `${parseInt(startChargeTime).toString().padStart(2, '0')}시~${(parseInt(endChargeTime)).toString().padStart(2, '0')}시, ${parseInt(endChargeTime) - parseInt(startChargeTime)}시간`
         : '시간 선택';
 
     const formatSelectedDate = () => {
@@ -502,23 +490,13 @@ const Map: React.FC = () => {
                         if (e.key === 'Enter') handleSearch();
                     }}
                 />
-                <select value={selectedChargerType} onChange={(e) => setSelectedChargerType(e.target.value)}>
+                <select>
                     <option>충전기 타입</option>
-                    <option>완속</option>
-                    <option>급속</option>
-                </select>
-                <select value={selectedChargerSocket} onChange={(e) => setSelectedChargerSocket(e.target.value)}>
-                    <option>충전기 소켓</option>
-                    <option>AC5핀</option>
-                    <option>AC7핀</option>
-                    <option>DC차데모</option>
-                    <option>DC콤보1</option>
-                    <option>DC콤보2</option>
-                    <option>테슬라</option>
                 </select>
                 <button onClick={handleSearch}>검색</button>
             </div>
             <div className="main-content">
+                <div className="map-container" ref={mapRef} />
                 <div className={`details-panel ${isSidebarOpen ? 'open' : ''}`}>
                     <h2>충전소 상세 정보</h2>
                     <p>조회된 리스트 기준 상세 정보</p>
@@ -542,15 +520,16 @@ const Map: React.FC = () => {
                 <button className="toggle-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                     {isSidebarOpen ? '◀' : '▶'}
                 </button>
-                <div className="map-container" ref={mapRef} />
                 <div className={`reservation-panel ${isReservationPanelVisible ? 'visible' : ''}`}>
-                    <div className={`reservation-panel-select ${timetoselect ? 'time' : ''}`}>
+                    
+                    <div className="reservation-panel-select">
                         <div className="panel-header">
-                            <h3>예약하기</h3>
-                            <button className="cancel-button" onClick={() => setIsReservationPanelVisible(false)}>꺼짐아이콘</button>
+                            <div style={{display:'flex', justifyContent:'space-between'}}>
+                            <h3>예약하기</h3><CloseIcon style={{cursor:'pointer'}} onClick={() => setIsReservationPanelVisible(false)}></CloseIcon>
+                            </div>
                             <p className="station-title">{selectedStationAddress}</p>
                         </div>
-                        <div className="panel-body">
+                        <div className={`panel-body ${timetoselect ? 'time' : ''}`}>
                             <div className="reservation-section">
                                 <div className="section-header">날짜 선택</div>
                                 <div className="date-picker">
@@ -561,19 +540,14 @@ const Map: React.FC = () => {
                                     />
                                 </div>
                             </div>
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <hr/>
+                            <hr />
                             {/* 시간을 DigitalClockValue로 선택하면 startChargeTime / endChargeTime이 업데이트됩니다. */}
-                            <DigitalClockValue
-                                onChangeStart={(time) => setStartChargeTime(time)}
-                                onChangeEnd={(time) => setEndChargeTime(time)}
-                            />
-
+                            <div style={{margin:'auto'}}>
+                                <DigitalClockValue
+                                    onChangeStart={(time) => setStartChargeTime(time)}
+                                    onChangeEnd={(time) => setEndChargeTime(time)}
+                                />
+                            </div>
                             <div className="time-bar-container">
                                 <div className="time-bar-wrapper">
                                     {/* 타임바 배경 (원래 CSS에서 높이/배경을 정의) */}
@@ -596,12 +570,12 @@ const Map: React.FC = () => {
                             <div style={{ marginTop: '8px' }}>
                                 <strong>선택된 시간:</strong>
                                 <div>
-                                    시작: {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
-                                    {'  /  '}
-                                    종료: {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {'  ~  '}
+                                    {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
                                     {'  '}
                                     <span style={{ color: '#666', marginLeft: 8 }}>
-                                        (스케일: {timelineScale === 1440 ? '24시간' : '48시간'})
+                                    (이용시간: {(toMinutes(endChargeTime) - toMinutes(startChargeTime)) / 60}시간)
                                     </span>
                                 </div>
                             </div>
