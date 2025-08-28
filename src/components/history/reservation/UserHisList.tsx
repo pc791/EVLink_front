@@ -67,7 +67,7 @@ const UserHisList: React.FC = () => {
         <div style={{display: 'flex', justifyContent: 'center'}}>
             <Box sx={{ width: '90%', height: '100%' }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 2 }}>내 충전 예약</Typography>
-                <Box>
+                <Box sx={{marginBottom:'10px'}}>
                     <form onSubmit={handleSubmit} style={{display: 'flex', justifyContent: 'center'}}>
                         <TextField label="검색어를 입력해주세요" name="keyword" id="outlined" size="small" value={keyword} margin="dense" 
                                    onChange={handleInputChange} sx={{width: '300px', '& .MuiOutlinedInput-root': {'& fieldset': { borderRadius: '12px' }}}}/>

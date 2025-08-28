@@ -59,9 +59,15 @@ const CarInfoSection: React.FC = () => {
     }))
   };
 
+  // 폼 제출 처리 함수
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    console.log('폼이 제출되었습니다:', carInfo)
+  }
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <FormControl variant="standard" sx={{ m: 1, minWidth: 150 }} size="small">
           <InputLabel id="label">제조사</InputLabel>
           <Select label="제조사" name="carBrand" value={carInfo?.carBrand} onChange={handleSelectChange}>
@@ -107,11 +113,7 @@ const CarInfoSection: React.FC = () => {
                   {CahrgerTypes.map((opt) => (
                     <TableRow key={opt.id}>
                       <TableCell align="center">
-                        <FormControlLabel
-                          value={opt.id}
-                          control={<Radio />}
-                          label=""
-                        />
+                        <FormControlLabel value={opt.id} control={<Radio />} label="" />
                       </TableCell>
                       <TableCell align="center">
                         {opt.label}

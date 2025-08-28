@@ -121,11 +121,11 @@ const Notice: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent) => {
+  //   if (e.key === 'Enter') {
+  //     handleSearch();
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -137,7 +137,7 @@ const Notice: React.FC = () => {
           placeholder="검색창"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleKeyPress}
+          // onKeyPress={handleKeyPress}
           className={styles.searchInput}
         />
         <button onClick={handleSearch} className={styles.searchButton}>

@@ -12,7 +12,7 @@ const UserStatTab: React.FC = () => {
     };
 
     return (
-        <div style={{margin:'80px', backgroundColor: '#ffffff'}}>
+        <div style={{margin:'80px'}}>
             <Box sx={{ width: '100%', typography: 'body1' }}>
                 <TabContext value={value}>
                     <Box sx={{ display: 'flex', borderRight: 1, borderColor: 'divider' }}>

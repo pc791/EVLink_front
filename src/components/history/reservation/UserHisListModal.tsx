@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CommonModal from './CommonModal';
-import { FormControl, TextField } from '@mui/material';
+import { Box, Button, FormControl, TextField } from '@mui/material';
 import { ReviewData } from './ReservationData';
 import { getValueByDataKey } from 'recharts/types/util/ChartUtils';
 
@@ -28,6 +28,12 @@ const UserHisListModal: React.FC<ModalProps> = ({ open, onClose, reviewId }) => 
         }))
       };
 
+    // 폼 제출 처리 함수
+    const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    console.log('폼이 제출되었습니다:', review)
+    }
+
     useEffect(() => {
         if (!reviewId) {
             return;
@@ -40,12 +46,18 @@ const UserHisListModal: React.FC<ModalProps> = ({ open, onClose, reviewId }) => 
 
     return (
         <CommonModal open={open} onClose={onClose}>
-            <h2>이용후기</h2>
-            <p>작성일자: {review?.date}</p>
-            <FormControl fullWidth>
-                <TextField label="내용을 작성하세요" name="content" multiline variant="outlined" value={review?.content} onChange={handleInputChange('content')} rows={5} 
-                sx={{'& .MuiInputBase-root': {overflowY: 'auto',},'& textarea': {resize: 'none',},}}/>
-            </FormControl>
+            <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+                <h2>이용후기</h2>
+                <p>작성일자: {review?.date}</p>
+                <FormControl onSubmit={handleSubmit}>
+                    <TextField label="내용을 작성하세요" name="content" multiline variant="outlined" value={review?.content} onChange={handleInputChange('content')} rows={5} 
+                    sx={{'& .MuiInputBase-root': {overflowY: 'auto',},'& textarea': {resize: 'none',}}}/>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2}}>
+                        <Button variant="contained" size="small" type="submit" sx={{backgroundColor: '#0033A0'}}>저장</Button>
+                        <Button onClick={onClose} sx={{ marginLeft: '10px', color: '#ffffff', backgroundColor: '#a71300' }}>닫기</Button>
+                    </Box>
+                </FormControl>
+            </Box>
         </CommonModal>
     );
 }
