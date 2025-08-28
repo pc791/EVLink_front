@@ -1,3 +1,6 @@
+body {
+    overflow: hidden;
+}
 /* 전체 레이아웃 */
 .container {
   /* background-color: #c7cddf; */
@@ -13,13 +16,14 @@
 
 /* 검색바 */
 .search-bar {
-  height: 60px;
+  height: 40px;
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
   padding: 10px;
-  background-color: hsl(225, 35%, 78%);
-  /* opacity: 0.3; */
+  /* background-color: hsl(225, 35%, 78%); */
+  background-color: #1976d2;
+  /* opacity: 0.5; */
   border-radius: 8px;
 }
 
@@ -62,9 +66,9 @@
   padding-bottom: 20px;
   /* 푸터와 겹치지 않게 여백 추가 */
 }
-.details-panel::-webkit-scrollbar {
+/* .details-panel::-webkit-scrollbar {
   display: none;
-}
+} */
 
 /* 패널 열기 */
 .details-panel.open {
@@ -288,9 +292,9 @@
 }
 
 .time-slot.selected {
-  background-color: #4285F4;
+  background-color: #1976d2;
   color: #fff;
-  border-color: #4285F4;
+  border-color: #1976d2;
 }
 
 .panel-footer {
@@ -394,10 +398,10 @@
 }
 
 .time-slot.selected {
-  background-color: #5d3fd3;
+  background-color: #1976d2;
   /* 이미지의 보라색 */
   color: #fff;
-  border-color: #5d3fd3;
+  border-color: #1976d2;
   transform: translateY(-2px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -450,7 +454,7 @@
 }
 
 .selected-box {
-  background-color: #5d3fd3;
+  background-color: #1976d2;
 }
 
 .custom-calendar {
@@ -527,7 +531,7 @@
 }
 
 .calendar-day.selected {
-  background-color: #5c2cc9;
+  background-color: #1976d2;;
   color: white;
   font-weight: bold;
 }
@@ -558,5 +562,5 @@
 }
 
 .legend.selected {
-  background-color: #5c2cc9;
+  background-color: #1976d2;
 }

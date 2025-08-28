@@ -389,14 +389,29 @@ const Map: React.FC = () => {
         setDragStartIndex(null);
     };
 
+    // const handleReserve = () => {
+    //     if (selectedTimeRange.length > 0) {
+    //         const selectedStation = DUMMY_STATIONS.find(station => station.addr === selectedStationAddress);
+    //         if (selectedStation) {
+    //             centerMapOnStation(selectedStation);
+    //         }
+    //         setIsModalVisible(true);
+    //     } else {
+    //         alert('시간을 선택해주세요.');
+    //     }
+    // };
+
     const handleReserve = () => {
-        if (selectedTimeRange.length > 0) {
+        // startChargeTime과 endChargeTime이 모두 존재하고 비어있지 않은지 확인합니다.
+        if (startChargeTime && endChargeTime) {
+            // 예약 로직 실행
             const selectedStation = DUMMY_STATIONS.find(station => station.addr === selectedStationAddress);
             if (selectedStation) {
                 centerMapOnStation(selectedStation);
             }
             setIsModalVisible(true);
         } else {
+            // 둘 중 하나라도 없으면 경고 메시지를 표시합니다.
             alert('시간을 선택해주세요.');
         }
     };
@@ -532,6 +547,7 @@ const Map: React.FC = () => {
                     <div className={`reservation-panel-select ${timetoselect ? 'time' : ''}`}>
                         <div className="panel-header">
                             <h3>예약하기</h3>
+                            <button className="cancel-button" onClick={() => setIsReservationPanelVisible(false)}>꺼짐아이콘</button>
                             <p className="station-title">{selectedStationAddress}</p>
                         </div>
                         <div className="panel-body">
