@@ -8,7 +8,7 @@ interface NoticeItem {
   content: string;
   writer: string;
   date: string;
-  isPrimary: boolean;
+  major_yn: boolean;
   hit: number;
 }
 
@@ -41,7 +41,7 @@ const NoticeDetail: React.FC = () => {
           <div className={styles.meta}>
             <span className={styles.date}>등록일: {notice.date}</span>
             <span className={styles.hit}>조회수: {notice.hit}</span>
-            {notice.isPrimary && <span className={styles.badge}>주요</span>}
+            {notice.major_yn && <span className={styles.badge}>필독</span>}
           </div>
         </div>
 
