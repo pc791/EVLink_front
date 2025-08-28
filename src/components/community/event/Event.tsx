@@ -43,7 +43,7 @@ const Event: React.FC = () => {
       title: "신규 충전소 오픈 혜택 이벤트",
       startDate: "2024-01-01",
       endDate: "2024-06-30",
-      status: "closed",
+      status: "ongoing",
       description: "신규 충전소 오픈 기념 특별 혜택을 제공했습니다."
     },
     {

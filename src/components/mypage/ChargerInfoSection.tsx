@@ -61,11 +61,18 @@ const ChargerInfoSection: React.FC = () => {
     }))
   };
 
+  // 폼 제출 처리 함수
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    console.log('폼이 제출되었습니다:', chargerInfo)
+  }
+  
+
   const getAddress = () => {}
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Box display="flex" alignItems="center" gap={2}>
           <TextField label="주소" name="charAddr" size="small" value={chargerInfo.charAddr} margin="dense" variant="standard" onChange={handleInputChange('charAddr')} required style={{margin:"9px", width: "350px"}}/>
           <Button variant="contained" size="small" onClick={getAddress} sx={{ mt: 2, backgroundColor: '#0033A0' }}>검색</Button>
@@ -88,11 +95,7 @@ const ChargerInfoSection: React.FC = () => {
                   {CahrgerTypes.map((opt) => (
                     <TableRow key={opt.id}>
                       <TableCell align="center">
-                        <FormControlLabel
-                          value={opt.id}
-                          control={<Radio />}
-                          label=""
-                        />
+                        <FormControlLabel value={opt.id} control={<Radio />} label=""/>
                       </TableCell>
                       <TableCell align="center">
                         {opt.label}
@@ -123,13 +126,13 @@ const ChargerInfoSection: React.FC = () => {
                 label="시작시간"
                 name = "charUseSTime"
                 value={chargerInfo.charUseSTime}
-                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue ? format(newValue, 'HH:mm:ss') : format('00:00:00', 'HH:mm:ss') }))}
+                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue instanceof Date ? format(newValue, 'HH:mm:ss') : format('00:00:00', 'HH:mm:ss') }))}
               />
               <TimePicker
                 label="종료시간"
                 name = "charUseETime"
                 value={chargerInfo.charUseETime}
-                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue ? format(newValue, 'HH:mm:ss') : format('23:59:59', 'HH:mm:ss') }))}
+                onChange={(newValue) => setChargerInfo((prev)=>({...prev, charType: newValue instanceof Date ? format(newValue, 'HH:mm:ss') : format('23:59:59', 'HH:mm:ss') }))}
               />
             </DemoContainer>
         </LocalizationProvider>

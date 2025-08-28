@@ -3,10 +3,7 @@ import { DUMMY_STATIONS, ChargingStation, fetchEvStations, ChargingStations } fr
 import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
-
-// (window as any).naver.maps.Event.addListener(mapInstance, 'idle', () => {
-//                     infoWindow.close();
-//                 });
+import DigitalClockValue from './Timetable';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -17,7 +14,7 @@ const getTodayDate = () => {
 };
 
 const Map: React.FC = () => {
-    const [aiAnswer, setAiAnswer] = useState("");
+    const [timetoselect, setTimetoselect] = useState(false);
     const mapRef = useRef<HTMLDivElement | null>(null);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isReservationPanelVisible, setIsReservationPanelVisible] = useState(false);
@@ -29,6 +26,8 @@ const Map: React.FC = () => {
     const [dragStartIndex, setDragStartIndex] = useState<number | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [mapInstance, setMapInstance] = useState<any>(null);
+    const [startChargeTime, setStartChargeTime] = useState(''); // "HH:mm"
+    const [endChargeTime, setEndChargeTime] = useState(''); // "HH:mm"
     const markersRef = useRef<any[]>([]);
     const [selectedChargerType, setSelectedChargerType] = useState('충전기 타입'); // '급속', '완속'
     const [selectedChargerSocket, setSelectedChargerSocket] = useState('충전기 소켓'); // 'AC5핀', 'DC차', 등
@@ -36,6 +35,12 @@ const Map: React.FC = () => {
     const [displayedStations, setDisplayedStations] = useState<ChargingStation[]>([]);
 
     const [stations, setStations] = useState<ChargingStations[]>([]);
+
+    // 타임바 관련 state
+    const [leftPosition, setLeftPosition] = useState<number>(0); // percent
+    const [barWidth, setBarWidth] = useState<number>(0); // percent
+    const [timelineScale, setTimelineScale] = useState<number>(1440); // minutes: 1440 or 2880
+
     const imageFileHtml = (type: string): string => {
         if (!type) return "";
         if (type === "B타입(5핀)" || type === "C타입(5핀)" || type === "BC타입(5핀)") {
@@ -345,27 +350,6 @@ const Map: React.FC = () => {
         }
     };
 
-    const askAI = async () => {
-        try {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-                },
-                body: JSON.stringify({
-                    model: "gpt-4o-mini",
-                    messages: [{ role: "user", content: "아니, 브라우저에 있는 회색 마커들은 뭐냐구." }],
-                }),
-            });
-
-            const data = await response.json();
-            setAiAnswer(data.choices[0].message.content);
-        } catch (error) {
-            console.error("AI 호출 실패:", error);
-            setAiAnswer("오류 발생 😢");
-        }
-    };
     const availableTimeSlots = Array.from({ length: 24 }, (_, i) => {
         const hour = String(i).padStart(2, '0');
         const status = (i === 15 || i === 23) ? 'unavailable' : 'available';
@@ -440,6 +424,57 @@ const Map: React.FC = () => {
         station: selectedStationAddress
     };
 
+    // --- MUI UI에서 보내주는 시간 데이터를 가져와 가공하는 함수 ---
+    function toMinutes(time: string) {
+        if (!time) return NaN;
+        const parts = time.split(':').map(s => parseInt(s, 10));
+        if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return NaN;
+        return parts[0] * 60 + parts[1];
+    }
+
+    // --- 사용자가 선택한 시간대를 시각화 시키는 useEffect 훅입니다. ---
+    useEffect(() => {
+        if (!startChargeTime || !endChargeTime) {
+            setLeftPosition(0);
+            setBarWidth(0);
+            setTimelineScale(1440);
+            return;
+        }
+
+        let startMin = toMinutes(startChargeTime);
+        let endMin = toMinutes(endChargeTime);
+
+        if (Number.isNaN(startMin) || Number.isNaN(endMin)) {
+            setLeftPosition(0);
+            setBarWidth(0);
+            setTimelineScale(1440);
+            return;
+        }
+
+        // 기본 스케일: 24시간(1440분)
+        let scale = 1440;
+
+        // 자정 넘어감 판단
+        if (endMin < startMin) {
+            // next day: 확장 스케일 48시간
+            endMin += 1440;
+            scale = 2880;
+        }
+
+        // left, width 계산 (percent)
+        const leftPct = (startMin / scale) * 100;
+        const widthPct = ((endMin - startMin) / scale) * 100;
+
+        setTimelineScale(scale);
+        setLeftPosition(leftPct);
+        setBarWidth(Math.max(0, widthPct));
+    }, [startChargeTime, endChargeTime]);
+
+    // 라벨 텍스트 계산 (00:00, 가운데, 오른쪽)
+    const leftLabel = '00:00';
+    const centerLabel = timelineScale === 1440 ? '12:00' : '24:00';
+    const rightLabel = timelineScale === 1440 ? '24:00' : '48:00';
+
     return (
         <div className="container" onMouseUp={handleDragEnd}>
             <div className="search-bar">
@@ -494,52 +529,72 @@ const Map: React.FC = () => {
                 </button>
                 <div className="map-container" ref={mapRef} />
                 <div className={`reservation-panel ${isReservationPanelVisible ? 'visible' : ''}`}>
-                    <div className="panel-header">
-                        <h3>예약하기</h3>
-                        <p className="station-title">{selectedStationAddress}</p>
-                    </div>
-                    <div className="panel-body">
-                        <div className="reservation-section">
-                            <div className="section-header">날짜 선택</div>
-                            <div className="date-picker">
-                                <Calendar
-                                    selectedDate={selectedDate}
-                                    onSelectDate={setSelectedDate}
-                                    unavailableDates={['2025-08-14']}
-                                />
-                            </div>
+                    <div className={`reservation-panel-select ${timetoselect ? 'time' : ''}`}>
+                        <div className="panel-header">
+                            <h3>예약하기</h3>
+                            <p className="station-title">{selectedStationAddress}</p>
                         </div>
-                        <div className="reservation-section">
-                            <div className="section-header">
-                                시간 선택
-                                <span className="total-time">{reservationTimeDisplay}</span>
-                            </div>
-                            <div className="time-selector-container">
-                                <div className="time-grid-scroller">
-                                    {availableTimeSlots.map((slot, index) => (
-                                        <div
-                                            key={index}
-                                            className={`time-slot ${selectedTimeRange.includes(slot.time) ? 'selected' :
-                                                slot.status === 'available' ? 'available' : 'unavailable'
-                                                }`}
-                                            onMouseDown={() => handleDragStart(index)}
-                                            onMouseOver={() => handleDragOver(index)}
-                                        >
-                                            <span className="time-label">{slot.time}시</span>
-                                            {slot.price && <span className="price-label">{slot.price.toLocaleString()}원</span>}
-                                        </div>
-                                    ))}
+                        <div className="panel-body">
+                            <div className="reservation-section">
+                                <div className="section-header">날짜 선택</div>
+                                <div className="date-picker">
+                                    <Calendar
+                                        selectedDate={selectedDate}
+                                        onSelectDate={(e) => { setSelectedDate(e); setTimetoselect(true); }}
+                                        unavailableDates={['2025-08-14']}
+                                    />
                                 </div>
                             </div>
-                            <div className="time-legend">
-                                <span className="time-legend-item"><span className="unavailable-box"></span> 예약불가</span>
-                                <span className="time-legend-item"><span className="available-box"></span> 가능</span>
-                                <span className="time-legend-item"><span className="selected-box"></span> 선택</span>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <hr/>
+                            {/* 시간을 DigitalClockValue로 선택하면 startChargeTime / endChargeTime이 업데이트됩니다. */}
+                            <DigitalClockValue
+                                onChangeStart={(time) => setStartChargeTime(time)}
+                                onChangeEnd={(time) => setEndChargeTime(time)}
+                            />
+
+                            <div className="time-bar-container">
+                                <div className="time-bar-wrapper">
+                                    {/* 타임바 배경 (원래 CSS에서 높이/배경을 정의) */}
+                                    <div
+                                        className="time-bar-orange"
+                                        style={{
+                                            left: `${leftPosition}%`,
+                                            width: `${barWidth}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <div className="time-labels">
+                                    <span className="time-label">{leftLabel}</span>
+                                    <span className="time-label-center">{centerLabel}</span>
+                                    <span className="time-label">{rightLabel}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="panel-footer">
-                            <button className="reserve-button" onClick={handleReserve}>예약하기</button>
-                            <button className="cancel-button" onClick={() => setIsReservationPanelVisible(false)}>취소</button>
+
+                            {/* 선택된 시간 표시 (가독성 좋게) */}
+                            <div style={{ marginTop: '8px' }}>
+                                <strong>선택된 시간:</strong>
+                                <div>
+                                    시작: {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {'  /  '}
+                                    종료: {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {'  '}
+                                    <span style={{ color: '#666', marginLeft: 8 }}>
+                                        (스케일: {timelineScale === 1440 ? '24시간' : '48시간'})
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button className="cancel-button" onClick={() => setTimetoselect(false)}>날짜 다시 선택하기</button>
+                            <div className="panel-footer">
+                                <button className="reserve-button" onClick={handleReserve}>예약하기</button>
+                                <button className="cancel-button" onClick={() => setIsReservationPanelVisible(false)}>취소</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -549,17 +604,7 @@ const Map: React.FC = () => {
                     onClose={() => setIsModalVisible(false)}
                     reservationDetails={reservationDetails}
                 />
-
             )}
-            {/* <button onClick={askAI} style={{ margin: "10px 0", padding: "8px 16px" }}>
-                AI에게 질문하기
-            </button>
-            {aiAnswer && (
-                <div style={{ marginTop: "10px", padding: "10px", border: "1px solid #ccc" }}>
-                    <strong>AI 응답:</strong>
-                    <p>{aiAnswer}</p>
-                </div>
-            )} */}
         </div>
     );
 };

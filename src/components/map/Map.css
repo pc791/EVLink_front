@@ -179,6 +179,15 @@
   /* visible 클래스가 추가되면 안으로 슬라이드 */
 }
 
+.reservation-panel-select{
+  transform: translateY(0);
+  transition: transform 0.5s ease-in-out;
+}
+.reservation-panel-select.time{
+  transition: transform 0.5s ease-in-out;
+  transform: translateY(-50%);
+}
+
 .panel-header {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
@@ -215,6 +224,47 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.date-picker{
+  margin : auto;
+}
+
+.time-bar-container {
+  width: 100%;
+  padding: 20px 0;
+  position: relative;
+}
+
+.time-bar-wrapper {
+  width: 100%;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden; /* 오렌지 바가 밖으로 삐져나가지 않게 */
+}
+
+.time-bar-orange {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: #ff9900;
+  border-radius: 10px;
+  box-sizing: border-box; /* padding, border 포함 너비 계산 */
+}
+
+.time-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  position: relative;
+}
+
+.time-labels .time-label-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .time-grid {

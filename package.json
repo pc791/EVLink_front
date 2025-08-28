@@ -22,6 +22,7 @@
     "@types/react-dom": "^19.0.0",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-pageflip": "^2.0.3",
@@ -61,5 +62,5 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-slick": "^0.23.13"
   },
-  "proxy": "http://bigdata.kepco.co.kr"
+  "proxy": "https://bigdata.kepco.co.kr"
 }

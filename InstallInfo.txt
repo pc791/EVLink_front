@@ -1,8 +1,11 @@
+Install Information. //라우팅을 위한 모듈
 
+//terminal에서 모듈 설치.
 yarn add react-router-dom
 yarn add --dev @types/react-router-dom
 
 //
+yarn add react-native 
 yarn add axios
 
 //
