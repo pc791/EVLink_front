@@ -388,13 +388,16 @@ const Map: React.FC = () => {
     };
 
     const handleReserve = () => {
-        if (selectedTimeRange.length > 0) {
+        // startChargeTime과 endChargeTime이 모두 존재하고 비어있지 않은지 확인합니다.
+        if (startChargeTime && endChargeTime) {
+            // 예약 로직 실행
             const selectedStation = DUMMY_STATIONS.find(station => station.addr === selectedStationAddress);
             if (selectedStation) {
                 centerMapOnStation(selectedStation);
             }
             setIsModalVisible(true);
         } else {
+            // 둘 중 하나라도 없으면 경고 메시지를 표시합니다.
             alert('시간을 선택해주세요.');
         }
     };
@@ -491,6 +494,7 @@ const Map: React.FC = () => {
                 <button onClick={handleSearch}>검색</button>
             </div>
             <div className="main-content">
+                <div className="map-container" ref={mapRef} />
                 <div className={`details-panel ${isSidebarOpen ? 'open' : ''}`}>
                     <h2>충전소 상세 정보</h2>
                     <p>조회된 리스트 기준 상세 정보</p>
@@ -514,14 +518,13 @@ const Map: React.FC = () => {
                 <button className="toggle-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                     {isSidebarOpen ? '◀' : '▶'}
                 </button>
-                <div className="map-container" ref={mapRef} />
                 <div className={`reservation-panel ${isReservationPanelVisible ? 'visible' : ''}`}>
-                    <div className={`reservation-panel-select ${timetoselect ? 'time' : ''}`}>
+                    <div className="reservation-panel-select">
                         <div className="panel-header">
                             <h3>예약하기</h3>
                             <p className="station-title">{selectedStationAddress}</p>
                         </div>
-                        <div className="panel-body">
+                        <div className={`panel-body ${timetoselect ? 'time' : ''}`}>
                             <div className="reservation-section">
                                 <div className="section-header">날짜 선택</div>
                                 <div className="date-picker">
@@ -532,19 +535,14 @@ const Map: React.FC = () => {
                                     />
                                 </div>
                             </div>
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <hr/>
+                            <hr />
                             {/* 시간을 DigitalClockValue로 선택하면 startChargeTime / endChargeTime이 업데이트됩니다. */}
-                            <DigitalClockValue
-                                onChangeStart={(time) => setStartChargeTime(time)}
-                                onChangeEnd={(time) => setEndChargeTime(time)}
-                            />
-
+                            <div style={{margin:'auto'}}>
+                                <DigitalClockValue
+                                    onChangeStart={(time) => setStartChargeTime(time)}
+                                    onChangeEnd={(time) => setEndChargeTime(time)}
+                                />
+                            </div>
                             <div className="time-bar-container">
                                 <div className="time-bar-wrapper">
                                     {/* 타임바 배경 (원래 CSS에서 높이/배경을 정의) */}
@@ -567,9 +565,9 @@ const Map: React.FC = () => {
                             <div style={{ marginTop: '8px' }}>
                                 <strong>선택된 시간:</strong>
                                 <div>
-                                    시작: {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
-                                    {'  /  '}
-                                    종료: {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {'  ~  '}
+                                    {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
                                     {'  '}
                                     <span style={{ color: '#666', marginLeft: 8 }}>
                                         (스케일: {timelineScale === 1440 ? '24시간' : '48시간'})

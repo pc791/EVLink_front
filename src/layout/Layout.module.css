@@ -1,21 +1,19 @@
 /* Layout Module Styles */
 .layout {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
 }
 
 
 .page {
-  min-height: calc(100vh - 70px);
+  /* min-height: 100%; */
   background: #fff;
   display: flex;
   flex-direction: column;
-  flex: 1;
 }
 
 .main {
-  flex: 1;
   width: 100%;
 }
 

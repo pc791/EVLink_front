@@ -11,14 +11,15 @@ interface DigitalClockValueProps {
 }
 
 export default function DigitalClockValue({ onChangeStart, onChangeEnd }: DigitalClockValueProps) {
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T05:30'));
-  const [value2, setValue2] = React.useState<Dayjs | null>(dayjs('2022-04-17T05:30'));
+  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T00:00'));
+  const [value2, setValue2] = React.useState<Dayjs | null>(dayjs('2022-04-17T00:00'));
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['MultiSectionDigitalClock', 'MultiSectionDigitalClock']}>
         <DemoItem label="충전시작시간">
           <MultiSectionDigitalClock
+            views={['hours']}
             ampm={false}
             value={value2}
             onChange={(newValue) => {
@@ -31,6 +32,7 @@ export default function DigitalClockValue({ onChangeStart, onChangeEnd }: Digita
         </DemoItem>
         <DemoItem label="충전종료시간">
           <MultiSectionDigitalClock
+            views={['hours']}
             ampm={false}
             value={value}
             onChange={(newValue) => {
