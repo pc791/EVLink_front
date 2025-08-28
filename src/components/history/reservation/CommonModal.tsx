@@ -24,9 +24,6 @@ export default function CommonModal({ open, onClose, children }: CommonModalProp
         }}
       >
         {children}
-        <Button onClick={onClose} sx={{ mt: 2 }}>
-          닫기
-        </Button>
       </Box>
     </Modal>
   );

@@ -99,6 +99,7 @@
   height: 700px; /* 박스 높이 증가 */
   overflow-y: auto; /* 스크롤 가능하도록 */
   flex-shrink: 0;
+  width: 100%;
 }
 
 /* FAQ 아이템 */
@@ -299,7 +300,7 @@
   margin-top: auto;
   margin-bottom: 2rem;
   flex-shrink: 0;
-  position: sticky;
+  /* position: sticky; */
   bottom: 0;
 }
 

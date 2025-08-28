@@ -61,11 +61,18 @@ const ChargerInfoSection: React.FC = () => {
     }))
   };
 
+  // 폼 제출 처리 함수
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    console.log('폼이 제출되었습니다:', chargerInfo)
+  }
+  
+
   const getAddress = () => {}
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Box display="flex" alignItems="center" gap={2}>
           <TextField label="주소" name="charAddr" size="small" value={chargerInfo.charAddr} margin="dense" variant="standard" onChange={handleInputChange('charAddr')} required style={{margin:"9px", width: "350px"}}/>
           <Button variant="contained" size="small" onClick={getAddress} sx={{ mt: 2, backgroundColor: '#0033A0' }}>검색</Button>
@@ -88,11 +95,7 @@ const ChargerInfoSection: React.FC = () => {
                   {CahrgerTypes.map((opt) => (
                     <TableRow key={opt.id}>
                       <TableCell align="center">
-                        <FormControlLabel
-                          value={opt.id}
-                          control={<Radio />}
-                          label=""
-                        />
+                        <FormControlLabel value={opt.id} control={<Radio />} label=""/>
                       </TableCell>
                       <TableCell align="center">
                         {opt.label}

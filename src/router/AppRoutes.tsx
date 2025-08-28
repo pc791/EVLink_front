@@ -15,6 +15,7 @@ import Map from '../components/map/Map'
 import UserInfoTabs from '../components/mypage/UserInfoTabs'
 import UserStatTab from '../components/history/analysis/UserStatTab'
 import ReservationTab from '../components/history/reservation/ReservationTab'
+import ServiceInfo from '../components/info/ServiceInfo'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -36,7 +37,7 @@ const AppRoutes: React.FC = () => {
         { path: '/faq', element: <FAQ /> }, // FAQ
         { path: '/event', element: <Event /> }, // 이벤트
         { path: '/analysis', element: <UserStatTab /> }, // 이용현황
-        // { path: '/service', element: <Service /> }, // 서비스안내
+        { path: '/service', element: <ServiceInfo /> }, // 서비스안내
         // { path: '/reserveform', element: <Reserveform />}, // 예약 폼
         { path: '/reservelist', element: <ReservationTab />}, // 예약 리스트
     ]

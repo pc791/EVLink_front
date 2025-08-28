@@ -25,13 +25,10 @@ const CommonInfoSection: React.FC = () => {
     }))
   }
 
-
-
   // 폼 제출 처리 함수
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     console.log('폼이 제출되었습니다:', commonParams)
-    // 여기에 폼 제출 로직을 구현할 수 있습니다
   }
 
   return (
@@ -46,6 +43,7 @@ const CommonInfoSection: React.FC = () => {
           variant="standard" 
           required 
           onChange={handleInputChange('nickname')}
+          sx={{width: '80%'}}
         /><br/>
         <TextField 
           label="이메일" 
@@ -59,6 +57,7 @@ const CommonInfoSection: React.FC = () => {
               readOnly: true,
             },
           }}
+          sx={{width: '80%'}}
         /><br/>
         <TextField 
           label="연락처" 
@@ -69,6 +68,7 @@ const CommonInfoSection: React.FC = () => {
           variant="standard" 
           required 
           onChange={handleInputChange('tel')}
+          sx={{width: '80%'}}
         /><br/>
         <TextField 
           label="이름" 
@@ -79,6 +79,7 @@ const CommonInfoSection: React.FC = () => {
           variant="standard" 
           required 
           onChange={handleInputChange('name')}
+          sx={{width: '80%'}}
         /><br/>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button variant="contained" size="small" type="submit" sx={{backgroundColor: '#0033A0'}}>저장</Button>
