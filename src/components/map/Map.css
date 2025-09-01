@@ -4,7 +4,7 @@
   /* background-color: #c7cddf; */
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 98vh;
   padding: 10px;
   padding-top: 90px;
   box-sizing: border-box;
@@ -78,20 +78,21 @@
 .toggle-btn {
   position: absolute;
   top: 50%;
-  left: 10px;
   /* 기본 닫힘 위치 */
-  width: 25px;
-  height: 25px;
+  width: 23px;
+  height: 46px;
   border: none;
-  background-color: #4285F4;
+  background-color: #0033A0;
+  background-clip: padding-box;
   color: white;
-  border-radius: 50%;
+  border-radius: 0px 9px 9px 0px;
   cursor: pointer;
   font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10;
+  left: 0;                 /* 기본 위치 꼭 지정 */
   transition: left 0.3s ease;
 }
 
