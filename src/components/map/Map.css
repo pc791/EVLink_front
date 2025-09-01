@@ -9,7 +9,7 @@ body{
   flex-direction: column;
   height: 100vh;
   padding: 10px;
-  padding-top: 90px;
+  padding-top: 70px;
   box-sizing: border-box;
   width: 100%;
   max-width: none
@@ -22,8 +22,8 @@ body{
   gap: 10px;
   margin-bottom: 10px;
   padding: 10px;
-  /* background-color: hsl(225, 35%, 78%); */
-  background-color: #93beff;
+  /* background-color: #0033A0; */
+  background-color: #1976d2;
   /* opacity: 0.5; */
   border-radius: 8px;
 }
@@ -34,6 +34,10 @@ body{
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
+}
+
+.search-bar button{
+  cursor: pointer;
 }
 
 /* 메인 컨텐츠 (지도, 상세 정보, 예약 패널) */
@@ -321,6 +325,11 @@ body{
   font-weight: bold;
 }
 
+.cancel-button:hover {
+  color: #fff;
+  background-color: #0033A0;
+}
+
 .reserve-button {
   background-color: #0033A0;
   color: #fff;
@@ -404,10 +413,10 @@ body{
 }
 
 .time-slot.selected {
-  background-color: #5d3fd3;
+  background-color: #4285F4;
   /* 이미지의 보라색 */
   color: #fff;
-  border-color: #5d3fd3;
+  border-color: #4285F4;
   transform: translateY(-2px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -460,7 +469,7 @@ body{
 }
 
 .selected-box {
-  background-color: #5d3fd3;
+  background-color: #4285F4;
 }
 
 .custom-calendar {
@@ -537,7 +546,7 @@ body{
 }
 
 .calendar-day.selected {
-  background-color: #5c2cc9;
+  background-color: #4285F4;
   color: white;
   font-weight: bold;
 }
@@ -568,5 +577,5 @@ body{
 }
 
 .legend.selected {
-  background-color: #5c2cc9;
+  background-color: #4285F4;
 }
