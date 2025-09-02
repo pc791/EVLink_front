@@ -57,7 +57,7 @@ const EVhome: React.FC = () => {
           <div className={styles.card}>
             <div className={styles.image}>
               <img 
-                src="/images/world-map-pins.jpg" 
+                src="/images/main3.jpg" 
                 alt="World map with charging station pins"
               />
             </div>
@@ -73,7 +73,7 @@ const EVhome: React.FC = () => {
           <div className={styles.card}>
             <div className={styles.image}>
               <img 
-                src="/images/main9.jpg" 
+                src="/images/main9.png" 
                 alt="Usage history bar chart"
               />
             </div>
@@ -89,7 +89,7 @@ const EVhome: React.FC = () => {
           <div className={styles.card}>
             <div className={styles.image}>
               <img 
-                src="/images/community-charging.jpg" 
+                src="/images/main8.jpg" 
                 alt="EV charging station in green setting"
               />
             </div>
@@ -139,7 +139,7 @@ const EVhome: React.FC = () => {
           </div>
 
           <button className={styles.arrow}>›</button>
-        </div>a
+        </div>
 
         <div className={styles.dots}>
           <span className={`${styles.dot} ${styles.active}`}></span>

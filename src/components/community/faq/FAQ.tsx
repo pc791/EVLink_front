@@ -265,7 +265,7 @@ const FAQ: React.FC = () => {
             }}
             className={styles.searchInput}
           />
-          <div className={styles.searchIcon}>🔍</div>
+          {/* <div className={styles.searchIcon}>🔍</div> */}
         </div>
       </div>
 
