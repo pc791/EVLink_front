@@ -193,7 +193,7 @@
   transition: transform 0.5s ease-in-out;
 }
 .panel-body.time{
-  transform: translateY(-43%);
+  transform: translateY(-48%);
 }
 
 .panel-header {
@@ -240,6 +240,9 @@
 
 .date-picker{
   margin : auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .time-bar-container {

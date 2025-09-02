@@ -5,6 +5,7 @@ import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
 import DigitalClockValue from './Timetable';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -152,7 +153,7 @@ const Map: React.FC = () => {
                                 <p>충전기 상태: ${station.cpStat}</p>
                                 <div><p>충전방식: ${station.cpTp}</p><div style=" background-color: #f1f1f1; border-radius:8px; padding: 1vh; display: flex; justify-content: center; align-items: center;">${imageFileHtml(station.cpTp)}</div></div>
                                 <button id="reserve-btn-${station.id}" style="
-                                    background-color:${station.cpStat !== "충전가능" ? "#d3d3d3ff;": "#0033A0;"}
+                                    background-color:${station.cpStat !== "충전가능" ? "#d3d3d3ff;" : "#0033A0;"}
                                     color: white;
                                     border: none;
                                     padding: 5px 10px;
@@ -521,11 +522,11 @@ const Map: React.FC = () => {
                     {isSidebarOpen ? '◀' : '▶'}
                 </button>
                 <div className={`reservation-panel ${isReservationPanelVisible ? 'visible' : ''}`}>
-                    
+
                     <div className="reservation-panel-select">
                         <div className="panel-header">
-                            <div style={{display:'flex', justifyContent:'space-between'}}>
-                            <h3>예약하기</h3><CloseIcon style={{cursor:'pointer'}} onClick={() => setIsReservationPanelVisible(false)}></CloseIcon>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <h3>예약하기</h3><CloseIcon style={{ cursor: 'pointer' }} onClick={() => setIsReservationPanelVisible(false)}></CloseIcon>
                             </div>
                             <p className="station-title">{selectedStationAddress}</p>
                         </div>
@@ -538,11 +539,14 @@ const Map: React.FC = () => {
                                         onSelectDate={(e) => { setSelectedDate(e); setTimetoselect(true); }}
                                         unavailableDates={['2025-08-14']}
                                     />
+                                    <p>날짜를 먼저 선택해 주세요!</p>
+                                    <p>그 다음에 시간을 선택해 주세요!</p>
+                                    <ArrowDownwardIcon />
                                 </div>
                             </div>
                             <hr />
                             {/* 시간을 DigitalClockValue로 선택하면 startChargeTime / endChargeTime이 업데이트됩니다. */}
-                            <div style={{margin:'auto'}}>
+                            <div style={{ margin: 'auto' }}>
                                 <DigitalClockValue
                                     onChangeStart={(time) => setStartChargeTime(time)}
                                     onChangeEnd={(time) => setEndChargeTime(time)}
@@ -575,7 +579,7 @@ const Map: React.FC = () => {
                                     {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
                                     {'  '}
                                     <span style={{ color: '#666', marginLeft: 8 }}>
-                                    (이용시간: {(toMinutes(endChargeTime) - toMinutes(startChargeTime)) / 60}시간)
+                                        (이용시간: {(toMinutes(endChargeTime) - toMinutes(startChargeTime)) / 60}시간)
                                     </span>
                                 </div>
                             </div>

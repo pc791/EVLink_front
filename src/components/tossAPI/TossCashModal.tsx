@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
-import TossCashModal from '../tossAPI/TossCashModal';
+import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
+import { CheckoutPage } from './Checkout';
 
 interface ReservationModalProps {
   onClose: () => void;
@@ -11,13 +11,12 @@ interface ReservationModalProps {
   };
 }
 
-const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails }) => {
+const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails }) => {
   const [userName, setUserName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [purpose, setPurpose] = useState('');
   const [request, setRequest] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleReservationSubmit = () => {
     // 예약 정보를 서버로 전송하는 로직을 여기에 추가
@@ -29,6 +28,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
       purpose,
       request
     });
+    alert('예약이 완료되었습니다!');
+    onClose();
   };
 
   return (
@@ -57,40 +58,20 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
               <label>충전소명</label>
               <span>{reservationDetails.station}</span>
             </div>
-          </div>
-          <hr />
-          {/* 예약자 정보 섹션 */}
-          <div className="user-info-section">
-            <h3 className="required-title">예약자 정보 <span className="required-text">*필수입력</span></h3>
-            <div className="form-group">
-              <label>예약자*</label>
-              <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>연락처*</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            </div>
-            <div className="form-group">
-              <label>이메일*</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <div className="info-item">
+              <label>금액</label>
+              <span>50_000원</span>
             </div>
           </div>
+          <hr/>
+          <CheckoutPage/>
         </div>
-        <div>
-
-        </div>
-        <div className="modal-footer">
-          <button className="submit-button" onClick={() => {handleReservationSubmit(); setIsModalVisible(true)}}>결제 하기</button>
-        </div>
-        {isModalVisible && (
-          <TossCashModal
-            onClose={() => setIsModalVisible(false)}
-            reservationDetails={reservationDetails}
-          />
-        )}
+        {/* <div className="modal-footer">
+          <button className="submit-button" onClick={handleReservationSubmit}>예약 완료</button>
+        </div> */}
       </div>
     </div>
   );
 };
 
-export default ReservationModal;
+export default TossCashModal;
