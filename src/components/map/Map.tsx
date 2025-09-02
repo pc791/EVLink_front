@@ -133,7 +133,7 @@ const Map: React.FC = () => {
         ${station.chargeTp === "급속" ? `<span style="position:absolute; top:-6px; right:-6px; font-size:18px;"><img style="width : 40px" src="https://www.gscev.com/images/common/ev/marker/marker_lightning.png" /></span>` : ""}
       </div>
     `,
-                            anchor: new (window as any).naver.maps.Point(0, 100),
+                            anchor: new (window as any).naver.maps.Point(0, 50),
                         }
                         : undefined // 실제 API 데이터는 기본 마커
                 });
@@ -146,7 +146,7 @@ const Map: React.FC = () => {
                 });
 
                 (window as any).naver.maps.Event.addListener(marker, 'click', () => {
-                    const content = `<div style="padding: 10px; font-size: 14px;">
+                    const content = `<div style="padding: 10px; font-size: 14px; height: auto;">
                                 <h4>${station.csNm}</h4>
                                 <p>충전기 타입: ${station.chargeTp}</p>
                                 <p>충전기 상태: ${station.cpStat}</p>
