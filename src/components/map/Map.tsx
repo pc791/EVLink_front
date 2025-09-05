@@ -429,11 +429,11 @@ const Map: React.FC = () => {
     };
 
     // --- MUI UI에서 보내주는 시간 데이터를 가져와 가공하는 함수 ---
-    function toMinutes(time: string) {
-        if (!time) return NaN;
-        const parts = time.split(':').map(s => parseInt(s, 10));
-        if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return NaN;
-        return parts[0] * 60 + parts[1];
+    function toHours(hours: string) {
+        if (!hours) return NaN;
+        const h = parseInt(hours, 10);
+        if (Number.isNaN(h)) return NaN;
+        return h;
     }
 
     // --- 사용자가 선택한 시간대를 시각화 시키는 useEffect 훅입니다. ---
@@ -445,8 +445,8 @@ const Map: React.FC = () => {
             return;
         }
 
-        let startMin = toMinutes(startChargeTime);
-        let endMin = toMinutes(endChargeTime);
+        let startMin = toHours(startChargeTime);
+        let endMin = toHours(endChargeTime);
 
         if (Number.isNaN(startMin) || Number.isNaN(endMin)) {
             setLeftPosition(0);
@@ -574,12 +574,12 @@ const Map: React.FC = () => {
                             <div style={{ marginTop: '8px' }}>
                                 <strong>선택된 시간:</strong>
                                 <div>
-                                    {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {startChargeTime}시
                                     {'  ~  '}
-                                    {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
+                                    {endChargeTime}시
                                     {'  '}
                                     <span style={{ color: '#666', marginLeft: 8 }}>
-                                        (이용시간: {(toMinutes(endChargeTime) - toMinutes(startChargeTime)) / 60}시간)
+                                        (이용시간: {(endChargeTime > startChargeTime) ? ((toHours(endChargeTime) - toHours(startChargeTime) + 24) % 24) : ((toHours(endChargeTime) - toHours(startChargeTime) + 24) % 24)}시간)
                                     </span>
                                 </div>
                             </div>

@@ -25,7 +25,7 @@ export default function DigitalClockValue({ onChangeStart, onChangeEnd }: Digita
             onChange={(newValue) => {
               setValue2(newValue ? dayjs(newValue) : null);
               if (onChangeStart && newValue) {
-                onChangeStart(dayjs(newValue).format('HH:mm')); // 부모에 전달
+                onChangeStart(dayjs(newValue).format('HH')); // 부모에 전달
               }
             }}
           />
@@ -38,7 +38,7 @@ export default function DigitalClockValue({ onChangeStart, onChangeEnd }: Digita
             onChange={(newValue) => {
               setValue(newValue ? dayjs(newValue) : null);
               if (onChangeEnd && newValue) {
-                onChangeEnd(dayjs(newValue).format('HH:mm')); // 부모에 전달
+                onChangeEnd(dayjs(newValue).format('HH')); // 부모에 전달
               }
             }}
           />
