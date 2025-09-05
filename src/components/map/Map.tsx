@@ -429,50 +429,50 @@ const Map: React.FC = () => {
     };
 
     // --- MUI UI에서 보내주는 시간 데이터를 가져와 가공하는 함수 ---
-    function toHours(hours: string) {
-        if (!hours) return NaN;
-        const h = parseInt(hours, 10);
-        if (Number.isNaN(h)) return NaN;
-        return h;
+// ...existing code...
+function toHours(hours: string) {
+    if (!hours) return NaN;
+    const h = parseInt(hours, 10);
+    return Number.isNaN(h) ? NaN : h;
+}
+
+useEffect(() => {
+    if (!startChargeTime || !endChargeTime) {
+        setLeftPosition(0);
+        setBarWidth(0);
+        setTimelineScale(1440); // 24시간(분)
+        return;
     }
 
-    // --- 사용자가 선택한 시간대를 시각화 시키는 useEffect 훅입니다. ---
-    useEffect(() => {
-        if (!startChargeTime || !endChargeTime) {
-            setLeftPosition(0);
-            setBarWidth(0);
-            setTimelineScale(1440);
-            return;
-        }
+    const start = toHours(startChargeTime);
+    const end = toHours(endChargeTime);
 
-        let startMin = toHours(startChargeTime);
-        let endMin = toHours(endChargeTime);
+    if (Number.isNaN(start) || Number.isNaN(end)) {
+        setLeftPosition(0);
+        setBarWidth(0);
+        setTimelineScale(1440);
+        return;
+    }
 
-        if (Number.isNaN(startMin) || Number.isNaN(endMin)) {
-            setLeftPosition(0);
-            setBarWidth(0);
-            setTimelineScale(1440);
-            return;
-        }
+    // 24시간 스케일
+    let scale = 24;
 
-        // 기본 스케일: 24시간(1440분)
-        let scale = 1440;
+    // 자정 넘어가는 경우 처리
+    let endForCalc = end;
+    if (end < start) {
+        endForCalc += 24;
+        scale = 48;
+    }
 
-        // 자정 넘어감 판단
-        if (endMin < startMin) {
-            // next day: 확장 스케일 48시간
-            endMin += 1440;
-            scale = 2880;
-        }
+    // 퍼센트 계산
+    const leftPct = (start / scale) * 100;
+    const widthPct = ((endForCalc - start) / scale) * 100;
 
-        // left, width 계산 (percent)
-        const leftPct = (startMin / scale) * 100;
-        const widthPct = ((endMin - startMin) / scale) * 100;
-
-        setTimelineScale(scale);
-        setLeftPosition(leftPct);
-        setBarWidth(Math.max(0, widthPct));
-    }, [startChargeTime, endChargeTime]);
+    setTimelineScale(scale * 60); // 분 단위로 환산
+    setLeftPosition(leftPct);
+    setBarWidth(Math.max(0, widthPct));
+}, [startChargeTime, endChargeTime]);
+// ...existing code...
 
     // 라벨 텍스트 계산 (00:00, 가운데, 오른쪽)
     const leftLabel = '00:00';
