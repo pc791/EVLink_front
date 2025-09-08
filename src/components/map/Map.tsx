@@ -6,6 +6,8 @@ import Calendar from './Calendar';
 import DigitalClockValue from './Timetable';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { useLocation } from 'react-router-dom';
+import ReservationOKModal from './ReservationOKModal';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -40,6 +42,10 @@ const Map: React.FC = () => {
     const [leftPosition, setLeftPosition] = useState<number>(0); // percent
     const [barWidth, setBarWidth] = useState<number>(0); // percent
     const [timelineScale, setTimelineScale] = useState<number>(1440); // minutes: 1440 or 2880
+
+    const location = useLocation();
+    const [isModal2Visible, setIsModal2Visible] = useState(false);
+
 
     const imageFileHtml = (type: string): string => {
         if (!type) return "";
@@ -327,9 +333,12 @@ const Map: React.FC = () => {
         if (mapInstance) {
             (window as any).naver.maps.Event.addListener(mapInstance, 'idle', () => updateMarkersInViewport(mapInstance));
             updateMarkersInViewport(mapInstance);
-
         }
-
+        const params = new URLSearchParams(location.search);
+        const orderId = params.get("orderId");
+        if (orderId) {
+            setIsModal2Visible(true); // 결제 성공 팝업 띄우기
+        }
     }, [mapInstance, stations]);
 
     const handleSearch = () => {
@@ -429,50 +438,50 @@ const Map: React.FC = () => {
     };
 
     // --- MUI UI에서 보내주는 시간 데이터를 가져와 가공하는 함수 ---
-// ...existing code...
-function toHours(hours: string) {
-    if (!hours) return NaN;
-    const h = parseInt(hours, 10);
-    return Number.isNaN(h) ? NaN : h;
-}
-
-useEffect(() => {
-    if (!startChargeTime || !endChargeTime) {
-        setLeftPosition(0);
-        setBarWidth(0);
-        setTimelineScale(1440); // 24시간(분)
-        return;
+    // ...existing code...
+    function toHours(hours: string) {
+        if (!hours) return NaN;
+        const h = parseInt(hours, 10);
+        return Number.isNaN(h) ? NaN : h;
     }
 
-    const start = toHours(startChargeTime);
-    const end = toHours(endChargeTime);
+    useEffect(() => {
+        if (!startChargeTime || !endChargeTime) {
+            setLeftPosition(0);
+            setBarWidth(0);
+            setTimelineScale(1440); // 24시간(분)
+            return;
+        }
 
-    if (Number.isNaN(start) || Number.isNaN(end)) {
-        setLeftPosition(0);
-        setBarWidth(0);
-        setTimelineScale(1440);
-        return;
-    }
+        const start = toHours(startChargeTime);
+        const end = toHours(endChargeTime);
 
-    // 24시간 스케일
-    let scale = 24;
+        if (Number.isNaN(start) || Number.isNaN(end)) {
+            setLeftPosition(0);
+            setBarWidth(0);
+            setTimelineScale(1440);
+            return;
+        }
 
-    // 자정 넘어가는 경우 처리
-    let endForCalc = end;
-    if (end < start) {
-        endForCalc += 24;
-        scale = 48;
-    }
+        // 24시간 스케일
+        let scale = 24;
 
-    // 퍼센트 계산
-    const leftPct = (start / scale) * 100;
-    const widthPct = ((endForCalc - start) / scale) * 100;
+        // 자정 넘어가는 경우 처리
+        let endForCalc = end;
+        if (end < start) {
+            endForCalc += 24;
+            scale = 48;
+        }
 
-    setTimelineScale(scale * 60); // 분 단위로 환산
-    setLeftPosition(leftPct);
-    setBarWidth(Math.max(0, widthPct));
-}, [startChargeTime, endChargeTime]);
-// ...existing code...
+        // 퍼센트 계산
+        const leftPct = (start / scale) * 100;
+        const widthPct = ((endForCalc - start) / scale) * 100;
+
+        setTimelineScale(scale * 60); // 분 단위로 환산
+        setLeftPosition(leftPct);
+        setBarWidth(Math.max(0, widthPct));
+    }, [startChargeTime, endChargeTime]);
+    // ...existing code...
 
     // 라벨 텍스트 계산 (00:00, 가운데, 오른쪽)
     const leftLabel = '00:00';
@@ -596,6 +605,12 @@ useEffect(() => {
             {isModalVisible && (
                 <ReservationModal
                     onClose={() => setIsModalVisible(false)}
+                    reservationDetails={reservationDetails}
+                />
+            )}
+            {isModal2Visible && (
+                <ReservationOKModal
+                    onClose={() => setIsModal2Visible(false)}
                     reservationDetails={reservationDetails}
                 />
             )}

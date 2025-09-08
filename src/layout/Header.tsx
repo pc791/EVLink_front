@@ -35,9 +35,10 @@ const Header: React.FC = () => {
                 <div className={styles['navbar-container']}>
                     {/* Logo and Brand */}
                     <div className={styles['logo-section']}>
-                        <img src='/images/logo.png' alt="EVLink Logo" style={{width:'40px', height:'40px'}} />
+                        
+                        <NavLink to=""><img src='/images/EVLink_logo.png' alt="EVLink Logo" style={{width:'10%', height:'10%'}} /></NavLink>
                         {/* <h1 className={styles['brand-name']}>EVLink</h1> */}
-                         <NavLink to="/" className={styles['brand-name']}>EVLink</NavLink>
+                         {/* <NavLink to="/" className={styles['brand-name']}>EVLink</NavLink> */}
                     </div>
 
                     {/* Right Section - Login, User Info, and Hamburger Menu */}
@@ -85,8 +86,8 @@ const Header: React.FC = () => {
                         <div className={styles['secondary-nav-section']}>
                             <h3 className={styles['secondary-nav-title']}>EV 충전소 찾기</h3>
                             <div className={styles['secondary-nav-links']}>
-                                <NavLink to="/service" className={styles['secondary-nav-item']}>서비스안내</NavLink>
-                                <NavLink to="/map" className={styles['secondary-nav-item']}>충전소찾기</NavLink>
+                                <a href="#" className={styles['secondary-nav-item']}>서비스안내</a>
+                                <a href="#" className={styles['secondary-nav-item']}>충전소찾기</a>
                             </div>
                         </div>
 
@@ -94,8 +95,8 @@ const Header: React.FC = () => {
                         <div className={styles['secondary-nav-section']}>
                             <h3 className={styles['secondary-nav-title']}>사용 내역</h3>
                             <div className={styles['secondary-nav-links']}>
-                                <NavLink to="/analysis" className={styles['secondary-nav-item']}>이용현황</NavLink>
-                                <NavLink to="/reservelist" className={styles['secondary-nav-item']}>예약내역</NavLink>
+                                <a href="#" className={styles['secondary-nav-item']}>이용현황</a>
+                                <a href="#" className={styles['secondary-nav-item']}>예약내역</a>
                             </div>
                         </div>
 
