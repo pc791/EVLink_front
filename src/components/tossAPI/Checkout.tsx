@@ -1,18 +1,19 @@
 import { loadTossPayments, ANONYMOUS, TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
 import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "8IaYRnOelr82w70MVDr3t";
 
-export function CheckoutPage() {
+export function CheckoutPage({ value }: { value: number }) {
   const [amount, setAmount] = useState({
     currency: "KRW",
-    value: 50_000,
+    value: value,
   });
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState<TossPaymentsWidgets | null>(null);
-
+  const nav = useNavigate()
   useEffect(() => {
     async function fetchPaymentWidgets() {
       // ------  결제위젯 초기화 ------
@@ -28,6 +29,7 @@ export function CheckoutPage() {
     }
 
     fetchPaymentWidgets();
+    console.log(value)
   }, [clientKey, customerKey]);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export function CheckoutPage() {
         {/* 쿠폰 체크박스 */}
         <div>
           <div>
-            <label htmlFor="coupon-box">
+            {/* <label htmlFor="coupon-box">
               <input
                 id="coupon-box"
                 type="checkbox"
@@ -91,7 +93,7 @@ export function CheckoutPage() {
                 }}
               />
               <span>5,000원 쿠폰 적용</span>
-            </label>
+            </label> */}
           </div>
         </div>
 

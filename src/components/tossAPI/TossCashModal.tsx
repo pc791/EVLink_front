@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
 import { CheckoutPage } from './Checkout';
 
@@ -17,6 +17,7 @@ const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDe
   const [email, setEmail] = useState('');
   const [purpose, setPurpose] = useState('');
   const [request, setRequest] = useState('');
+  const [cash, setCash] = useState(parseInt(reservationDetails.time) * 2000)
 
   const handleReservationSubmit = () => {
     // 예약 정보를 서버로 전송하는 로직을 여기에 추가
@@ -31,6 +32,10 @@ const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDe
     alert('예약이 완료되었습니다!');
     onClose();
   };
+
+  useEffect(() => {
+    setCash(parseInt(reservationDetails.time) * 2000)
+  }, [reservationDetails.time]);
 
   return (
     <div className="modal-overlay">
@@ -60,11 +65,11 @@ const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDe
             </div>
             <div className="info-item">
               <label>금액</label>
-              <span>50_000원</span>
+              <span>(시간당 2,000원이라는 가정하에) {parseInt(reservationDetails.time) * 2000}원</span>
             </div>
           </div>
           <hr/>
-          <CheckoutPage/>
+          <CheckoutPage value= {cash} />
         </div>
         {/* <div className="modal-footer">
           <button className="submit-button" onClick={handleReservationSubmit}>예약 완료</button>
