@@ -1,165 +1,138 @@
-// Login page supporting BOTH passwordless (email link) and social OAuth logins.
-// - Passwordless: sends your email to backend to receive a magic link
-// - Social: redirects to backend OAuth endpoints (Google, Naver, Kakao, Facebook)
-// Backend is responsible for setting the session and redirecting back to the app.
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { useAuth } from 'auth/AuthProvider';
 import styles from './Login.module.css';
-// import { AuthProvider } from '../../auth/AuthProvider';
-// // import constants from '../../auth/constants';
+export default function Login() {
+  const { profile, isLoggedIn, loginWithProvider, logout, checkLogin, passwordless } = useAuth();
 
-const Login: React.FC = () => {
-  // UI state
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
-
-  // Read any error coming back from backend redirects (e.g., /login?error=oauth_failed)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const oauthErr = params.get('error');
-    if (oauthErr) {
-      setError('소셜 로그인에 실패했습니다. 다시 시도해주세요.');
-    }
-  }, []);
-
-  // Start Passwordless login by asking backend to send a link to the provided email
-  const handlePasswordlessLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setInfo('');
-
-    if (!email) {
-      setError('이메일을 입력해주세요.');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Adjust endpoint to match your backend implementation
-      await axios.post('/api/auth/passwordless/start', { email }, { withCredentials: true });
-      setInfo('로그인 링크를 이메일로 전송했습니다. 메일함을 확인해주세요.');
-    } catch (err) {
-      setError('이메일 전송에 실패했습니다. 잠시 후 다시 시도해주세요.');
-    } finally {
-      setIsLoading(false);
-    }
+  // 화면 전체 중앙 배치
+  const pageContainer: React.CSSProperties = {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: '#f9fafb',
   };
 
-  // Start the OAuth flow by navigating to our backend endpoints
-  const handleSocialLogin = (provider: 'google' | 'naver' | 'kakao' | 'facebook') => {
-    setIsLoading(true);
-    setError('');
-    setInfo('');
-    window.location.href = `/api/auth/${provider}`;
+  // 카드 컨테이너
+  const card: React.CSSProperties = {
+    fontFamily: 'sans-serif',
+    padding: 20,
+    maxWidth: 420,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   };
 
+  // lane (버튼/구분선 공통 폭)
+  const lane: React.CSSProperties = {
+    width: '70%',
+    maxWidth: 360,
+    minWidth: 240,
+    margin: '0 auto',
+  };
+
+  // 텍스트 버튼
+  const textButton: React.CSSProperties = {
+    width: '100%',
+    height: 45,
+    border: '1px solid #ccc',
+    borderRadius: 6,
+    background: '#f5f5f5',
+    cursor: 'pointer',
+    fontSize: 14,
+  };
+
+  // 이미지 버튼
+  const imageButton: React.CSSProperties = {
+    width: '100%',
+    height: 45,
+    border: '1px solid #ccc',
+    borderRadius: 6,
+    background: '#f5f5f5',
+    padding: 0,
+    overflow: 'hidden',
+    cursor: 'pointer',
+  };
+
+  const imgFit: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    display: 'block',
+  };
+
+  // 로그인 상태가 아니면 로그인 화면 표시
+  if (profile === null && !isLoggedIn) {
+    return (
+      <div style={pageContainer}>
+        <div style={card}>
+          <h2 style={{ marginBottom: 16, textAlign: 'center', width: '100%' }}>Login</h2>
+
+          {/* 패스워드리스 */}
+          <div style={lane}>
+            <button style={textButton} onClick={() => passwordless('')}>
+              Passwordless
+            </button>
+          </div>
+
+          {/* 구분선 */}
+          <div style={{ ...lane, display: 'flex', alignItems: 'center', margin: '16px auto' }}>
+            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid #ccc' }} />
+            <span style={{ margin: '0 8px', color: '#666', fontSize: 14 }}>또는</span>
+            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid #ccc' }} />
+          </div>
+
+          {/* 소셜 로그인 */}
+          <div style={{ ...lane, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <button style={imageButton} onClick={() => loginWithProvider('google')}>
+              <img src="/images/google_login.png" alt="Google 로그인" style={imgFit} />
+            </button>
+
+            <button style={imageButton} onClick={() => loginWithProvider('kakao')}>
+              <img src="/images/kakao_login.png" alt="Kakao 로그인" style={imgFit} />
+            </button>
+
+            <button style={imageButton} onClick={() => loginWithProvider('naver')}>
+              <img src="/images/naver_login.png" alt="Naver 로그인" style={imgFit} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 로그인 상태인 경우 내 프로필 화면 표시
   return (
-    <div className={styles.container}>
-      <div className={styles.loginCard}>
-        {/* Header */} 
-        {/* <div className={styles.header}>
-          <img src="/images/logo.png" alt="EVLink Logo" className={styles.logo} />
-          <h1 className={styles.title}>EVLink에 로그인</h1>
-          <p className={styles.subtitle}>전기차 충전의 새로운 경험을 시작하세요</p>
-        </div> */}
+    <div style={pageContainer}>
+      <div style={card}>
+        <h2 style={{ marginBottom: 16, textAlign: 'center', width: '100%' }}>내 프로필</h2>
 
-        {/* Passwordless Login (Email magic link) */}
-        <div className={styles.passwordlessSection}>
-          <h2 className={styles.sectionTitle}>Passwordless</h2>
-          <form onSubmit={handlePasswordlessLogin} className={styles.form}>
-            <div className={styles.inputGroup}>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="이메일 주소를 입력하세요"
-                className={styles.emailInput}
-                disabled={isLoading}
-              />
+        <div style={{ ...lane, display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+          {profile?.profileImage && (
+            <img
+              src={profile.profileImage}
+              alt="avatar"
+              style={{ width: 40, height: 40, borderRadius: '50%' }}
+            />
+          )}
+          <div>
+            <strong>{profile?.name}</strong>
+            <div style={{ fontSize: 14, color: '#555' }}>
+              {profile?.email} · {profile?.provider}
             </div>
-            <button
-              type="submit"
-              className={styles.passwordlessButton}
-              disabled={isLoading}
-            >
-              {isLoading ? '전송 중...' : '이메일로 로그인 링크 받기'}
-            </button>
-          </form>
-        </div>
-
-        {/* Divider */}
-        <div className={styles.divider}>
-          <span className={styles.dividerText}>또는</span>
-        </div>
-
-        {/* Social Login
-            - Each button sends the user to /api/auth/{provider}
-            - Backend completes OAuth and sets session
-            - On success, backend redirects back to the app (e.g., "/") */}
-       <div className={styles.socialSection}>
-          <h2 className={styles.sectionTitle}>소셜 계정으로 로그인</h2>
-          <div className={styles.socialButtons}>
-            <button
-              onClick={() => handleSocialLogin('google')}
-              className={`${styles.socialButton} ${styles.google}`}
-              disabled={isLoading}
-            >
-              <img src="/images/google-icon.png" alt="Google" className={styles.socialIcon} />
-              <span>Google로 로그인</span>
-            </button>
-
-            <button
-              onClick={() => handleSocialLogin('naver')}
-              className={`${styles.socialButton} ${styles.naver}`}
-              disabled={isLoading}
-            >
-              <img src="/images/naver-icon.png" alt="Naver" className={styles.socialIcon} />
-              <span>네이버로 로그인</span>
-            </button>
-
-            <button
-              onClick={() => handleSocialLogin('kakao')}
-              className={`${styles.socialButton} ${styles.kakao}`}
-              disabled={isLoading}
-            >
-              <img src="/images/kakao-icon.png" alt="Kakao" className={styles.socialIcon} />
-              <span>카카오로 로그인</span>
-            </button>
-
-            <button
-              onClick={() => handleSocialLogin('facebook')}
-              className={`${styles.socialButton} ${styles.facebook}`}
-              disabled={isLoading}
-            >
-              <img src="/images/facebook-icon.png" alt="Facebook" className={styles.socialIcon} />
-              <span>페이스북으로 로그인</span>
-            </button>
           </div>
         </div>
 
-        {/* Error message */}
-        {error && (
-          <div className={styles.errorMessage}>
-            {error}
-          </div>
-        )}
-
-        {/* Informational message (e.g., after sending magic link) */}
-        {info && (
-          <p className={styles.footerText}>{info}</p>
-        )}
-
-        {/* Footer: for OAuth, first login acts as signup. No separate signup needed. */}
-        <div className={styles.footer}>
-          <p className={styles.footerText}>
-            계정이 없으신가요? <span className={styles.signupLink}>소셜 계정 또는 이메일로 시작하세요</span>
-          </p>
+        <div style={{ ...lane, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button style={textButton} onClick={checkLogin}>
+            세션 새로고침
+          </button>
+          <button style={textButton} onClick={logout}>
+            로그아웃
+          </button>
         </div>
       </div>
     </div>
   );
-};
-
-export default Login;
+}

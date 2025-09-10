@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
-import { CheckoutPage } from './Checkout';
 
 interface ReservationModalProps {
   onClose: () => void;
@@ -11,31 +10,9 @@ interface ReservationModalProps {
   };
 }
 
-const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails }) => {
-  const [userName, setUserName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [purpose, setPurpose] = useState('');
-  const [request, setRequest] = useState('');
-  const [cash, setCash] = useState(parseInt(reservationDetails.time) * 2000)
+const ReservationOKModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails }) => {
 
-  const handleReservationSubmit = () => {
-    // 예약 정보를 서버로 전송하는 로직을 여기에 추가
-    console.log('예약 정보 제출:', {
-      ...reservationDetails,
-      userName,
-      phone,
-      email,
-      purpose,
-      request
-    });
-    alert('예약이 완료되었습니다!');
-    onClose();
-  };
 
-  useEffect(() => {
-    setCash(parseInt(reservationDetails.time) * 2000)
-  }, [reservationDetails.time]);
 
   return (
     <div className="modal-overlay">
@@ -63,13 +40,9 @@ const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDe
               <label>충전소명</label>
               <span>{reservationDetails.station}</span>
             </div>
-            <div className="info-item">
-              <label>금액</label>
-              <span>(시간당 2,000원이라는 가정하에) {parseInt(reservationDetails.time) * 2000}원</span>
-            </div>
           </div>
           <hr/>
-          <CheckoutPage value= {cash} />
+          <h1>예약이 완료 되셨습니다~!</h1>
         </div>
         {/* <div className="modal-footer">
           <button className="submit-button" onClick={handleReservationSubmit}>예약 완료</button>
@@ -79,4 +52,4 @@ const TossCashModal: React.FC<ReservationModalProps> = ({ onClose, reservationDe
   );
 };
 
-export default TossCashModal;
+export default ReservationOKModal;

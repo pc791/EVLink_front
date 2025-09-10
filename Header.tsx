@@ -33,13 +33,16 @@ const Header: React.FC = () => {
         <div className={styles['header-container']} onMouseLeave={handleMouseLeave}>
             <header className={styles.header}>
                 <div className={styles['navbar-container']}>
+                 
                     {/* Logo and Brand */}
+                    <NavLink to="/">
                     <div className={styles['logo-section']}>
                         
-                        <img src='/images/EVLink_logo.png' alt="EVLink Logo" style={{width:'10%', height:'10%'}} />
+                        <img src='/images/EVLink_logo.png' alt="EVLink Logo" style={{width:'20%', height:'20%'}} />
                         {/* <h1 className={styles['brand-name']}>EVLink</h1> */}
                          {/* <NavLink to="/" className={styles['brand-name']}>EVLink</NavLink> */}
                     </div>
+                    </NavLink>
 
                     {/* Right Section - Login, User Info, and Hamburger Menu */}
                     <div className={styles['right-section']}>

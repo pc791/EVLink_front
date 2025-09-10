@@ -1,18 +1,20 @@
 import { loadTossPayments, ANONYMOUS, TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
 import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "8IaYRnOelr82w70MVDr3t";
 
-export function CheckoutPage() {
+export function CheckoutPage({ value }: { value: number }) {
   const [amount, setAmount] = useState({
     currency: "KRW",
-    value: 50_000,
+    value: value,
   });
+  const payRandomNum = "f5gRsKqKxLZCzdK4EZQ42";
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState<TossPaymentsWidgets | null>(null);
-
+  const nav = useNavigate()
   useEffect(() => {
     async function fetchPaymentWidgets() {
       // ------  결제위젯 초기화 ------
@@ -28,6 +30,7 @@ export function CheckoutPage() {
     }
 
     fetchPaymentWidgets();
+    console.log(value)
   }, [clientKey, customerKey]);
 
   useEffect(() => {
@@ -75,7 +78,7 @@ export function CheckoutPage() {
         {/* 쿠폰 체크박스 */}
         <div>
           <div>
-            <label htmlFor="coupon-box">
+            {/* <label htmlFor="coupon-box">
               <input
                 id="coupon-box"
                 type="checkbox"
@@ -91,7 +94,7 @@ export function CheckoutPage() {
                 }}
               />
               <span>5,000원 쿠폰 적용</span>
-            </label>
+            </label> */}
           </div>
         </div>
 
@@ -105,9 +108,9 @@ export function CheckoutPage() {
               // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
               // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
               await widgets?.requestPayment({
-                orderId: "f5gRsKqKxLZCzdK4EZQ42",
+                orderId: payRandomNum,
                 orderName: "토스 티셔츠 외 2건",
-                successUrl: window.location.origin + "/success",
+                successUrl: window.location.origin + `/map?${payRandomNum}`,
                 failUrl: window.location.origin + "/fail",
                 customerEmail: "customer123@gmail.com",
                 customerName: "김토스",

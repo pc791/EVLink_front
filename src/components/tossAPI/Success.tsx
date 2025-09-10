@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import styles from '../home/EVhome.module.css';
 
 export function SuccessPage() {
   const navigate = useNavigate();
@@ -37,17 +39,16 @@ export function SuccessPage() {
   }, []);
 
   return (
-    <div className="result wrapper">
+    <div style={{marginTop:'100px'}}>
       <div className="box_section">
-        <h2>
-          결제 성공
-        </h2>
+        <h2>결제 성공</h2>
         <p>{`주문번호: ${searchParams.get("orderId")}`}</p>
         <p>{`결제 금액: ${Number(
           searchParams.get("amount")
         ).toLocaleString()}원`}</p>
         <p>{`paymentKey: ${searchParams.get("paymentKey")}`}</p>
       </div>
+      <NavLink to='/reservelist' className="reserve-button" style={{textDecoration:'None'}}>예약내역 확인하기</NavLink>
     </div>
   );
 }

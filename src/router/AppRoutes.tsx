@@ -16,6 +16,8 @@ import UserInfoTabs from '../components/mypage/UserInfoTabs'
 import UserStatTab from '../components/history/analysis/UserStatTab'
 import ReservationTab from '../components/history/reservation/ReservationTab'
 import ServiceInfo from '../components/info/ServiceInfo'
+import { SuccessPage } from '../components/tossAPI/Success'
+import { FailPage } from '../components/tossAPI/Fail'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -40,6 +42,8 @@ const AppRoutes: React.FC = () => {
         { path: '/service', element: <ServiceInfo /> }, // 서비스안내
         // { path: '/reserveform', element: <Reserveform />}, // 예약 폼
         { path: '/reservelist', element: <ReservationTab />}, // 예약 리스트
+        { path: '/success', element: <SuccessPage />},
+        { path: '/fail', element: <FailPage />},
     ]
     
     

@@ -9,9 +9,9 @@ const Footer: React.FC = () => {
         <div className={styles.footerTop}>
           <div className={styles.footerLogo}>
             <div className={styles.footerLogoIcon}>
-              <img src='/images/logo.png' alt="EVLink Logo" style={{width:'40px', height:'40px'}} />
+              <img src='/images/EVLink_logo_white.png' alt="EVLink Logo" style={{width:'400%', height:'400%'}} />
             </div>
-            <span className={styles.footerBrandName}>EVLink</span>
+            {/* <span className={styles.footerBrandName}>EVLink</span> */}
           </div>
           
           <div className={styles.socialMediaIcons}>
