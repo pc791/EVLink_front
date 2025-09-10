@@ -429,50 +429,50 @@ const Map: React.FC = () => {
     };
 
     // --- MUI UI에서 보내주는 시간 데이터를 가져와 가공하는 함수 ---
-// ...existing code...
-function toHours(hours: string) {
-    if (!hours) return NaN;
-    const h = parseInt(hours, 10);
-    return Number.isNaN(h) ? NaN : h;
-}
-
-useEffect(() => {
-    if (!startChargeTime || !endChargeTime) {
-        setLeftPosition(0);
-        setBarWidth(0);
-        setTimelineScale(1440); // 24시간(분)
-        return;
+    function toMinutes(time: string) {
+        if (!time) return NaN;
+        const parts = time.split(':').map(s => parseInt(s, 10));
+        if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return NaN;
+        return parts[0] * 60 + parts[1];
     }
 
-    const start = toHours(startChargeTime);
-    const end = toHours(endChargeTime);
+    // --- 사용자가 선택한 시간대를 시각화 시키는 useEffect 훅입니다. ---
+    useEffect(() => {
+        if (!startChargeTime || !endChargeTime) {
+            setLeftPosition(0);
+            setBarWidth(0);
+            setTimelineScale(1440);
+            return;
+        }
 
-    if (Number.isNaN(start) || Number.isNaN(end)) {
-        setLeftPosition(0);
-        setBarWidth(0);
-        setTimelineScale(1440);
-        return;
-    }
+        let startMin = toMinutes(startChargeTime);
+        let endMin = toMinutes(endChargeTime);
 
-    // 24시간 스케일
-    let scale = 24;
+        if (Number.isNaN(startMin) || Number.isNaN(endMin)) {
+            setLeftPosition(0);
+            setBarWidth(0);
+            setTimelineScale(1440);
+            return;
+        }
 
-    // 자정 넘어가는 경우 처리
-    let endForCalc = end;
-    if (end < start) {
-        endForCalc += 24;
-        scale = 48;
-    }
+        // 기본 스케일: 24시간(1440분)
+        let scale = 1440;
 
-    // 퍼센트 계산
-    const leftPct = (start / scale) * 100;
-    const widthPct = ((endForCalc - start) / scale) * 100;
+        // 자정 넘어감 판단
+        if (endMin < startMin) {
+            // next day: 확장 스케일 48시간
+            endMin += 1440;
+            scale = 2880;
+        }
 
-    setTimelineScale(scale * 60); // 분 단위로 환산
-    setLeftPosition(leftPct);
-    setBarWidth(Math.max(0, widthPct));
-}, [startChargeTime, endChargeTime]);
-// ...existing code...
+        // left, width 계산 (percent)
+        const leftPct = (startMin / scale) * 100;
+        const widthPct = ((endMin - startMin) / scale) * 100;
+
+        setTimelineScale(scale);
+        setLeftPosition(leftPct);
+        setBarWidth(Math.max(0, widthPct));
+    }, [startChargeTime, endChargeTime]);
 
     // 라벨 텍스트 계산 (00:00, 가운데, 오른쪽)
     const leftLabel = '00:00';
@@ -574,12 +574,12 @@ useEffect(() => {
                             <div style={{ marginTop: '8px' }}>
                                 <strong>선택된 시간:</strong>
                                 <div>
-                                    {startChargeTime}시
+                                    {startChargeTime ? `${startChargeTime.replace(':', '시 ')}분` : '--'}
                                     {'  ~  '}
-                                    {endChargeTime}시
+                                    {endChargeTime ? `${endChargeTime.replace(':', '시 ')}분` : '--'}
                                     {'  '}
                                     <span style={{ color: '#666', marginLeft: 8 }}>
-                                        (이용시간: {(endChargeTime > startChargeTime) ? ((toHours(endChargeTime) - toHours(startChargeTime) + 24) % 24) : ((toHours(endChargeTime) - toHours(startChargeTime) + 24) % 24)}시간)
+                                        (이용시간: {(toMinutes(endChargeTime) - toMinutes(startChargeTime)) / 60}시간)
                                     </span>
                                 </div>
                             </div>
