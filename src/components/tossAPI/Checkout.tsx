@@ -1,12 +1,12 @@
-import { loadTossPayments, ANONYMOUS, TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
+import { loadTossPayments, TossPaymentsWidgets } from "@tosspayments/tosspayments-sdk";
 import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "8IaYRnOelr82w70MVDr3t";
 
-export function CheckoutPage({ value }: { value: number }) {
+export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (paymentData: any) => void; }) {
   const [amount, setAmount] = useState({
     currency: "KRW",
     value: value,
@@ -14,7 +14,8 @@ export function CheckoutPage({ value }: { value: number }) {
   const payRandomNum = "f5gRsKqKxLZCzdK4EZQ42";
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState<TossPaymentsWidgets | null>(null);
-  const nav = useNavigate()
+  const location = useLocation(); // 추가
+  const navigate = useNavigate(); // 추가
   useEffect(() => {
     async function fetchPaymentWidgets() {
       // ------  결제위젯 초기화 ------
@@ -68,6 +69,19 @@ export function CheckoutPage({ value }: { value: number }) {
     widgets.setAmount(amount);
   }, [widgets, amount]);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const paymentKey = urlParams.get('paymentKey');
+    const orderId = urlParams.get('orderId');
+
+    if (paymentKey && orderId) {
+      console.log('결제 성공! paymentKey:', paymentKey, 'orderId:', orderId);
+      onSuccess({ paymentKey, orderId });
+      // URL을 정리하여 브라우저 히스토리를 깔끔하게 유지
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, onSuccess, navigate]);
+
   return (
     <div className="wrapper">
       <div className="box_section">
@@ -103,26 +117,25 @@ export function CheckoutPage({ value }: { value: number }) {
           className="submit-button"
           disabled={!ready}
           onClick={async () => {
-            try {
-              // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-              // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
-              // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
-              await widgets?.requestPayment({
-                orderId: payRandomNum,
-                orderName: "토스 티셔츠 외 2건",
-                successUrl: window.location.origin + `/map?${payRandomNum}`,
-                failUrl: window.location.origin + "/fail",
-                customerEmail: "customer123@gmail.com",
-                customerName: "김토스",
-                customerMobilePhone: "01012341234",
-              });
-            } catch (error) {
-              // 에러 처리하기
-              console.error(error);
-            }
-          }}
-        >
-          결제하기
+                        try {
+                            // 💡 매번 고유한 orderId를 생성
+                            const uniqueOrderId = `ev_${Date.now()}`;
+                            await widgets?.requestPayment({
+                                orderId: uniqueOrderId,
+                                orderName: "전기차 충전소 예약",
+                                // 💡 successUrl에 paymentKey와 orderId를 쿼리 파라미터로 포함
+                                successUrl: `${window.location.origin}${location.pathname}?orderId=${uniqueOrderId}&paymentKey={paymentKey}`,
+                                failUrl: window.location.origin + "/fail",
+                                customerEmail: "customer123@gmail.com",
+                                customerName: "김토스",
+                                customerMobilePhone: "01012341234",
+                            });
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }}
+                >
+                    결제하기
         </button>
       </div>
     </div>

@@ -5,29 +5,31 @@ import TossCashModal from '../tossAPI/TossCashModal';
 interface ReservationModalProps {
   onClose: () => void;
   reservationDetails: {
-    date: string;
-    time: string;
-    station: string;
+    chargerId : number;
+    resDate: string;
+    resStartTime: string;
+    resEndTime: string;
+    resAddr: string;
+    resPayTotalHour: string;
   };
 }
 
 const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails }) => {
-  const [userName, setUserName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [purpose, setPurpose] = useState('');
-  const [request, setRequest] = useState('');
+  const [resNm, setResNm] = useState('');
+  const [resTel, setResTel] = useState('');
+  const [resEmail, setResEmail] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // TossCashModal에 전달할 사용자 정보 객체
+  const resInfo = { resNm, resTel, resEmail };
 
   const handleReservationSubmit = () => {
     // 예약 정보를 서버로 전송하는 로직을 여기에 추가
     console.log('예약 정보 제출:', {
       ...reservationDetails,
-      userName,
-      phone,
-      email,
-      purpose,
-      request
+      resNm,
+      resTel,
+      resEmail,
     });
   };
 
@@ -43,20 +45,21 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
           <div className="reservation-info-section">
             <div className="info-item">
               <label>예약 날짜</label>
-              <span>{reservationDetails.date}</span>
+              <span>{reservationDetails.resDate}</span>
             </div>
             <div className="info-item">
               <label>예약 시간</label>
-              <span>{reservationDetails.time}</span>
-            </div>
-            <div className="info-item">
-              <label>예약 인원</label>
-              <span>1명</span>
+              <span>{reservationDetails.resStartTime}시 ~ {reservationDetails.resEndTime}시</span>
             </div>
             <div className="info-item">
               <label>충전소명</label>
-              <span>{reservationDetails.station}</span>
+              <span>{reservationDetails.resAddr}</span>
             </div>
+            <div className="info-item">
+              <label>결제 비용</label>
+              <span>{reservationDetails.resPayTotalHour}원</span>
+            </div>
+
           </div>
           <hr />
           {/* 예약자 정보 섹션 */}
@@ -64,15 +67,15 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
             <h3 className="required-title">예약자 정보 <span className="required-text">*필수입력</span></h3>
             <div className="form-group">
               <label>예약자*</label>
-              <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} />
+              <input type="text" value={resNm} onChange={(e) => setResNm(e.target.value)} />
             </div>
             <div className="form-group">
               <label>연락처*</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <input type="tel" value={resTel} onChange={(e) => setResTel(e.target.value)} />
             </div>
             <div className="form-group">
               <label>이메일*</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type="email" value={resEmail} onChange={(e) => setResEmail(e.target.value)} />
             </div>
           </div>
         </div>
@@ -80,12 +83,24 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
 
         </div>
         <div className="modal-footer">
-          <button className="submit-button" onClick={() => {handleReservationSubmit(); setIsModalVisible(true)}}>결제 하기</button>
+          <button
+            className="submit-button"
+            onClick={() => {
+              // 필수 입력 항목 유효성 검사
+              if (!resNm || !resTel || !resEmail) {
+                alert('예약자 정보를 모두 입력해주세요.');
+                return;
+              }
+              setIsModalVisible(true);
+            }}
+          >
+            결제 하기</button>
         </div>
         {isModalVisible && (
           <TossCashModal
             onClose={() => setIsModalVisible(false)}
             reservationDetails={reservationDetails}
+            resInfo={resInfo}
           />
         )}
       </div>
