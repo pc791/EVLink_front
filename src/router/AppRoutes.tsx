@@ -18,6 +18,9 @@ import ReservationTab from '../components/history/reservation/ReservationTab'
 import ServiceInfo from '../components/info/ServiceInfo'
 import { SuccessPage } from '../components/tossAPI/Success'
 import { FailPage } from '../components/tossAPI/Fail'
+import QnaList from '../components/qna/QnaList'
+import QnaForm from '../components/qna/QnaForm'
+import QnaDetail from '../components/qna/QnaDetail'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -44,6 +47,9 @@ const AppRoutes: React.FC = () => {
         { path: '/reservelist', element: <ReservationTab />}, // 예약 리스트
         { path: '/success', element: <SuccessPage />},
         { path: '/fail', element: <FailPage />},
+        { path: '/board', element: <QnaList />},
+        { path: '/board/form', element: <QnaForm />},
+        { path: '/board/detail/:board_id', element: <QnaDetail />},
     ]
     
     

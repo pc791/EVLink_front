@@ -338,6 +338,7 @@ const Map: React.FC = () => {
         const orderId = params.get("orderId");
         if (orderId) {
             setIsModal2Visible(true); // 결제 성공 팝업 띄우기
+            
         }
     }, [mapInstance, stations]);
 

@@ -33,29 +33,29 @@ export function CheckoutPage({ value }: { value: number }) {
     console.log(value)
   }, [clientKey, customerKey]);
 
-  useEffect(() => {
-    async function renderPaymentWidgets() {
-      if (widgets == null) {
-        return;
-      }
-      // ------ 주문의 결제 금액 설정 ------
-      await widgets.setAmount(amount);
-
-      await Promise.all([
-        // ------  결제 UI 렌더링 ------
-        widgets.renderPaymentMethods({
-          selector: "#payment-method",
-          variantKey: "DEFAULT",
-        }),
-        // ------  이용약관 UI 렌더링 ------
-        widgets.renderAgreement({
-          selector: "#agreement",
-          variantKey: "AGREEMENT",
-        }),
-      ]);
-
-      setReady(true);
+  async function renderPaymentWidgets() {
+    if (widgets == null) {
+      return;
     }
+    // ------ 주문의 결제 금액 설정 ------
+    await widgets.setAmount(amount);
+
+    await Promise.all([
+      // ------  결제 UI 렌더링 ------
+      widgets.renderPaymentMethods({
+        selector: "#payment-method",
+        variantKey: "DEFAULT",
+      }),
+      // ------  이용약관 UI 렌더링 ------
+      widgets.renderAgreement({
+        selector: "#agreement",
+        variantKey: "AGREEMENT",
+      }),
+    ]);
+
+    setReady(true);
+  }
+  useEffect(() => {
 
     renderPaymentWidgets();
   }, [widgets]);
