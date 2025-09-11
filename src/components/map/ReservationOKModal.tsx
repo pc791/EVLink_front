@@ -4,9 +4,11 @@ import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
 interface ReservationModalProps {
   onClose: () => void;
   reservationDetails: {
-    date: string;
-    time: string;
-    station: string;
+    resDate: string;
+    resStartTime: string;
+    resEndTime: string;
+    resAddr: string;
+    resPayTotalHour:string;
   };
 }
 
@@ -26,19 +28,15 @@ const ReservationOKModal: React.FC<ReservationModalProps> = ({ onClose, reservat
           <div className="reservation-info-section">
             <div className="info-item">
               <label>예약 날짜</label>
-              <span>{reservationDetails.date}</span>
+              <span>{reservationDetails.resDate}</span>
             </div>
             <div className="info-item">
               <label>예약 시간</label>
-              <span>{reservationDetails.time}</span>
-            </div>
-            <div className="info-item">
-              <label>예약 인원</label>
-              <span>1명</span>
-            </div>
+              <span>{reservationDetails.resStartTime}~{reservationDetails.resEndTime}</span>
+            </div>            
             <div className="info-item">
               <label>충전소명</label>
-              <span>{reservationDetails.station}</span>
+              <span>{reservationDetails.resAddr}</span>
             </div>
           </div>
           <hr/>
