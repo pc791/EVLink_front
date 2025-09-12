@@ -98,7 +98,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
         </div>
         {isModalVisible && (
           <TossCashModal
-            onClose={() => setIsModalVisible(false)}
+            onClose={() => {console.log("토스 모달 닫아버리기."); setIsModalVisible(false)}}
             reservationDetails={reservationDetails}
             resInfo={resInfo}
           />

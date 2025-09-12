@@ -6,7 +6,8 @@ import Calendar from './Calendar';
 import DigitalClockValue from './Timetable';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ReservationOKModal from './ReservationOKModal';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -25,8 +26,8 @@ const Map: React.FC = () => {
     const [selectedStationPayTotal, setSelectedStationPayTotal] = useState('');
     const [selectedDate, setSelectedDate] = useState(getTodayDate());
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragStartIndex, setDragStartIndex] = useState<number | null>(null);
+    // const [isDragging, setIsDragging] = useState(false);
+    // const [dragStartIndex, setDragStartIndex] = useState<number | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [mapInstance, setMapInstance] = useState<any>(null);
     const [startChargeTime, setStartChargeTime] = useState(''); // "HH:mm"
@@ -45,7 +46,9 @@ const Map: React.FC = () => {
     const [barWidth, setBarWidth] = useState<number>(0); // percent
     const [timelineScale, setTimelineScale] = useState<number>(1440); // minutes: 1440 or 2880
     const location = useLocation();
-    // const [isModal2Visible, setIsModal2Visible] = useState(false);
+    const [isModal2Visible, setIsModal2Visible] = useState(false);
+
+    const navigate = useNavigate(); // 추가
 
     const imageFileHtml = (type: string): string => {
         if (!type) return "";
@@ -277,12 +280,13 @@ const Map: React.FC = () => {
                 const stations = await fetchPrivateChargers();
                 if (stations.length === 0) {
                     console.error('개인 충전소 데이터가 비어 있어 초기 지도를 생성할 수 없습니다.');
-                    return;
+                    // return; 2025.09.11 load 이슈 조치
                 }
 
                 const initialStation = stations[0];
-
-                const centerLocation = new naver.maps.LatLng(initialStation.position.lat, initialStation.position.lng);
+                
+                // 2025.09.11 load 이슈 조치
+                const centerLocation = initialStation ? new naver.maps.LatLng(initialStation.position.lat, initialStation.position.lng) : "";
                 const map = new naver.maps.Map(mapRef.current!, {
                     center: centerLocation,
                     zoom: 15,
@@ -319,6 +323,18 @@ const Map: React.FC = () => {
         }
     }, [mapInstance, stations]);
 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const paymentKey = urlParams.get('paymentKey');
+        const orderId = urlParams.get('orderId');
+
+        if (paymentKey && orderId) {
+            console.log('결제 성공! paymentKey:', paymentKey, 'orderId:', orderId);
+            setIsModal2Visible(true);
+            // URL을 정리하여 브라우저 히스토리를 깔끔하게 유지
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location, navigate]);
 
     const handleSearch = () => {
         if (searchKeyword.trim() !== '' && mapInstance) {
@@ -339,10 +355,10 @@ const Map: React.FC = () => {
         }
     };
 
-    const handleDragEnd = () => {
-        setIsDragging(false);
-        setDragStartIndex(null);
-    };
+    // const handleDragEnd = () => {
+    //     setIsDragging(false);
+    //     setDragStartIndex(null);
+    // };
 
     const handleReserve = () => {
         // startChargeTime과 endChargeTime이 모두 존재하고 비어있지 않은지 확인합니다.
@@ -361,10 +377,6 @@ const Map: React.FC = () => {
             alert('시간을 선택해주세요.');
         }
     };
-
-    const reservationTimeDisplay = (endChargeTime || startChargeTime)
-        ? `${parseInt(startChargeTime).toString().padStart(2, '0')}시~${(parseInt(endChargeTime)).toString().padStart(2, '0')}시, ${parseInt(endChargeTime) - parseInt(startChargeTime)}시간`
-        : '시간 선택';
 
     const formatSelectedDate = () => {
         if (!selectedDate) return '';
@@ -440,7 +452,8 @@ const Map: React.FC = () => {
     const rightLabel = timelineScale === 1440 ? '24:00' : '48:00';
 
     return (
-        <div className="container" onMouseUp={handleDragEnd}>
+        <div className="container">
+        {/* <div className="container" onMouseUp={handleDragEnd}> */}
             <div className="search-bar">
                 <input
                     type="text"
@@ -562,6 +575,8 @@ const Map: React.FC = () => {
                     reservationDetails={reservationDetails}
                 />
             )}
+            {/* ✅ 결제 성공 시에만 ReservationOKModal 렌더링 */}
+            {isModal2Visible && <ReservationOKModal onClose={() => setIsModal2Visible(false)} reservationDetails={reservationDetails} />}
         </div>
     );
 };

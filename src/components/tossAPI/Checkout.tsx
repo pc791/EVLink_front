@@ -15,7 +15,7 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState<TossPaymentsWidgets | null>(null);
   const location = useLocation(); // 추가
-  const navigate = useNavigate(); // 추가
+  // const navigate = useNavigate(); // 추가
   useEffect(() => {
     async function fetchPaymentWidgets() {
       // ------  결제위젯 초기화 ------
@@ -57,7 +57,6 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
     setReady(true);
   }
   useEffect(() => {
-
     renderPaymentWidgets();
   }, [widgets]);
 
@@ -69,19 +68,6 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
     widgets.setAmount(amount);
   }, [widgets, amount]);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const paymentKey = urlParams.get('paymentKey');
-    const orderId = urlParams.get('orderId');
-
-    if (paymentKey && orderId) {
-      console.log('결제 성공! paymentKey:', paymentKey, 'orderId:', orderId);
-      onSuccess({ paymentKey, orderId });
-      // URL을 정리하여 브라우저 히스토리를 깔끔하게 유지
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location, onSuccess, navigate]);
-
   return (
     <div className="wrapper">
       <div className="box_section">
@@ -91,25 +77,6 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
         <div id="agreement" />
         {/* 쿠폰 체크박스 */}
         <div>
-          <div>
-            {/* <label htmlFor="coupon-box">
-              <input
-                id="coupon-box"
-                type="checkbox"
-                aria-checked="true"
-                disabled={!ready}
-                onChange={(event) => {
-                  setAmount({
-                    ...amount,
-                    value: event.target.checked
-                      ? amount.value - 5_000
-                      : amount.value + 5_000,
-                  });
-                }}
-              />
-              <span>5,000원 쿠폰 적용</span>
-            </label> */}
-          </div>
         </div>
 
         {/* 결제하기 버튼 */}
@@ -117,25 +84,25 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
           className="submit-button"
           disabled={!ready}
           onClick={async () => {
-                        try {
-                            // 💡 매번 고유한 orderId를 생성
-                            const uniqueOrderId = `ev_${Date.now()}`;
-                            await widgets?.requestPayment({
-                                orderId: uniqueOrderId,
-                                orderName: "전기차 충전소 예약",
-                                // 💡 successUrl에 paymentKey와 orderId를 쿼리 파라미터로 포함
-                                successUrl: `${window.location.origin}${location.pathname}?orderId=${uniqueOrderId}&paymentKey={paymentKey}`,
-                                failUrl: window.location.origin + "/fail",
-                                customerEmail: "customer123@gmail.com",
-                                customerName: "김토스",
-                                customerMobilePhone: "01012341234",
-                            });
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    }}
-                >
-                    결제하기
+            try {
+              // 💡 매번 고유한 orderId를 생성
+              const uniqueOrderId = `ev_${Date.now()}`;
+              await widgets?.requestPayment({
+                orderId: uniqueOrderId,
+                orderName: "전기차 충전소 예약",
+                // 💡 successUrl에 paymentKey와 orderId를 쿼리 파라미터로 포함
+                successUrl: `${window.location.origin}${location.pathname}?orderId=${uniqueOrderId}&paymentKey=${payRandomNum}`,
+                failUrl: window.location.origin + "/fail",
+                customerEmail: "customer123@gmail.com",
+                customerName: "김토스",
+                customerMobilePhone: "01012341234",
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+        >
+          결제하기
         </button>
       </div>
     </div>
