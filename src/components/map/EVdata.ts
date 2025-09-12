@@ -13,7 +13,7 @@ export interface ChargingStations {
 // 개인 충전소 데이터를 가져오는 새로운 함수
 export const fetchPrivateChargers = async (): Promise<ChargingStations[]> => {
   try {
-    const response = await fetch('http://localhost:80/evlink/api/charger/list'); // Postman에서 확인된 URL
+    const response = await fetch('http://localhost:80/evlink/mypage/charger/list'); // Postman에서 확인된 URL
     if (!response.ok) {
       throw new Error('Failed to fetch private chargers');
     }
