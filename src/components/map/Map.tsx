@@ -7,7 +7,6 @@ import DigitalClockValue from './Timetable';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ReservationOKModal from './ReservationOKModal';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -574,9 +573,7 @@ const Map: React.FC = () => {
                     onClose={() => setIsModalVisible(false)}
                     reservationDetails={reservationDetails}
                 />
-            )}
-            {/* ✅ 결제 성공 시에만 ReservationOKModal 렌더링 */}
-            {isModal2Visible && <ReservationOKModal onClose={() => setIsModal2Visible(false)} reservationDetails={reservationDetails} />}
+            )}            
         </div>
     );
 };

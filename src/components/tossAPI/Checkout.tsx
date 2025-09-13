@@ -91,7 +91,7 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
                 orderId: uniqueOrderId,
                 orderName: "전기차 충전소 예약",
                 // 💡 successUrl에 paymentKey와 orderId를 쿼리 파라미터로 포함
-                successUrl: `${window.location.origin}${location.pathname}?orderId=${uniqueOrderId}&paymentKey=${payRandomNum}`,
+                successUrl: `${window.location.origin}/success`,
                 failUrl: window.location.origin + "/fail",
                 customerEmail: "customer123@gmail.com",
                 customerName: "김토스",
