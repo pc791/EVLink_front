@@ -1,8 +1,12 @@
 // src/auth/AuthProvider.tsx
 import axios from 'axios';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
-const BASE_URL = 'http://localhost:8080/TeamCProject_final';
+const BASE_URL = 'http://localhost:8080/TeamCproject_final';
+
+//  첫 요청 전에 적용되도록 파일 최상단에서 설정
+axios.defaults.baseURL = BASE_URL;
+axios.defaults.withCredentials = true;
 
 interface AuthVO {
   isLoggedIn: boolean;
@@ -10,9 +14,7 @@ interface AuthVO {
   name?: string;
   provider?: string;
   profileImage?: string;
-  token?: string;
 }
-
 type Provider = 'google' | 'kakao' | 'naver';
 
 interface AuthCtx {
@@ -21,7 +23,7 @@ interface AuthCtx {
   loginWithProvider: (p: Provider) => Promise<void>;
   checkLogin: () => Promise<void>;
   logout: () => Promise<void>;
-  passwordless: (id: string) => Promise<void>; // ← 필수로 선언
+  passwordless: (id: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthCtx | undefined>(undefined);
@@ -29,61 +31,52 @@ const AuthContext = createContext<AuthCtx | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<AuthVO | null>(null);
 
-  // Axios 기본 설정
-  axios.defaults.baseURL = BASE_URL;
-  axios.defaults.withCredentials = true;
-
   // 세션 확인
-  const checkLogin = async (): Promise<void> => {
+  const checkLogin = useCallback(async () => {
     try {
       const { data } = await axios.get<AuthVO>('/api/auth/session');
-      setProfile(data.isLoggedIn ? data : null);
+      setProfile(data?.isLoggedIn ? data : null);
     } catch {
       setProfile(null);
     }
+  }, []);
+
+  // 소셜 로그인 시작 (서버 OAuth 엔드포인트로 이동)
+  const loginWithProvider = async (provider: Provider) => {
+    window.location.assign(`${BASE_URL}/oauth2/authorization/${provider}`);
   };
 
-  // 소셜 로그인 시작
-const loginWithProvider = async (provider: Provider): Promise<void> => {
-  window.location.assign(`${BASE_URL}/oauth2/authorization/${provider}`);
-};
+  // 로그아웃 후 즉시 세션 재확인
+  const logout = useCallback(async () => {
+    try { await axios.post('/api/auth/logout'); } catch {}
+    await checkLogin();
+  }, [checkLogin]);
 
-
-  // 로그아웃
-  const logout = async (): Promise<void> => {
-    await axios.post('/api/auth/logout').catch(() => {});
-    setProfile(null);
-  };
-
-  // 패스워드리스 (엔드포인트는 서버에 맞게 유지)
-  const passwordless = async (id: string): Promise<void> => {
+  // 선택: 패스워드리스
+  const passwordless = async (id: string) => {
     try {
-      await axios.post('/login/login', {
+      await axios.post('/login/Login', {
         id,
         redirectUri: window.location.origin + '/auth/callback',
       });
       alert('로그인 링크를 보냈습니다. 메일함을 확인하세요.');
-    } catch (e) {
+    } catch {
       alert('로그인 링크 요청 실패');
     }
   };
 
+  // 앱 시작/포커스 시 세션 동기화
   useEffect(() => {
     void checkLogin();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const onVisible = () => { if (document.visibilityState === 'visible') void checkLogin(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [checkLogin]);
+
+  const isLoggedIn = !!profile?.isLoggedIn;
 
   return (
-    <AuthContext.Provider
-      value={{
-        profile,
-        isLoggedIn: !!profile?.isLoggedIn,
-        loginWithProvider,
-        checkLogin,
-        logout,
-        passwordless,
-      }}
-    >
+    <AuthContext.Provider value={{ profile, isLoggedIn, loginWithProvider, checkLogin, logout, passwordless }}>
       {children}
     </AuthContext.Provider>
   );
