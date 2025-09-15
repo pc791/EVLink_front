@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "8IaYRnOelr82w70MVDr3t";
 
-export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (paymentData: any) => void; }) {
+export function CheckoutPage({ value }: { value: number; }) {
   const [amount, setAmount] = useState({
     currency: "KRW",
     value: value,
@@ -64,7 +64,6 @@ export function CheckoutPage({ value, onSuccess }: { value: number; onSuccess: (
     if (widgets == null) {
       return;
     }
-
     widgets.setAmount(amount);
   }, [widgets, amount]);
 

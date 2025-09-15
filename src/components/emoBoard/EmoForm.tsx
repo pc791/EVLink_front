@@ -3,12 +3,12 @@ import { Form, Input, Button, Typography, Space, message } from 'antd';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import style from './qna.module.css'
-import { QnaVO, VO } from './qnaData';
+import style from './emo.module.css'
+import { QnaVO, VO } from './emoData';
 
 const { Title } = Typography;
 
-const QnaForm: React.FC = () => {
+const EmoForm: React.FC = () => {
   const [enable, setEnable] = useState(true);
   const [data, setData] = useState<VO>()
   const [emotion, setEmotion] = useState('');
@@ -48,7 +48,7 @@ const QnaForm: React.FC = () => {
 
   const fetchAI = async () => {
     try {
-      const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
+      const response = await axios.post("http://192.168.0.80:9000/restapi/emotion", {
         text: formData.content,
       });
       console.log(response);
@@ -163,4 +163,4 @@ const QnaForm: React.FC = () => {
 };
 
 
-export default QnaForm;
+export default EmoForm;

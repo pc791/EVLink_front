@@ -160,3 +160,7 @@ const cpTpMap: Record<string, string> = {
 //     };
 //   }),
 // ];
+export interface PaymentInfo {
+  paymentKey: string | null;
+  orderId: string | null;
+}

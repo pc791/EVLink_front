@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { QnaVO, VO } from './qnaData';
+import { QnaVO, VO } from './emoData';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 
-import style from './qna.module.css'
+import style from './emo.module.css'
 import { Card, Descriptions, Typography, Button, Space, message, Divider } from 'antd';
 
 
 
 const { Title, Paragraph } = Typography;
 
-const QnaDetail: React.FC = () => {
+const EmoDetail: React.FC = () => {
     const [upboard, setUpboard] = useState<QnaVO | null>(null);
     const [data, setData] = useState<VO>()
     const { board_id } = useParams<{ board_id: string }>();
@@ -29,7 +29,7 @@ const QnaDetail: React.FC = () => {
                 setUpboard(resp.data);
 
                 // 2) 감정 분석 요청 (resp.data.content 사용)
-                const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
+                const response = await axios.post("http://3.34.69.170:9000/mykobert/mytransformers", {
                     text: resp.data.content,
                 });
                 console.log(response.data);
@@ -132,6 +132,6 @@ const QnaDetail: React.FC = () => {
     );
 };
 
-export default QnaDetail;
+export default EmoDetail;
 
 

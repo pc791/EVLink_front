@@ -1,0 +1,117 @@
+.savelistcontainer {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 30px 20px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.savelisttitle {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.container {
+  margin: 20px;
+  width: 100%;
+  border: 1px solid #D5D5D5;
+  border-radius: 6px;
+  background-color: white;
+  padding: 30px;
+}
+
+.savetable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.savetable th,
+.savetable td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.savetable th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.savelink:hover {
+  background-color: #f9f9f9;
+}
+
+.savelink a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.savelink a:hover {
+  text-decoration: underline;
+}
+
+.button {
+  display: inline-block;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #218838;
+}
+
+select,
+input[type="text"] {
+  padding: 6px 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+  cursor: pointer;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+}
+
+.pagination {
+  margin-top: 20px;
+}
+
+.page-item .page-link {
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 6px 12px;
+  margin: 0 3px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.page-item.active .page-link {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
