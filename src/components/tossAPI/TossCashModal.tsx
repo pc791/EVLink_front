@@ -94,7 +94,6 @@ const TossCashModal: React.FC<TossCashModalProps> = ({ onClose, reservationDetai
           <hr />
           <CheckoutPage
             value={Number(reservationDetails.resPayTotalHour)}
-            onSuccess={handlePaymentSuccess}
           />
         </div>
       </div>

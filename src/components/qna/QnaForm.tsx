@@ -48,7 +48,7 @@ const QnaForm: React.FC = () => {
 
   const fetchAI = async () => {
     try {
-      const response = await axios.post("http://192.168.0.80:9000/restapi/emotion", {
+      const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
         text: formData.content,
       });
       console.log(response);

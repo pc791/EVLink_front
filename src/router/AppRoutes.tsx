@@ -21,6 +21,9 @@ import { FailPage } from '../components/tossAPI/FailPage'
 import QnaList from '../components/qna/QnaList'
 import QnaForm from '../components/qna/QnaForm'
 import QnaDetail from '../components/qna/QnaDetail'
+import EmoList from '../components/emoBoard/EmoList'
+import EmoForm from '../components/emoBoard/EmoForm'
+import EmoDetail from '../components/emoBoard/EmoDetail'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -50,6 +53,9 @@ const AppRoutes: React.FC = () => {
         { path: '/board', element: <QnaList />},
         { path: '/board/form', element: <QnaForm />},
         { path: '/board/detail/:board_id', element: <QnaDetail />},
+        { path: '/emoboard', element: <EmoList/>},
+        { path: '/emoboard/form', element: <EmoForm />},
+        { path: '/emoboard/detail/:emo_id', element: <EmoDetail />},
     ]
     
     

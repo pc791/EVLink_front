@@ -108,7 +108,8 @@ const Header: React.FC = () => {
                                 <NavLink to="/event" className={styles['secondary-nav-item']}>이벤트</NavLink>
                                 <NavLink to="/notice" className={styles['secondary-nav-item']}>공지사항</NavLink>
                                 <NavLink to="/faq" className={styles['secondary-nav-item']}>FAQ</NavLink>
-                                <NavLink to="/board" className={styles['secondary-nav-item']}>자유게시판</NavLink>
+                                <NavLink to="/board" className={styles['secondary-nav-item']}>이용후기(AI)</NavLink>
+                                <NavLink to="/emoboard" className={styles['secondary-nav-item']}>커뮤니티(AI)</NavLink>
                             </div>
                         </div>
                     </div>
