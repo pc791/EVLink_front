@@ -1,5 +1,5 @@
 import React, { JSX } from 'react'
-import { useAuth } from './AuthProvider';
+import { useAuth } from 'auth/AuthProvider';
 import { Navigate, useLocation } from 'react-router-dom';
 
 /* <RequireAuth>

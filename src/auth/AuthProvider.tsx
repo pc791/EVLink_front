@@ -1,129 +1,89 @@
+// src/auth/AuthProvider.tsx
 import axios from 'axios';
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { BASE_URL } from './constants';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import  { BASE_URL } from 'auth/constants';
+// const BASE_URL = 'http://localhost:8080/EVLink_backend-main';
 
-interface User {
-  usercode: number;
-  id: string;
-  uname: string;
-  img: string;
-  currentTime: string;
-  currentMonth: string;
-  memostatus: number;
-}
+//  첫 요청 전에 적용되도록 파일 최상단에서 설정
+axios.defaults.baseURL = BASE_URL;
+axios.defaults.withCredentials = true;
 
-interface AuthContextProps {
-  user: User | null;
+interface AuthVO {
   isLoggedIn: boolean;
+  email?: string;
+  name?: string;
+  provider?: string;
+  profile?: string;
+}
+type Provider = 'google' | 'kakao' | 'naver';
+
+interface AuthCtx {
+  profile: AuthVO | null;
+  isLoggedIn: boolean;
+  loginWithProvider: (p: Provider) => Promise<void>;
   checkLogin: () => Promise<void>;
   logout: () => Promise<void>;
-
-  // 우리가 쓰는 로그인 방식들
-  loginWithProvider: (provider: 'google' | 'naver' | 'kakao' | 'facebook') => void;
-  sendMagicLinkById: (id: string) => Promise<void>;
-
-  // 상태 업데이트 유틸
-  updateUserName: (name: string) => void;
-  updateImgName: (img: string) => void;
-  updateMemostatus: (memostatus: number) => void;
-  updateCurrentTime: (currentTime: string) => void;
-  updateCurrentMonth: (currentMonth: string) => void;
+  passwordless: (id: string) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const AuthContext = createContext<AuthCtx | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  //  소셜 로그인 시작
-  const loginWithProvider = (provider: 'google' | 'naver' | 'kakao' | 'facebook') => {
-    const redirect = encodeURIComponent(window.location.origin + '/auth/callback');
-    window.location.href = `${BASE_URL}/oauth2/authorization/${provider}?redirect_uri=${redirect}`;
-  };
-
-  // 아이디 기반 링크 passwordless
-  const sendMagicLinkById = async (id: string): Promise<void> => {
-    await axios.post(
-      `${BASE_URL}/signin/link`,
-      { id, redirectUri: window.location.origin + '/auth/callback' },
-      { withCredentials: true }
-    );
-    alert('로그인 링크를 보냈습니다. 메일함(또는 SMS)을 확인하세요.');
-  };
+  const [profile, setProfile] = useState<AuthVO | null>(null);
 
   // 세션 확인
-  const checkLogin = async (): Promise<void> => {
+  const checkLogin = useCallback(async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/signin/session`, { withCredentials: true });
-      const payload = res.data?.data ?? res.data;
-
-      if (payload?.id) {
-        setUser(payload);
-        updateUserName(payload.uname ?? payload.name ?? '');
-        updateImgName(payload.img ?? '');
-        updateMemostatus(payload.memostatus ?? 0);
-        updateCurrentTime(res.data?.currentTime ?? payload.currentTime ?? '');
-        updateCurrentMonth(res.data?.currentMonth ?? payload.currentMonth ?? '');
-      } else {
-        setUser(null);
-        updateUserName('');
-        updateImgName('');
-        updateMemostatus(0);
-        updateCurrentTime('');
-        updateCurrentMonth('');
-      }
+      const { data } = await axios.get<AuthVO>('/api/auth/session');
+      setProfile(data?.isLoggedIn ? data : null);
     } catch {
-      setUser(null);
-      updateUserName('');
-      updateImgName('');
-      updateMemostatus(0);
-      updateCurrentTime('');
-      updateCurrentMonth('');
+      setProfile(null);
+    }
+  }, []);
+
+  // 소셜 로그인 시작 (서버 OAuth 엔드포인트로 이동)
+  const loginWithProvider = async (provider: Provider) => {
+    window.location.assign(`${BASE_URL}/oauth2/authorization/${provider}`);
+  };
+
+  // 로그아웃 후 즉시 세션 재확인
+  const logout = useCallback(async () => {
+    try { await axios.post('/api/auth/logout'); } catch {}
+    await checkLogin();
+  }, [checkLogin]);
+
+  // 선택: 패스워드리스
+  const passwordless = async (id: string) => {
+    try {
+      await axios.post('/login/Login', {
+        id,
+        redirectUri: window.location.origin + '/auth/callback',
+      });
+      alert('로그인 링크를 보냈습니다. 메일함을 확인하세요.');
+    } catch {
+      alert('로그인 링크 요청 실패');
     }
   };
 
+  // 앱 시작/포커스 시 세션 동기화
   useEffect(() => {
-    checkLogin();
-  }, []);
+    void checkLogin();
+    const onVisible = () => { if (document.visibilityState === 'visible') void checkLogin(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [checkLogin]);
 
-  // 로그아웃
-  const logout = async (): Promise<void> => {
-    await axios.get(`${BASE_URL}/signin/dosignout`, { withCredentials: true });
-    setUser(null);
-  };
-
-  // 상태 업데이트 유틸 함수들
-  const updateUserName = (uname: string) => setUser(prev => (prev ? { ...prev, uname } : prev));
-  const updateImgName = (img: string) => setUser(prev => (prev ? { ...prev, img } : prev));
-  const updateMemostatus = (memostatus: number) => setUser(prev => (prev ? { ...prev, memostatus } : prev));
-  const updateCurrentTime = (currentTime: string) => setUser(prev => (prev ? { ...prev, currentTime } : prev));
-  const updateCurrentMonth = (currentMonth: string) => setUser(prev => (prev ? { ...prev, currentMonth } : prev));
-
-  const isLoggedIn = user !== null;
+  const isLoggedIn = !!profile?.isLoggedIn;
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoggedIn,
-        checkLogin,
-        logout,
-        loginWithProvider,   // sns 
-        sendMagicLinkById,   // passwordless
-        updateUserName,
-        updateImgName,
-        updateMemostatus,
-        updateCurrentTime,
-        updateCurrentMonth,
-      }}
-    >
+    <AuthContext.Provider value={{ profile, isLoggedIn, loginWithProvider, checkLogin, logout, passwordless }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('AuthContext는 AuthProvider 안에서만 사용해야 합니다.');
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth는 AuthProvider 내부에서만 사용하세요.');
+  return ctx;
 };

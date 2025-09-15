@@ -1,4 +1,5 @@
 {
+  
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -6,6 +7,10 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": "src",
+    "paths": {
+      "auth/*": ["auth/*"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

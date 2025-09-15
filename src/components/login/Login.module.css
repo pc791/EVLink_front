@@ -1,0 +1,315 @@
+/* ===========================
+   Login.module.css (FULL DROP-IN)
+   - JSX 변경 없음 (.imageButton + <img class="imgFit" />)
+   - 로고 이미지가 버튼 크기에 '완전히' 맞게 채워짐
+   - 텍스트 중앙 정렬 완벽 구현
+   =========================== */
+
+/* 페이지 컨테이너(옵션) */
+.container {
+  min-height: 100vh;
+  color: white;
+  margin-top: 0;
+  padding-top: 0;
+  overflow-x: hidden;
+}
+
+/* 팔레트 (페이지/카드용) */
+:root {
+  --bg: #f9fafb;
+  --beige-light: #f7f3ef;
+  --beige-mid:   #f0eae2;
+  --card-bg:     #fdf8f3;
+  --border:      #e6ded3;
+  --text-main:   #1a1a1a;
+  --text-sub:    #666;
+  --btn-bg:      #f7f5f2;
+  --btn-border:  #d9d2c7;
+  --btn-hover:   #efe8dd;
+}
+
+/* 배경 */
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(
+    to right,
+    var(--beige-light) 0%,
+    var(--beige-mid) 60%,
+    rgba(240, 234, 226, 0.9) 100%
+  );
+}
+
+/* 카드: 가로 좁게, 높이 적당히 */
+.card {
+  background: var(--card-bg);
+  padding: 28px 24px;
+  max-width: 420px;
+  width: 100%;
+  min-height: 460px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* 제목 */
+.title {
+  width: 100%;
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.2px;
+}
+
+/* 공통 폭 라인: 가로폭 축소 */
+.lane,
+.divider,
+.socialCol,
+.actions {
+  width: 70%;
+  max-width: 300px;
+  min-width: 240px;
+  margin: 0 auto;
+}
+
+/* 텍스트 버튼 (패스워드리스) */
+.textButton {
+  width: 100%;
+  height: 48px;
+  border: 1px solid var(--btn-border);
+  border-radius: 12px;
+  background: var(--btn-bg);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: background 0.2s, border-color 0.2s, transform 0.02s, box-shadow 0.2s;
+  box-shadow: 0 1.5px 2px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.textButton:hover { 
+  background: var(--btn-hover); 
+  border-color: #c9bfb3; 
+}
+
+.textButton:active { 
+  transform: translateY(1px); 
+}
+
+.textButton:focus-visible {
+  outline: 2px solid #c9bfb3;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(201, 191, 179, 0.25);
+}
+
+/* 구분선 */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 12px auto;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
+.dividerText {
+  margin: 0 8px;
+  font-size: 15px;
+  color: var(--text-sub);
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* 소셜 섹션 */
+.socialCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ================================
+   소셜 버튼 & 로고 - 완벽한 중앙 정렬
+   - 버튼 높이 고정, 로고가 버튼을 '완전히' 덮도록
+   - 비율 유지 + 정확히 중앙 (object-fit: cover)
+   - 텍스트 중앙 정렬 완벽 구현
+   ================================ */
+.imageButton {
+  width: 100%;
+  height: 48px;                     /* 버튼 높이 고정 */
+  border: 1px solid var(--btn-border);
+  border-radius: 12px;
+  background: transparent;          /* 이미지에 색 있음 */
+  padding: 0;
+  overflow: hidden;                 /* 넘치는 부분은 깔끔히 잘라냄 */
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.02s, filter 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.imageButton:hover { 
+  filter: brightness(0.98); 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06); 
+}
+
+.imageButton:active { 
+  transform: translateY(1px); 
+}
+
+/* 로고: 버튼 박스를 '완전히' 채움 - cover로 비율 유지하며 완전 채움 */
+.imgFit {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;                /* 비율 유지 + 완전 채움(필요시 가장자리 일부 크롭) */
+  object-position: center center;   /* 정확히 정중앙 */
+  transform-origin: center center;
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
+}
+
+/* ===== 브랜드별 최적화 =====
+   - 각 브랜드별로 최적의 크기와 위치 조정 */
+.imageButton img[src*="google"],
+.imageButton img[alt*="Google"] {
+  transform: scale(1.1);            /* Google 로고 최적화 */
+  object-fit: cover;
+}
+
+.imageButton img[src*="kakao"],
+.imageButton img[alt*="Kakao"] {
+  transform: scale(1.05);           /* Kakao 로고 최적화 */
+  object-fit: cover;
+}
+
+.imageButton img[src*="naver"],
+.imageButton img[alt*="Naver"] {
+  transform: scale(1.08);           /* Naver 로고 최적화 */
+  object-fit: cover;
+}
+
+/* 프로필(옵션) */
+.profileRow { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  width: 100%; 
+}
+
+.avatar {
+  width: 48px; 
+  height: 48px; 
+  border-radius: 50%;
+  object-fit: cover; 
+  border: 1px solid var(--border); 
+  background: #fff;
+}
+
+.profileInfo { 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.profileMeta { 
+  font-size: 14px; 
+  color: var(--text-sub); 
+}
+
+/* 하단 버튼 그룹 */
+.actions { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px; 
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .card {
+    min-height: 440px;
+    padding: 22px 18px;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+  
+  .title { 
+    font-size: 22px; 
+  }
+  
+  .lane, .divider, .socialCol, .actions {
+    width: 88%;
+    min-width: auto;
+  }
+  
+  .textButton { 
+    height: 46px; 
+    font-size: 15px; 
+  }
+  
+  .imageButton { 
+    height: 46px;    /* 모바일에서도 꽉 차게 유지 */
+  }
+  
+  /* 모바일에서 로고 크기 조정 */
+  .imageButton img[src*="google"],
+  .imageButton img[alt*="Google"] {
+    transform: scale(1.05);
+  }
+
+  .imageButton img[src*="kakao"],
+  .imageButton img[alt*="Kakao"] {
+    transform: scale(1.0);
+  }
+
+  .imageButton img[src*="naver"],
+  .imageButton img[alt*="Naver"] {
+    transform: scale(1.03);
+  }
+}
+
+/* 추가 최적화: 이미지가 버튼에 완벽하게 맞도록 */
+.imageButton {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* 텍스트 중앙 정렬을 위한 추가 스타일 */
+.textButton,
+.dividerText,
+.title {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 로그인 완료 메시지 */
+.page > div:last-child {
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-main);
+  font-weight: 600;
+}
