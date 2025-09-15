@@ -13,16 +13,15 @@ interface ReservationModalProps {
     resAddr: string;
     resPayTotalHour: string;
   };
-  주문함 : PaymentInfo;
 }
 
-const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails, 주문함 }) => {
+const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservationDetails }) => {
   console.log(reservationDetails)
   const [resNm, setResNm] = useState('');
   const [resTel, setResTel] = useState('');
   const [resEmail, setResEmail] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [order, setOrder] = useState(주문함)
+  const [order, setOrder] = useState()
   // TossCashModal에 전달할 사용자 정보 객체
   const resInfo = { resNm, resTel, resEmail };
   
@@ -69,13 +68,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
       onClose();
     }
   };
-  useEffect(() => {
-    if(order.orderId !== ""){
-    handlePaymentSuccess(order)
-    }else {
-      console.error("서버로 전송을 못함 ㅠㅠ")
-    }
-  },[order])
 
   return (
     <div className="modal-overlay">

@@ -9,6 +9,17 @@ export interface QnaVO {
   emotion?: string;
   score?: number;
 }
+export interface EmotionVO {
+  emo_id?: number;
+  title: string;
+  user_id: string;
+  content: string;
+  hit?: number;
+  reg_dt?: string;
+  upd_dt?: string;
+  emotion?: string;
+  score?: number;
+}
 export interface VO {
     count: number;
     results: [{
@@ -24,7 +35,6 @@ export interface EmotionProb {
 }
 
 export interface EmoVO {
-  ok: boolean;
   text: string;
   label_index: number;
   label_en: string;

@@ -10,10 +10,10 @@ export interface QnaVO {
   score?: number;
 }
 export interface VO {
-    count: number;
-    results: [{
-        pred_index: number,
-        pred_label: string,
-        probabilities: number[]
-    }];
+  count: number;
+  results: [{
+    pred_index: number,
+    pred_label: string,
+    probabilities: number[]
+  }];
 }

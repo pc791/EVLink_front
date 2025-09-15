@@ -55,7 +55,7 @@ const AppRoutes: React.FC = () => {
         { path: '/board/detail/:board_id', element: <QnaDetail />},
         { path: '/emoboard', element: <EmoList/>},
         { path: '/emoboard/form', element: <EmoForm />},
-        { path: '/emoboard/detail/:board_id', element: <EmoDetail />},
+        { path: '/emoboard/detail/:emo_id', element: <EmoDetail />},
     ]
     
     

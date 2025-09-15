@@ -46,10 +46,16 @@ const QnaDetail: React.FC = () => {
 
     const handleDeleteClick = async () => {
         if (!upboard) return;
+        const result = window.confirm("정말 삭제하시겠습니까?");
+        if (result) {
+            console.log("사용자가 확인 눌렀음");
+        } else {
+            console.log("사용자가 취소 눌렀음");
+        }
         try {
-            await axios.get(`http://192.168.0.133:81/board/detail?board_id=${id}`);
+            await axios.get(`http://192.168.0.133:81/board/delete?board_id=${id}`);
             message.success('삭제되었습니다.');
-            navigate('/faq/qna');
+            navigate('/board');
         } catch (error) {
             console.error('삭제 오류:', error);
             message.error('삭제에 실패했습니다.');

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Typography, Space, message } from 'antd';
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { Legend, Pie, PieChart, ResponsiveContainer, Sector, SectorProps } from 'recharts';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import style from './emo.module.css'
-import { QnaVO, VO } from './emoData';
+import { EmotionProb, EmoVO, QnaVO } from './emoData';
 
 const { Title } = Typography;
 
 const EmoForm: React.FC = () => {
   const [enable, setEnable] = useState(true);
-  const [data, setData] = useState<VO>()
+  const [data, setData] = useState<EmoVO>()
   const [emotion, setEmotion] = useState('');
-  const [score, setScore] = useState('');
+  const [predProb, setPredProb] = useState('');
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
@@ -34,10 +34,9 @@ const EmoForm: React.FC = () => {
     data.append('user_id', formData.user_id);
     data.append('content', formData.content);
     data.append('emotion', emotion);
-    data.append('score', score?.toString());
 
     try {
-      await axios.post('http://192.168.0.133:81/EvLink/board/insert', data);
+      await axios.post('http://192.168.0.133:81/EvLink/emotion/insert', data);
       message.success('글이 등록되었습니다.');
       navigate('/board');
     } catch (error) {
@@ -46,43 +45,136 @@ const EmoForm: React.FC = () => {
     }
   };
 
+  type Coordinate = {
+    x: number;
+    y: number;
+  };
+  type PieSectorData = {
+    percent?: number;
+    name?: string | number;
+    midAngle?: number;
+    middleRadius?: number;
+    tooltipPosition?: Coordinate;
+    value?: number;
+    paddingAngle?: number;
+    dataKey?: string;
+    payload?: any;
+  };
+
+  type PieSectorDataItem = React.SVGProps<SVGPathElement> & Partial<SectorProps> & PieSectorData;
+
+  const renderActiveShape = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+    percent,
+    value,
+  }: PieSectorDataItem) => {
+    const RADIAN = Math.PI / 180;
+    const sin = Math.sin(-RADIAN * (midAngle ?? 1));
+    const cos = Math.cos(-RADIAN * (midAngle ?? 1));
+    const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
+    const sy = (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
+    const mx = (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
+    const my = (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? 'start' : 'end';
+
+    return (
+      <g>
+        <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+          {payload.name}
+        </text>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <Sector
+          cx={cx}
+          cy={cy}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          innerRadius={(outerRadius ?? 0) + 6}
+          outerRadius={(outerRadius ?? 0) + 10}
+          fill={fill}
+        />
+        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`PV, ${value?.toFixed(3)}`}</text>
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+          {`(${((percent ?? 1) * 100).toFixed(2)}%)`}
+        </text>
+      </g>
+    );
+  };
+
+  const hangle2emotion = ( emotion : string) => {
+    if(emotion === "Angry"){
+      return "짜증남"
+    }else if(emotion === "Fear"){
+      return "무서움"
+    }else if(emotion === "Happy"){
+      return "행복함"
+    }else if(emotion === "Tender"){
+      return "다정함"
+    }else if(emotion === "Sad"){
+      return "슬픔"
+    }
+  }
   const fetchAI = async () => {
     try {
-      const response = await axios.post("http://192.168.0.80:9000/restapi/emotion", {
+      const response = await axios.post("http://3.34.69.170:9000/mykobert/mytransformers", {
         text: formData.content,
       });
       console.log(response);
       setData(response.data);
       setEnable(false);
-      const predLabel = response.data.results[0].pred_label || '';
-      setEmotion(predLabel);
-      const proba_score = parseFloat(response.data.results[0].probabilities[1].toFixed(3));
-      setScore(proba_score.toString());
-      console.log(proba_score);
-      console.log(score);
+      const probsObj = response.data.probs as { [key: number]: EmotionProb };
+
+      const probsArray = Object.values(probsObj); // 이제 타입이 EmotionProb[]
+      const highest = probsArray.reduce<EmotionProb>((prev, curr) => curr.prob > prev.prob ? curr : prev, { label: '', prob: 0 });
+
+      const predLabel = highest.label;
+      setPredProb((highest.prob * 100).toFixed(1)+"%");
+      setEmotion(hangle2emotion(predLabel) ?? '');
     } catch (error) {
       console.error(error);
       message.error("데이터를 불러오지 못했습니다.");
     }
   }
+  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#a4de6c"];
+  const chartData = Object.entries(data?.probs ?? {}).map(([key, emo], idx) => ({
+    name: emo.label,      // "Angry"
+    value: (emo.prob * 100),   // 0.26
+    fill: COLORS[idx % COLORS.length], // 색상 순환
+  }));
+
   useEffect(() => {
     console.log('emotion state updated:', emotion);
   }, [emotion]);
   useEffect(() => {
-    console.log('proba_score state updated:', score);
-  }, [score]);
-  useEffect(() => {
     setEnable(true);
   }, [formData.content]);
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-  const positive = data?.results.reduce((sum, result) => sum + result.probabilities[1], 0) ?? 0;
-  const negative = data?.results.reduce((sum, result) => sum + result.probabilities[0], 0) ?? 0;
+  // const positive = data?.results.reduce((sum, result) => sum + result.probabilities[1], 0) ?? 0;
+  // const negative = data?.results.reduce((sum, result) => sum + result.probabilities[0], 0) ?? 0;
 
-  const pieData = [
-    { name: '긍정적', value: positive },
-    { name: '부정적', value: negative },
-  ];
+  // const pieData = [
+  //   { name: '긍정적', value: positive },
+  //   { name: '부정적', value: negative },
+  // ];
 
   return (
     <div style={{ marginTop: '50px' }}>
@@ -114,6 +206,9 @@ const EmoForm: React.FC = () => {
             <Form.Item rules={[{ required: true }]} >
               <Input name="emotion" onChange={handleChange} value={emotion} readOnly />
             </Form.Item>
+            <Form.Item rules={[{ required: true }]} >
+              <Input name="rate" onChange={handleChange} value={predProb} readOnly />
+            </Form.Item>
             <Form.Item>
               <Space>
                 <Button type="primary" htmlType="submit" disabled={enable}>
@@ -128,31 +223,18 @@ const EmoForm: React.FC = () => {
           </Form>
         </div>
         <div className={style.container}>
-          <ResponsiveContainer width="100%" height="100%" minWidth={500} minHeight={300} >
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart width={400} height={400}>
               <Pie
-                data={pieData}
+                activeShape={renderActiveShape}
+                data={chartData}
                 cx="50%"
                 cy="50%"
-                // labelLine={true}
-                label={({ name, percent = 0 }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                innerRadius={60}
                 outerRadius={80}
-                innerRadius={50}
                 fill="#8884d8"
                 dataKey="value"
-                nameKey="name"
-              >
-                {data?.results.map((result) => (
-                  <Cell key={`cell-${result.pred_label}`} fill={COLORS[result.pred_index % COLORS.length]} />
-                ))}
-              </Pie>
-              <text
-                x="50%"
-                y="47%"
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={15}
-              >AI 감정분석</text>
+              />
               <Legend />
             </PieChart>
           </ResponsiveContainer>

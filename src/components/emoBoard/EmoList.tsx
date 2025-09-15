@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { QnaVO } from './emoData';
+import { EmotionVO } from './emoData';
 import style from './emo.module.css'
 import { Input, Button, Select, Pagination, Space } from 'antd';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
@@ -10,7 +10,7 @@ import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 const { Option } = Select;
 
 const EmoList: React.FC = () => {
-  const [upBoardList, setUpBoardList] = useState<QnaVO[]>([]);
+  const [upBoardList, setUpBoardList] = useState<EmotionVO[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   // const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +21,7 @@ const EmoList: React.FC = () => {
 
   const fetchUpboardList = async (page: number) => {
     try {
-      const response = await axios.get('http://192.168.0.133:81/EvLink/board/list', {
+      const response = await axios.get('http://192.168.0.133:81/EvLink/emotion/list', {
         params: {
           cPage: page,
           searchType,
@@ -90,7 +90,7 @@ const EmoList: React.FC = () => {
             <Button type="primary" onClick={handleSearch}>
               검색
             </Button>
-            <Link to="/board/form">
+            <Link to="/emoboard/form">
               <Button>글쓰기</Button>
             </Link>
           </Space>
@@ -107,10 +107,10 @@ const EmoList: React.FC = () => {
               </thead>
               <tbody>
                 {upBoardList.map((item) => (
-                  <tr key={item.board_id} style={{ textAlign: 'center' }}>
-                    <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.board_id}</td>
+                  <tr key={item.emo_id} style={{ textAlign: 'center' }}>
+                    <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.emo_id}</td>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0', textAlign: 'left' }}>
-                      <Link to={`/board/detail/:${item.board_id}`} style={{ color: 'black' }}>{item.title}</Link>
+                      <Link to={`/emoboard/detail/:${item.emo_id}`} style={{ color: 'black' }}>{item.title}</Link>
                     </td>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.hit}</td>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.reg_dt}</td>
