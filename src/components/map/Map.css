@@ -336,6 +336,11 @@
   color: #fff;
 }
 
+.reserve-button:hover {
+  color: #fff;
+  background-color: #0358b3;
+}
+
 .cancel-button {
   background-color: #ccc;
   color: #333;

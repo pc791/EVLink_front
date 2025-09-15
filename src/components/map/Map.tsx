@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { fetchEvStations, ChargingStations, fetchPrivateChargers, PaymentInfo } from './EVdata';
+import { fetchEvStations, ChargingStations, fetchPrivateChargers } from './EVdata';
 import './Map.css';
 import ReservationModal from './ReservationModal';
 import Calendar from './Calendar';
@@ -7,7 +7,6 @@ import DigitalClockValue from './Timetable';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ReservationOKModal from './ReservationOKModal';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -47,11 +46,6 @@ const Map: React.FC = () => {
     const [timelineScale, setTimelineScale] = useState<number>(1440); // minutes: 1440 or 2880
     const location = useLocation();
     const [isModal2Visible, setIsModal2Visible] = useState(false);
-
-    const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
-        paymentKey: "",
-        orderId: "",
-    });
 
     const navigate = useNavigate(); // 추가
 
@@ -104,8 +98,6 @@ const Map: React.FC = () => {
             return <><img src='/images/dc_cha.png' alt='타입' width={40} /><img src='/images/dc_combo1.png' alt='타입' width={40} /><img src='/images/dc_combo2.png' alt='타입' width={40} /></>;
         }
     }
-
-    //예약 요청 함수
 
     const updateMarkersInViewport = (map: any) => {
         if (!map) return;
@@ -291,7 +283,7 @@ const Map: React.FC = () => {
                 }
 
                 const initialStation = stations[0];
-
+                
                 // 2025.09.11 load 이슈 조치
                 const centerLocation = initialStation ? new naver.maps.LatLng(initialStation.position.lat, initialStation.position.lng) : "";
                 const map = new naver.maps.Map(mapRef.current!, {
@@ -329,13 +321,6 @@ const Map: React.FC = () => {
             updateMarkersInViewport(mapInstance);
         }
     }, [mapInstance, stations]);
-    
-    useEffect(() => {
-        if (mapInstance) {
-            (window as any).naver.maps.Event.addListener(mapInstance, 'idle', () => updateMarkersInViewport(mapInstance));
-            updateMarkersInViewport(mapInstance);
-        }
-    }, [mapInstance, stations]);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
@@ -343,13 +328,10 @@ const Map: React.FC = () => {
         const orderId = urlParams.get('orderId');
 
         if (paymentKey && orderId) {
-            setPaymentInfo({
-                paymentKey: paymentKey,
-                orderId: orderId
-            });
             console.log('결제 성공! paymentKey:', paymentKey, 'orderId:', orderId);
-            setIsModalVisible(true);
+            setIsModal2Visible(true);
             // URL을 정리하여 브라우저 히스토리를 깔끔하게 유지
+            navigate(location.pathname, { replace: true });
         }
     }, [location, navigate]);
 
@@ -470,7 +452,7 @@ const Map: React.FC = () => {
 
     return (
         <div className="container">
-            {/* <div className="container" onMouseUp={handleDragEnd}> */}
+        {/* <div className="container" onMouseUp={handleDragEnd}> */}
             <div className="search-bar">
                 <input
                     type="text"
@@ -539,8 +521,8 @@ const Map: React.FC = () => {
                             {/* 시간을 DigitalClockValue로 선택하면 startChargeTime / endChargeTime이 업데이트됩니다. */}
                             <div style={{ margin: 'auto' }}>
                                 <DigitalClockValue
-                                    onChangeStart={(time) => {setStartChargeTime(time); console.log(startChargeTime)}}
-                                    onChangeEnd={(time) => {setEndChargeTime(time); console.log(endChargeTime)}}
+                                    onChangeStart={(time) => setStartChargeTime(time)}
+                                    onChangeEnd={(time) => setEndChargeTime(time)}
                                 />
                             </div>
                             <div className="time-bar-container">
@@ -587,13 +569,11 @@ const Map: React.FC = () => {
                 </div>
             </div>
             {isModalVisible && (
-                <ReservationModal 주문함={paymentInfo}
+                <ReservationModal
                     onClose={() => setIsModalVisible(false)}
                     reservationDetails={reservationDetails}
                 />
-            )}
-            {/* ✅ 결제 성공 시에만 ReservationOKModal 렌더링 */}
-            {/* {isModal2Visible && <ReservationOKModal  onClose={() => setIsModal2Visible(false)} reservationDetails={reservationDetails} />} */}
+            )}            
         </div>
     );
 };

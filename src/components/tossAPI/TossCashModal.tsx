@@ -80,14 +80,14 @@ const TossCashModal: React.FC<TossCashModalProps> = ({ onClose, reservationDetai
             </div>
             <div className="info-item">
               <label>예약 시간</label>
-              <span>{reservationDetails.resStartTime}~{reservationDetails.resEndTime}</span>
+              <span>{reservationDetails.resStartTime}시 ~{reservationDetails.resEndTime}시</span>
             </div>
             <div className="info-item">
               <label>충전소명</label>
               <span>{reservationDetails.resAddr}</span>
             </div>
             <div className="info-item">
-              <label>금액</label>
+              <label>결제금액</label>
               <span>{reservationDetails.resPayTotalHour}원</span>
             </div>
           </div>

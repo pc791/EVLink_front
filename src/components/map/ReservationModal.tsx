@@ -6,7 +6,7 @@ import { PaymentInfo } from './EVdata';
 interface ReservationModalProps {
   onClose: () => void;
   reservationDetails: {
-    chargerId : number;
+    chargerId: number;
     resDate: string;
     resStartTime: string;
     resEndTime: string;
@@ -135,6 +135,18 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
                 alert('예약자 정보를 모두 입력해주세요.');
                 return;
               }
+              // 1. 예약 및 결제 정보 객체 생성
+              const fullReservationData = {
+                ...reservationDetails,
+                resNm,
+                resTel,
+                resEmail,
+              };
+
+              // 2. 세션 스토리지에 저장 (문자열로 변환)
+              sessionStorage.setItem('reservationData', JSON.stringify(fullReservationData));
+
+              // 3. TossCashModal 렌더링
               setIsModalVisible(true);
             }}
           >
@@ -142,7 +154,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, reservatio
         </div>
         {isModalVisible && (
           <TossCashModal
-            onClose={() => {console.log("토스 모달 닫아버리기."); setIsModalVisible(false)}}
+            onClose={() => { console.log("토스 모달 닫아버리기."); setIsModalVisible(false) }}
             reservationDetails={reservationDetails}
             resInfo={resInfo}
           />
