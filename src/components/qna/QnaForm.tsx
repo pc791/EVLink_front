@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Typography, Space, message } from 'antd';
+import { Form, Input, Button, Space, message } from 'antd';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import style from './qna.module.css'
 import { QnaVO, VO } from './qnaData';
 
-const { Title } = Typography;
+
 
 const QnaForm: React.FC = () => {
   const [enable, setEnable] = useState(true);
@@ -39,7 +39,7 @@ const QnaForm: React.FC = () => {
     try {
       await axios.post('http://192.168.0.133:81/EvLink/board/insert', data);
       message.success('글이 등록되었습니다.');
-      navigate('/board');
+      navigate('/review');
     } catch (error) {
       console.error('등록 실패:', error);
       message.error('등록 중 오류가 발생했습니다.');
@@ -50,7 +50,7 @@ const QnaForm: React.FC = () => {
     try {
       const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
         text: formData.content,
-      });
+      },{withCredentials:false});
       console.log(response);
       setData(response.data);
       setEnable(false);
@@ -120,7 +120,7 @@ const QnaForm: React.FC = () => {
                   등록하기
                 </Button>
                 <Button onClick={fetchAI}>AI 감정분석</Button>
-                <Link to="/board">
+                <Link to="/review">
                   <Button>취소</Button>
                 </Link>
               </Space>

@@ -21,7 +21,7 @@ const EmoList: React.FC = () => {
 
   const fetchUpboardList = async (page: number) => {
     try {
-      const response = await axios.get('http://192.168.0.133:81/EvLink/emotion/list', {
+      const response = await axios.get('http://192.168.0.133:80/evlink/emotion/list', {
         params: {
           cPage: page,
           searchType,

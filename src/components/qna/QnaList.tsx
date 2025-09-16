@@ -90,7 +90,7 @@ const QnaList: React.FC = () => {
             <Button type="primary" onClick={handleSearch}>
               검색
             </Button>
-            <Link to="/board/form">
+            <Link to="/review/form">
               <Button>글쓰기</Button>
             </Link>
           </Space>
@@ -110,7 +110,7 @@ const QnaList: React.FC = () => {
                   <tr key={item.board_id} style={{ textAlign: 'center' }}>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.board_id}</td>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0', textAlign: 'left' }}>
-                      <Link to={`/board/detail/:${item.board_id}`} style={{ color: 'black' }}>{item.title}</Link>
+                      <Link to={`/review/detail/:${item.board_id}`} style={{ color: 'black' }}>{item.title}</Link>
                     </td>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.hit}</td>
                     <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.reg_dt}</td>

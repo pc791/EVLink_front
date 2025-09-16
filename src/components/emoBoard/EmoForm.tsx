@@ -36,7 +36,7 @@ const EmoForm: React.FC = () => {
     data.append('emotion', emotion);
 
     try {
-      await axios.post('http://192.168.0.133:81/EvLink/emotion/insert', data);
+      await axios.post('http://192.168.0.133:80/evlink/emotion/insert', data);
       message.success('글이 등록되었습니다.');
       navigate('/board');
     } catch (error) {
@@ -137,7 +137,7 @@ const EmoForm: React.FC = () => {
     try {
       const response = await axios.post("http://3.34.69.170:9000/mykobert/mytransformers", {
         text: formData.content,
-      });
+      },{withCredentials:false});
       console.log(response);
       setData(response.data);
       setEnable(false);
@@ -215,7 +215,7 @@ const EmoForm: React.FC = () => {
                   등록하기
                 </Button>
                 <Button onClick={fetchAI}>AI 감정분석</Button>
-                <Link to="/board">
+                <Link to="/emoboard">
                   <Button>취소</Button>
                 </Link>
               </Space>

@@ -9,7 +9,7 @@ import { Card, Descriptions, Typography, Button, Space, message, Divider } from 
 
 
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 const QnaDetail: React.FC = () => {
     const [upboard, setUpboard] = useState<QnaVO | null>(null);
@@ -31,7 +31,7 @@ const QnaDetail: React.FC = () => {
                 // 2) 감정 분석 요청 (resp.data.content 사용)
                 const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
                     text: resp.data.content,
-                });
+                },{withCredentials:false});
                 console.log(response.data);
                 setData(response.data);
             } catch (error) {
@@ -53,9 +53,9 @@ const QnaDetail: React.FC = () => {
             console.log("사용자가 취소 눌렀음");
         }
         try {
-            await axios.get(`http://192.168.0.133:81/board/delete?board_id=${id}`);
+            await axios.get(`http://192.168.0.133:81/EvLink/board/delete?board_id=${id}`);
             message.success('삭제되었습니다.');
-            navigate('/board');
+            navigate('/review');
         } catch (error) {
             console.error('삭제 오류:', error);
             message.error('삭제에 실패했습니다.');
