@@ -4,9 +4,9 @@
   /* background-color: #c7cddf; */
   display: flex;
   flex-direction: column;
-  height: 98vh;
+  height: 100vh;
   padding: 10px;
-  padding-top: 70px;
+  padding-top: 100px;
   box-sizing: border-box;
   width: 100%;
   max-width: none

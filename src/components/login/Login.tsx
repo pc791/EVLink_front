@@ -20,12 +20,13 @@ export default function Login() {
     return (
       <div className={styles.page}>
         <div className={styles.card}>
-          <h2 className={styles.title}>Login</h2>
+          <h2 className={styles.title}>로그인</h2>
 
           {/* 패스워드리스 */}
           <div className={styles.lane}>
             <button className={styles.textButton} onClick={() => navigate("/passwordLess")}>
-              Passwordless
+              <img src="/images/passwordless.png" alt="패스워드리스 로그인" style={{width: '70px', height: '50px', marginRight: '5px'}} />
+              <label style={{fontSize: '18px'}}>패스워드리스 로그인</label>
             </button>
           </div>
 
@@ -43,10 +44,10 @@ export default function Login() {
             <button className={styles.imageButton} onClick={() => loginWithProvider('kakao')}>
               <img src="/images/kakao_login.png" alt="Kakao 로그인" className={styles.imgFit} />
             </button>
-
-            <button className={styles.imageButton} onClick={() => loginWithProvider('naver')}>
+            
+            {/* <button className={styles.imageButton} onClick={() => loginWithProvider('naver')}>
               <img src="/images/naver_login.png" alt="Naver 로그인" className={styles.imgFit} />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

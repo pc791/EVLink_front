@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './Header.module.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
-import ChatPanel from 'components/home/ChatAI';
+import ChatPanel from '../components/home/ChatAI';
 import AssistantIcon from '@mui/icons-material/Assistant';
 
 const Header: React.FC = () => {
@@ -161,14 +161,14 @@ const handleLogout = async () => {
           <div className={styles['right-section']}>
             {!isLoggedIn ? (
               <div className={styles['right-buttons']}>
-                <button className={styles['login-button']} onClick={handleLogin}>Login</button>
+                <button className={styles['login-button']} onClick={handleLogin}>로그인</button>
               </div>
             ) : (
               <div className={styles['right-buttons']}>
                 <div className={styles['user-section']}>
                   {/* 순서: 내정보(👤) → 알림(🔔) → Logout */}
                   <NavLink to="/mypage" className={styles['my-info-button']} aria-label="내 정보">👤</NavLink>
-                  <NavLink to="/mypage" className={styles['notification-button']} aria-label="알림">🔔</NavLink>
+                  {/* <NavLink to="/mypage" className={styles['notification-button']} aria-label="알림">🔔</NavLink> */}
                   <button className={styles['logout-button']} onClick={handleLogout}>Logout</button>
                 </div>
               </div>
@@ -181,23 +181,26 @@ const handleLogout = async () => {
       <div className={`${styles['secondary-nav']} ${isOpen ? styles.show : ''}`}>
         <div className={styles['secondary-nav-container']}>
           <div className={styles['secondary-nav-items']}>
-
+            {/* EV 충전소 찾기 섹션 */}
             <div className={styles['secondary-nav-section']}>
               <h3 className={styles['secondary-nav-title']}>EV 충전소 찾기</h3>
               <div className={styles['secondary-nav-links']}>
-                <NavLink to="/service" className={styles['secondary-nav-item']}>서비스안내</NavLink>
                 <NavLink to="/map" className={styles['secondary-nav-item']}>충전소찾기</NavLink>
+                <NavLink to="/service" className={styles['secondary-nav-item']}>서비스안내</NavLink>
               </div>
             </div>
 
+            {/* 사용 내역 섹션 */}
             <div className={styles['secondary-nav-section']}>
               <h3 className={styles['secondary-nav-title']}>사용 내역</h3>
-              <div className={styles['secondary-nav-links']}>
-                <NavLink to="/analysis" className={styles['secondary-nav-item']}>이용현황</NavLink>
-                <NavLink to="/reservelist" className={styles['secondary-nav-item']}>예약내역</NavLink>
-              </div>
+                <div className={styles['secondary-nav-links']}>
+                  <NavLink to="/analysis" className={styles['secondary-nav-item']}>이용현황</NavLink>
+                  <NavLink to="/reservelist" className={styles['secondary-nav-item']}>예약내역</NavLink>
+                </div>
             </div>
 
+                   
+            {/* 커뮤니티 섹션 */}
             <div className={styles['secondary-nav-section']}>
               <h3 className={styles['secondary-nav-title']}>커뮤니티</h3>
               <div className={styles['secondary-nav-links']}>

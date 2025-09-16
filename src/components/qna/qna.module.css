@@ -1,3 +1,28 @@
+/* ===== QnaList Page — Soft Blue Background (EmoBoard와 동일) ===== */
+:root{
+  --navy:      #0033A0;     /* 버튼/포인트용 */
+  --ink-900:   #0f172a;     /* 제목 */
+  --ink-800:   #1f2937;
+  --ink-700:   #334155;     /* 본문 */
+  --ink-500:   #64748b;     /* 보조 */
+  --card:      #ffffff;     /* 카드 배경 */
+  --line:      #e6ebf3;     /* 카드/테이블 보더 */
+  --thead:     #f5f7fb;     /* 테이블 헤더 */
+  --row-hover: #f8fafc;     /* 행 hover */
+}
+
+/* ✅ 페이지 전용 배경 — EmoBoard와 동일한 파스텔 블루 좌→우 그라데이션 */
+.page{
+  min-height: 110vh;
+  padding: 0 16px;
+  background: linear-gradient(
+    90deg,
+    #dce9ff 0%,    /* 왼쪽: 부드러운 연파랑 */
+    #e8f1ff 50%,   /* 중간: 아주 연한 하늘색 */
+    #f8fbff 100%   /* 오른쪽: 거의 흰색에 가까운 파스텔 블루 */
+  );
+}
+
 .savelistcontainer {
   max-width: 1000px;
   margin: 20px auto;
@@ -15,103 +40,311 @@
   color: #333;
 }
 
-.container {
-  margin: 20px;
-  width: 100%;
-  border: 1px solid #D5D5D5;
-  border-radius: 6px;
-  background-color: white;
-  padding: 30px;
+/* 메인 컨테이너 — 가로 배치 */
+.mainContainer{
+  margin:84px auto 44px;
+  width:100%;
+  max-width:2000px;               /* 가로 배치를 위해 더 넓게 */
+  min-height:740px;
+  display:flex;
+  gap:20px;
+  box-sizing:border-box;
 }
 
-.savetable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1rem;
+/* 중앙 카드 — 게시판 영역 */
+.container{
+  flex:2;
+  padding:1.6rem 1.4rem;
+  box-sizing:border-box;
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.22), 0 8px 18px rgba(0,0,0,0.12);
 }
 
-.savetable th,
-.savetable td {
-  border: 1px solid #ddd;
-  padding: 12px 15px;
-  text-align: center;
+/* 차트 컨테이너 — 감정 분석 영역 */
+.chartContainer{
+  flex:1;
+  padding:1.6rem 1.4rem;
+  box-sizing:border-box;
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.22), 0 8px 18px rgba(0,0,0,0.12);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 }
 
-.savetable th {
-  background-color: #f5f5f5;
-  font-weight: 600;
+.chartTitle{
+  margin:0 0 20px;
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:.01em;
+  color:var(--ink-900);
+  text-align:center;
+}
+
+/* 제목 — 좌측 라벨 느낌 */
+.qnatitle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 20px;
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:.01em;
+  color:var(--ink-900);
+}
+.qnatitle::before{
+  content:'';
+  display:inline-block;
+  width:6px; height:22px;
+  border-radius:4px;
+  background: linear-gradient(180deg, #8fb3ff, var(--navy));
+  box-shadow: 0 8px 18px rgba(0,51,160,.18);
+}
+
+/* 검색 섹션 */
+.searchSection{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:40px;
+  flex-wrap:wrap;
+}
+
+/* 테이블 컨테이너 — 카드만 보이게 */
+.tableContainer{ background: transparent; border: 0; }
+
+/* 테이블 */
+.qnatable{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+  border-radius:12px;
+  overflow:hidden;
+}
+.qnatable thead th{
+  background: var(--thead);
+  padding:16px 18px;
+  font-weight:900;
+  font-size:1.05rem;
+  color:var(--ink-800);
+  border-bottom:2px solid var(--line);
+  position:relative;
+}
+.qnatable thead th::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-2px;
+  height:1px;
+  background: linear-gradient(90deg, rgba(0,0,0,.04), rgba(0,0,0,0), rgba(0,0,0,.04));
+}
+.qnatable tbody tr:nth-child(even){ background:#fafcff; } /* 은은한 zebra */
+.qnatable tbody tr:hover{ background:var(--row-hover); }
+
+.qnatable td{
+  padding:16px 18px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+  vertical-align:middle;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--ink-700);
+  font-size:1.1rem;
+}
+
+/* 컬럼 정렬 */
+.qnatable th:nth-child(1), .qnatable td:nth-child(1){
+  width:10%;
+  text-align:center;
+  font-size:1.0rem;
+  color:var(--ink-500);
+}
+.qnatable th:nth-child(2){
+  width:60%;
+  text-align:center;
+  font-size:1.15rem;
+  font-weight:700;
+  color:var(--ink-900);
+}
+
+.qnatable td:nth-child(2){
+  width:60%;
+  text-align:left;
+  font-size:1.15rem;
+  font-weight:700;
+  color:var(--ink-900);
+}
+
+.qnatable th:nth-child(3), .qnatable td:nth-child(3){
+  width:15%;
+  text-align:center;
+  font-size:1.05rem;
+  color:var(--ink-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.qnatable th:nth-child(4), .qnatable td:nth-child(4){
+  width:15%;
+  text-align:center;
+  font-size:1.0rem;
+  color:var(--ink-500);
 }
 
 .savelink:hover {
-  background-color: #f9f9f9;
+  background-color: var(--row-hover);
 }
 
 .savelink a {
-  color: #007bff;
+  color: var(--ink-900);
   text-decoration: none;
 }
 
 .savelink a:hover {
-  text-decoration: underline;
+  color: var(--navy);
 }
 
 .button {
-  display: inline-block;
-  background-color: #28a745;
+  background: var(--navy);
   color: white;
-  padding: 10px 20px;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: background-color 0.3s;
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 900;
+  transition: transform .15s, filter .15s, opacity .15s;
+  box-shadow: 0 5px 14px rgba(0, 51, 160, .16);
 }
 
 .button:hover {
-  background-color: #218838;
+  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
-select,
-input[type="text"] {
-  padding: 6px 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+/* Ant Design 컴포넌트 스타일 오버라이드 */
+.searchSection .ant-select {
+  border-radius: 999px !important;
+  border: 2px solid var(--line) !important;
 }
 
-.btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
+.searchSection .ant-select:focus,
+.searchSection .ant-select-focused {
+  border-color: var(--navy) !important;
+  box-shadow: 0 6px 18px rgba(0,51,160,.18) !important;
 }
 
-.btn-warning {
-  background-color: #ffc107;
-  color: #212529;
-  cursor: pointer;
+.searchSection .ant-input {
+  border-radius: 999px !important;
+  border: 2px solid var(--line) !important;
+  padding: 12px 16px !important;
+  font-size: 1.1rem !important;
 }
 
-.btn-warning:hover {
-  background-color: #e0a800;
+.searchSection .ant-input:focus,
+.searchSection .ant-input-focused {
+  border-color: var(--navy) !important;
+  box-shadow: 0 6px 18px rgba(0,51,160,.18) !important;
 }
 
-.pagination {
-  margin-top: 20px;
+.searchSection .ant-btn-primary {
+  background: var(--navy) !important;
+  border-color: var(--navy) !important;
+  border-radius: 999px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 5px 14px rgba(0, 51, 160, .16) !important;
 }
 
-.page-item .page-link {
-  color: #007bff;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  padding: 6px 12px;
-  margin: 0 3px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s;
+.searchSection .ant-btn-primary:hover {
+  background: var(--navy) !important;
+  border-color: var(--navy) !important;
+  transform: translateY(-1px) !important;
+  filter: brightness(1.06) !important;
 }
 
-.page-item.active .page-link {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+.searchSection .ant-btn {
+  border-radius: 999px !important;
+  font-weight: 900 !important;
+}
+
+/* 페이지네이션 */
+.pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-top:40px;
+  flex-wrap:wrap;
+}
+
+/* 폼 컨테이너 */
+.formContainer{
+  margin-top:20px;
+}
+
+.emotionSection{
+  background:var(--row-hover);
+  padding:20px;
+  border-radius:12px;
+  margin:20px 0;
+  border:1px solid var(--line);
+}
+
+/* 상세 페이지 스타일 */
+.detailContent{
+  margin-top:20px;
+}
+
+.detailSection{
+  margin-bottom:30px;
+}
+
+.buttonSection{
+  display:flex;
+  justify-content:center;
+  margin-top:30px;
+  padding-top:20px;
+  border-top:2px solid var(--line);
+}
+
+.loadingSection{
+  text-align:center;
+  padding:40px;
+  color:var(--ink-700);
+}
+
+/* 반응형 */
+@media (max-width: 1200px){
+  .mainContainer{ 
+    max-width:95%; 
+    flex-direction:column;
+    gap:20px;
+  }
+  .container{ 
+    flex:none;
+    width:100%;
+  }
+  .chartContainer{ 
+    flex:none;
+    width:100%;
+    min-height:400px;
+  }
+}
+@media (max-width: 920px){
+  .mainContainer{ max-width:92%; }
+}
+@media (max-width:768px){
+  .mainContainer{ margin:74px auto 30px; }
+  .container{ padding:1.2rem .9rem; }
+  .chartContainer{ padding:1.2rem .9rem; }
+  .qnatitle{ font-size:1.55rem; }
+  .chartTitle{ font-size:1.2rem; }
+  .qnatable thead th{ font-size:.9rem; padding:10px 12px; }
+  .qnatable td{ font-size:.95rem; padding:10px 12px; }
 }

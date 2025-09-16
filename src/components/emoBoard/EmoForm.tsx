@@ -177,15 +177,18 @@ const EmoForm: React.FC = () => {
   // ];
 
   return (
-    <div style={{ marginTop: '50px' }}>
-      <h2>글 등록</h2>
-      <div style={{ display: 'flex', justifyContent: 'center', width: 1100, margin: 'auto' }}>
+    <div className={style.page}>
+      <div style={{height: '30px'}}></div>
+      <div className={style.mainContainer}>
         <div className={style.container}>
+          <h1 className={style.emotitle}>글 등록</h1>
+
           <Form
             form={form}
             layout="vertical"
             onFinish={handleSubmit}
             initialValues={formData}
+            className={style.formContainer}
           >
             <Form.Item label="제목" name="title" rules={[{ required: true, message: '제목을 입력하세요' }]}>
               <Input name="title" onChange={handleChange} />
@@ -203,12 +206,16 @@ const EmoForm: React.FC = () => {
                 style={{ resize: 'none' }}
               />
             </Form.Item>
-            <Form.Item rules={[{ required: true }]} >
-              <Input name="emotion" onChange={handleChange} value={emotion} readOnly />
-            </Form.Item>
-            <Form.Item rules={[{ required: true }]} >
-              <Input name="rate" onChange={handleChange} value={predProb} readOnly />
-            </Form.Item>
+            
+            <div className={style.emotionSection}>
+              <Form.Item label="감정 분석 결과" rules={[{ required: true }]}>
+                <Input name="emotion" onChange={handleChange} value={emotion} readOnly />
+              </Form.Item>
+              <Form.Item label="확률" rules={[{ required: true }]}>
+                <Input name="rate" onChange={handleChange} value={predProb} readOnly />
+              </Form.Item>
+            </div>
+            
             <Form.Item>
               <Space>
                 <Button type="primary" htmlType="submit" disabled={enable}>
@@ -222,8 +229,10 @@ const EmoForm: React.FC = () => {
             </Form.Item>
           </Form>
         </div>
-        <div className={style.container}>
-          <ResponsiveContainer width="100%" height="100%">
+        
+        <div className={style.chartContainer}>
+          <h2 className={style.chartTitle}>감정 분석</h2>
+          <ResponsiveContainer width="100%" height="100%" minWidth={400} minHeight={400}>
             <PieChart width={400} height={400}>
               <Pie
                 activeShape={renderActiveShape}

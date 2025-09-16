@@ -28,8 +28,8 @@
 .container{
   margin:84px auto 44px;
   width:100%;
-  max-width:840px;               /* FAQ보다 조금 넓은 카드 폭 */
-  min-height:540px;
+  max-width:1200px;               /* FAQ보다 조금 넓은 카드 폭 */
+  min-height:740px;
   padding:1.6rem 1.4rem;
   box-sizing:border-box;
   background: var(--card);
@@ -43,8 +43,8 @@
   display:flex;
   align-items:center;
   gap:10px;
-  margin:0 0 16px;
-  font-size:26px;
+  margin:0 0 20px;
+  font-size:30px;
   font-weight:900;
   letter-spacing:.01em;
   color:var(--ink-900);
@@ -62,17 +62,17 @@
 .searchSection{
   display:flex;
   justify-content:center;
-  gap:8px;
-  margin-bottom:14px;
+  gap:12px;
+  margin-bottom:20px;
   flex-wrap:wrap;
 }
 .searchInput{
-  flex:1 1 260px;
-  max-width:380px;
-  padding:10px 14px;
+  flex:1 1 280px;
+  max-width:420px;
+  padding:12px 16px;
   border:2px solid var(--line);
   border-radius:999px;
-  font-size:.98rem;
+  font-size:1.1rem;
   background:#fff;
   color:var(--ink-900);
   transition:border-color .2s, box-shadow .2s;
@@ -86,10 +86,10 @@
   background:var(--navy);
   color:#fff;
   border:0;
-  padding:10px 16px;
+  padding:12px 20px;
   border-radius:999px;
   cursor:pointer;
-  font-size:.94rem;
+  font-size:1.05rem;
   font-weight:900;
   transition:transform .15s, filter .15s, opacity .15s;
 }
@@ -126,9 +126,9 @@
 }
 .noticeTable thead th{
   background: var(--thead);
-  padding:12px 14px;
+  padding:16px 18px;
   font-weight:900;
-  font-size:.93rem;
+  font-size:1.05rem;
   color:var(--ink-800);
   border-bottom:2px solid var(--line);
   position:relative;
@@ -146,7 +146,7 @@
 .noticeTable tbody tr:hover{ background:var(--row-hover); }
 
 .noticeTable td{
-  padding:12px 14px;
+  padding:12px 18px;
   border-bottom:1px solid var(--line);
   cursor:pointer;
   vertical-align:middle;
@@ -154,27 +154,36 @@
   text-overflow:ellipsis;
   white-space:nowrap;
   color:var(--ink-700);
-  font-size:.98rem;
+  font-size:1.1rem;
 }
 
 /* 컬럼 정렬 */
 .noticeTable th:nth-child(1), .noticeTable td:nth-child(1){
   width:15%;
   text-align:center;
-  font-size:.88rem;
+  font-size:1.0rem;
   color:var(--ink-500);
 }
-.noticeTable th:nth-child(2), .noticeTable td:nth-child(2){
+.noticeTable th:nth-child(2){
   width:70%;
   text-align:center;
-  font-size:1.02rem;
+  font-size:1.0rem;
   font-weight:700;
   color:var(--ink-900);
 }
+
+.noticeTable td:nth-child(2){
+  width:70%;
+  text-align:left;
+  font-size:1.0rem;
+  font-weight:700;
+  color:var(--ink-900);
+}
+
 .noticeTable th:nth-child(3), .noticeTable td:nth-child(3){
   width:15%;
-  text-align:right;
-  font-size:.95rem;
+  text-align:center;
+  font-size:1.0rem;
   color:var(--ink-700);
   font-variant-numeric: tabular-nums;
 }
@@ -201,18 +210,18 @@
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:10px;
-  margin-top:18px;
+  gap:12px;
+  margin-top:20px;
   flex-wrap:wrap;
 }
 .pageButton{
   background:var(--navy);
   color:#fff;
   border:0;
-  padding:8px 14px;
+  padding:10px 16px;
   border-radius:999px;
   cursor:pointer;
-  font-size:.92rem;
+  font-size:1.0rem;
   font-weight:900;
   transition:transform .15s, filter .15s, opacity .15s;
   box-shadow: 0 5px 14px rgba(0, 51, 160, .16);

@@ -80,8 +80,8 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <div>
-            <label htmlFor="user_nicknm" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>닉네임</label>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <label htmlFor="user_nicknm" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333', textAlign: 'left', width: '400px' }}>닉네임</label>
             <input 
               id="user_nicknm"
               type="text"
@@ -90,8 +90,7 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
               required 
               onChange={handleInputChange('user_nicknm')}
               style={{
-                width: '100%',
-                maxWidth: '400px',
+                width: '400px',
                 padding: '12px 16px',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
@@ -106,8 +105,8 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
             />
           </div>
           
-          <div>
-            <label htmlFor="login_id" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>아이디(e-mail)</label>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <label htmlFor="login_id" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333', textAlign: 'left', width: '400px' }}>아이디(e-mail)</label>
             <input 
               id="login_id"
               type="email"
@@ -115,8 +114,7 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
               value={commonParams.login_id} 
               readOnly
               style={{
-                width: '100%',
-                maxWidth: '400px',
+                width: '400px',
                 padding: '12px 16px',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
@@ -129,8 +127,8 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
             />
           </div>
           
-          <div>
-            <label htmlFor="user_nm" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>이름</label>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <label htmlFor="user_nm" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333', textAlign: 'left', width: '400px' }}>이름</label>
             <input 
               id="user_nm"
               type="text"
@@ -139,8 +137,7 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
               required 
               onChange={handleInputChange('user_nm')}
               style={{
-                width: '100%',
-                maxWidth: '400px',
+                width: '400px',
                 padding: '12px 16px',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
@@ -155,8 +152,8 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
             />
           </div>
           
-          <div>
-            <label htmlFor="user_phone" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>연락처</label>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <label htmlFor="user_phone" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333', textAlign: 'left', width: '400px' }}>연락처</label>
             <input 
               id="user_phone"
               type="tel"
@@ -165,8 +162,7 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
               required 
               onChange={handleInputChange('user_phone')}
               style={{
-                width: '100%',
-                maxWidth: '400px',
+                width: '400px',
                 padding: '12px 16px',
                 border: '1px solid #ddd',
                 borderRadius: '8px',

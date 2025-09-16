@@ -108,8 +108,7 @@ const EVhome: React.FC = () => {
       {/* Reviews Section */}
       <section className={styles.section}>
         <h2 className={styles.title}>고객 후기</h2>
-        <p className={styles.subtitle}>전기차 충전의 새로운 경험을 제공합니다.</p>
-        
+        <p className={styles.subtitle} style={{marginBottom:'20px'}}>전기차 충전의 새로운 경험을 제공합니다.</p>
         <div className={styles.carousel}>
           <button className={styles.arrow}>‹</button>
           

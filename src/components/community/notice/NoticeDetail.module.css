@@ -1,9 +1,39 @@
-.container {
-  margin: 0 auto;
-  padding: 20px;
-  margin-top: 80px;
-  background-color:#fff;
-  width: 100%;
+/* ===== NoticeDetail Page — Soft Blue Background (Notice와 동일) ===== */
+:root{
+  --navy:      #0033A0;     /* 버튼/포인트용 */
+  --ink-900:   #0f172a;     /* 제목 */
+  --ink-800:   #1f2937;
+  --ink-700:   #334155;     /* 본문 */
+  --ink-500:   #64748b;     /* 보조 */
+  --card:      #ffffff;     /* 카드 배경 */
+  --line:      #e6ebf3;     /* 카드/테이블 보더 */
+  --pin-red:   #e03131;     /* 필독 표시 */
+}
+
+/* ✅ 페이지 전용 배경 — Notice와 동일한 파스텔 블루 좌→우 그라데이션 */
+.page{
+  min-height: 100vh;
+  padding: 0 16px;
+  background: linear-gradient(
+    90deg,
+    #dce9ff 0%,    /* 왼쪽: 부드러운 연파랑 */
+    #e8f1ff 50%,   /* 중간: 아주 연한 하늘색 */
+    #f8fbff 100%   /* 오른쪽: 거의 흰색에 가까운 파스텔 블루 */
+  );
+}
+
+/* 중앙 카드 — Notice와 동일한 깔끔하고 단정한 레이아웃 */
+.container{
+  margin:84px auto 44px;
+  width:100%;
+  max-width:1200px;               /* Notice와 동일한 카드 폭 */
+  min-height:740px;
+  padding:1.6rem 1.4rem;
+  box-sizing:border-box;
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.22), 0 8px 18px rgba(0,0,0,0.12);
 }
 
 .header {
@@ -11,38 +41,42 @@
 }
 
 .backButton {
-  background: #0033A0;
+  background: var(--navy);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 12px 20px;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-size: 1.05rem;
+  font-weight: 900;
+  transition: transform .15s, filter .15s, opacity .15s;
+  box-shadow: 0 5px 14px rgba(0, 51, 160, .16);
 }
 
 .backButton:hover {
-  background: #0056b3;
+  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
 .content {
-  background: white;
-  border-radius: 10px;
-  padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .titleSection {
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--line);
   padding-bottom: 20px;
   margin-bottom: 30px;
 }
 
 .title {
   font-size: 1.8rem;
-  font-weight: bold;
+  font-weight: 900;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--ink-900);
+  letter-spacing: .01em;
 }
 
 .meta {
@@ -50,20 +84,20 @@
   gap: 20px;
   align-items: center;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--ink-500);
 }
 
 .date, .hit {
-  color: #666;
+  color: var(--ink-500);
 }
 
 .badge {
-  background: #ff4757;
+  background: var(--pin-red);
   color: white;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.8rem;
-  font-weight: bold;
+  font-weight: 900;
 }
 
 .contentSection {
@@ -72,6 +106,15 @@
 
 .contentText {
   font-size: 1rem;
-  color: #333;
+  color: var(--ink-700);
   white-space: pre-wrap;
+}
+
+/* 반응형 */
+@media (max-width: 920px){
+  .container{ max-width:92%; }
+}
+@media (max-width:768px){
+  .container{ margin:74px auto 30px; padding:1.2rem .9rem; }
+  .title{ font-size:1.55rem; }
 }

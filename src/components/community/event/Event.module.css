@@ -22,7 +22,7 @@
 
 /* 타이틀: 단정하고 강조 */
 .title {
-  font-size: 2.7rem;        
+  font-size: 2.0rem;        
   font-weight: 800;         
   color: var(--ink-900);
   text-align: center;
@@ -41,7 +41,7 @@
 
 /* 섹션 래퍼 */
 .ongoingSection, .closedSection {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto 2.4rem auto;
 }
 

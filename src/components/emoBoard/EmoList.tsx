@@ -70,57 +70,60 @@ const EmoList: React.FC = () => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   console.log(data.length)
   return (
-    <div>
-      <h2>FAQ</h2>
-      <div style={{ display: 'flex', justifyContent: 'center', width:1100, margin: 'auto' }}>
+    <div className={style.page}>
+      <div style={{height: '30px'}}></div>
+      <div className={style.mainContainer}>
         <div className={style.container}>
-          <Space style={{ marginBottom: 16 }}>
-            <Select value={searchType} onChange={setSearchType} style={{ width: 120 }}>
-              <Option value="user_id">작성자</Option>
-              <Option value="title">제목</Option>
-              <Option value="content">내용</Option>
-            </Select>
-            <Input
-              placeholder="검색어 입력"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              style={{ width: 200 }}
-            />
+          <h1 className={style.emotitle}>커뮤니티</h1>
 
-            <Button type="primary" onClick={handleSearch}>
-              검색
-            </Button>
-            <Link to="/emoboard/form">
-              <Button>글쓰기</Button>
-            </Link>
-          </Space>
+          <div className={style.searchSection}>
+            <Space>
+              <Select value={searchType} onChange={setSearchType} style={{ width: 120 }}>
+                <Option value="user_id">작성자</Option>
+                <Option value="title">제목</Option>
+                <Option value="content">내용</Option>
+              </Select>
+              <Input
+                placeholder="검색어 입력"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                style={{ width: 200 }}
+              />
+              <Button type="primary" onClick={handleSearch}>
+                검색
+              </Button>
+              <Link to="/emoboard/form">
+                <Button>글쓰기</Button>
+              </Link>
+            </Space>
+          </div>
 
-          <div style={{ border: '1px solid #f0f0f0', borderRadius: 8, overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead style={{ backgroundColor: '#fafafa' }}>
+          <div className={style.tableContainer}>
+            <table className={style.emotable}>
+              <thead>
                 <tr>
-                  <th style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>번호</th>
-                  <th style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>제목</th>
-                  <th style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>조회수</th>
-                  <th style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>작성일</th>
+                  <th>번호</th>
+                  <th>제목</th>
+                  <th>조회수</th>
+                  <th>작성일</th>
                 </tr>
               </thead>
               <tbody>
                 {upBoardList.map((item) => (
-                  <tr key={item.emo_id} style={{ textAlign: 'center' }}>
-                    <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.emo_id}</td>
-                    <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0', textAlign: 'left' }}>
-                      <Link to={`/emoboard/detail/:${item.emo_id}`} style={{ color: 'black' }}>{item.title}</Link>
+                  <tr key={item.emo_id} className={style.savelink}>
+                    <td>{item.emo_id}</td>
+                    <td>
+                      <Link to={`/emoboard/detail/:${item.emo_id}`}>{item.title}</Link>
                     </td>
-                    <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.hit}</td>
-                    <td style={{ padding: '12px', borderBottom: '1px solid #f0f0f0' }}>{item.reg_dt}</td>
+                    <td>{item.hit}</td>
+                    <td>{item.reg_dt}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <div className={style.pagination}>
             <Pagination
               current={currentPage}
               total={totalItems}
@@ -130,14 +133,15 @@ const EmoList: React.FC = () => {
             />
           </div>
         </div>
-        <div className={style.container}>
-          <ResponsiveContainer width="100%" height="100%" minWidth={500} minHeight={300} >
+        
+        <div className={style.chartContainer}>
+          <h2 className={style.chartTitle}>감정 분석</h2>
+          <ResponsiveContainer width="100%" height="100%" minWidth={400} minHeight={400} >
             <PieChart width={400} height={400}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                // labelLine={true}
                 label={({ name, percent = 0 }) => `${name}: ${(percent * 100).toFixed(1)}%`}
                 outerRadius={80}
                 innerRadius={50}

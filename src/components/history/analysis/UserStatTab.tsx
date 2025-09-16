@@ -33,13 +33,13 @@ const UserStatTab: React.FC = () => {
     }, [profile?.userId]);
 
     return (
-        <div style={{margin:'80px'}}>
+        <div style={{margin:'100px'}}>
             <Box sx={{ width: '100%', typography: 'body1' }}>
                 <TabContext value={value}>
                     <Box sx={{ display: 'flex', borderRight: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="user info tabs" orientation="vertical" sx={{ borderRight: 1, borderColor: 'divider', minWidth: '10%' }}>
-                            <Tab label="내 충전 현황" value="1" sx={{fontSize:'100%'}}/>
-                            <Tab label="이용자 충전 현황" value="2" sx={{fontSize:'100%'}}/>
+                            <Tab label="내 충전 현황" value="1" sx={{fontSize:'120%'}}/>
+                            <Tab label="이용자 충전 현황" value="2" sx={{fontSize:'120%'}}/>
                         </TabList>
                         <Box sx={{ flexGrow: 1 }}>
                             <TabPanel value="1">

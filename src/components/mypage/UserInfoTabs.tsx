@@ -38,14 +38,14 @@ const UserInfoTabs: React.FC = () => {
   // 세션에서 사용자의 서비스 유형 확인 필요
 
   return (
-        <div style={{margin:'80px'}}>
+        <div style={{margin:'100px'}}>
             <Box sx={{ width: '100%', typography: 'body1'}}>
                 <TabContext value={value}>
                     <Box sx={{ display: 'flex', borderRight: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="user info tabs" orientation="vertical" sx={{ borderRight: 1, borderColor: 'divider', minWidth: '10%' }}>
-                            <Tab label="공통사항" value="1" sx={{fontSize:'100%'}}/>
-                            <Tab label="차량등록" value="2" sx={{fontSize:'100%'}}/>
-                            <Tab label="충전기등록" value="3" sx={{fontSize:'100%'}}/>
+                            <Tab label="공통사항" value="1" sx={{fontSize:'120%'}}/>
+                            <Tab label="차량등록" value="2" sx={{fontSize:'120%'}}/>
+                            <Tab label="충전기등록" value="3" sx={{fontSize:'120%'}}/>
                         </TabList>
                         <Box sx={{ flexGrow: 1 }}>
                             <TabPanel value="1">

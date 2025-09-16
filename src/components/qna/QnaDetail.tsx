@@ -70,50 +70,56 @@ const QnaDetail: React.FC = () => {
         { name: '부정적', value: negative },
     ];
     return (
-        <div style={{ marginTop: '60px' }}>
-            <h2>QnA 상세 보기</h2>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className={style.page}>
+            <div style={{height: '30px'}}></div>
+            <div className={style.mainContainer}>
                 <div className={style.container}>
-                    <Card>
+                    <h1 className={style.qnatitle}>게시글 상세 보기</h1>
+                    
+                    <div className={style.detailContent}>
                         {upboard ? (
                             <>
-                                <Descriptions
-                                    bordered
-                                    column={1}
-                                    size="middle"
-                                    labelStyle={{ width: '120px', fontSize: '13px', fontWeight: 500 }}
-                                    contentStyle={{ fontSize: '16px', fontWeight: 600 }}
-                                >
-                                    <Descriptions.Item label="번호">{upboard.board_id}</Descriptions.Item>
-                                    <Descriptions.Item label="제목">{upboard.title}</Descriptions.Item>
-                                    <Descriptions.Item label="작성자">{upboard.user_id}</Descriptions.Item>
-                                    <Descriptions.Item label="내용">
-                                        <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
-                                            {upboard.content}
-                                        </Paragraph>
-                                    </Descriptions.Item>
-                                </Descriptions>
+                                <div className={style.detailSection}>
+                                    <Descriptions
+                                        bordered
+                                        column={1}
+                                        size="middle"
+                                        labelStyle={{ width: '120px', fontSize: '13px', fontWeight: 500 }}
+                                        contentStyle={{ fontSize: '16px', fontWeight: 600 }}
+                                    >
+                                        <Descriptions.Item label="번호">{upboard.board_id}</Descriptions.Item>
+                                        <Descriptions.Item label="제목">{upboard.title}</Descriptions.Item>
+                                        <Descriptions.Item label="작성자">{upboard.user_id}</Descriptions.Item>
+                                        <Descriptions.Item label="내용">
+                                            <Paragraph style={{ whiteSpace: 'pre-wrap', marginBottom: 0 }}>
+                                                {upboard.content}
+                                            </Paragraph>
+                                        </Descriptions.Item>
+                                    </Descriptions>
+                                </div>
 
-                                <Divider />
-
-                                <Space style={{ marginTop: 16 }}>
-                                    <Button danger onClick={handleDeleteClick}>
-                                        삭제
-                                    </Button>
-                                    <Link to="/board">
-                                        <Button type="default" style={{ backgroundColor: '#1390ff', color: 'white' }}>목록으로</Button>
-                                    </Link>
-                                </Space>
+                                <div className={style.buttonSection}>
+                                    <Space>
+                                        <Button danger onClick={handleDeleteClick}>
+                                            삭제
+                                        </Button>
+                                        <Link to="/review">
+                                            <Button type="default" style={{ backgroundColor: '#1390ff', color: 'white' }}>목록으로</Button>
+                                        </Link>
+                                    </Space>
+                                </div>
                             </>
                         ) : (
-                            <Paragraph>불러오는 중입니다...</Paragraph>
+                            <div className={style.loadingSection}>
+                                <Paragraph>불러오는 중입니다...</Paragraph>
+                            </div>
                         )}
-                    </Card>
-
-                    <Divider />
+                    </div>
                 </div>
-                <div className={style.container}>
-                    <ResponsiveContainer width="100%" height="100%" minWidth={500} minHeight={300} >
+                
+                <div className={style.chartContainer}>
+                    <h2 className={style.chartTitle}>감정 분석</h2>
+                    <ResponsiveContainer width="100%" height="100%" minWidth={400} minHeight={400}>
                         <PieChart width={400} height={400}>
                             <Pie
                                 data={pieData}

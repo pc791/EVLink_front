@@ -56,30 +56,62 @@ const NoticeDetail: React.FC = () => {
     return () => { aborted = true; };
   }, [routeId]);
 
-  if (loading) return <div>불러오는 중...</div>;
-  if (error) return <div style={{ color: 'red' }}>에러: {error}</div>;
-  if (!notice) return <div>데이터가 없습니다.</div>;
+  if (loading) return (
+    <div className={styles.page}>
+      <div style={{height: '50px'}}></div>
+      <div className={styles.container}>
+        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--ink-700)' }}>
+          불러오는 중...
+        </div>
+      </div>
+    </div>
+  );
+  
+  if (error) return (
+    <div className={styles.page}>
+      <div style={{height: '50px'}}></div>
+      <div className={styles.container}>
+        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--pin-red)' }}>
+          에러: {error}
+        </div>
+      </div>
+    </div>
+  );
+  
+  if (!notice) return (
+    <div className={styles.page}>
+      <div style={{height: '50px'}}></div>
+      <div className={styles.container}>
+        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--ink-700)' }}>
+          데이터가 없습니다.
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate('/notice')}>
-          ← 목록으로
-        </button>
-      </div>
-
-      <div className={styles.content}>
-        <div className={styles.titleSection}>
-          <h1 className={styles.title}>{notice.title}</h1>
-          <div className={styles.meta}>
-            <span className={styles.date}>등록일: {notice.noticeDt}</span>
-            <span className={styles.hit}>조회수: {notice.hit}</span>
-            {notice.majorYn === 'Y' && <span className={styles.badge}>필독</span>}
-          </div>
+    <div className={styles.page}>
+      <div style={{height: '30px'}}></div>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <button className={styles.backButton} onClick={() => navigate('/notice')}>
+            ← 목록으로
+          </button>
         </div>
 
-        <div className={styles.contentSection}>
-          <div className={styles.contentText}>{notice.content}</div>
+        <div className={styles.content}>
+          <div className={styles.titleSection}>
+            <h1 className={styles.title}>{notice.title}</h1>
+            <div className={styles.meta}>
+              <span className={styles.date}>등록일: {notice.noticeDt}</span>
+              <span className={styles.hit}>조회수: {notice.hit}</span>
+              {notice.majorYn === 'Y' && <span className={styles.badge}>필독</span>}
+            </div>
+          </div>
+
+          <div className={styles.contentSection}>
+            <div className={styles.contentText}>{notice.content}</div>
+          </div>
         </div>
       </div>
     </div>

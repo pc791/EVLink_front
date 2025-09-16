@@ -240,7 +240,7 @@ const ChargerInfoSection: React.FC<{userId:number}> = ({userId}) => {
             onChange={handleInputChange('addr_detail')}
             style={{
               width: '100%',
-              maxWidth: '500px',
+              maxWidth: '784px',
               padding: '12px 16px',
               border: '1px solid #ddd',
               borderRadius: '8px',
@@ -301,52 +301,54 @@ const ChargerInfoSection: React.FC<{userId:number}> = ({userId}) => {
             />
           </RadioGroup>
         </Box>
-        <FormControl sx={{ margin: "20px 0" }}>
-          <FormLabel sx={{ fontSize: '16px', fontWeight: '500', color: '#333', mb: 2 }}>충전방식</FormLabel>
-          <RadioGroup name="charger_socket" value={chargerInfo.charger_socket} onChange={handleSelectChange}>
-            <TableContainer 
-              component={Paper} 
-              sx={{ 
-                borderRadius: '8px',
-                overflow: 'hidden',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-              }}
-            >
-              <Table size="medium" aria-label="charger types table">
-                <TableHead sx={{ backgroundColor: '#f8f9fa' }}>
-                  <TableRow>
-                    <TableCell align="center" sx={{ fontWeight: '600' }}>선택</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: '600' }}>종류</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: '600' }}>충전소켓</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {CahrgerTypes.map((opt) => (
-                    <TableRow key={opt.id} sx={{ '&:hover': { backgroundColor: '#f8f9fa' } }}>
-                      <TableCell align="center">
-                        <FormControlLabel 
-                          value={opt.id} 
-                          control={<Radio sx={{ '&.Mui-checked': { color: '#0033A0' } }} />} 
-                          label="" 
-                        />
-                      </TableCell>
-                      <TableCell align="center" sx={{ fontSize: '14px' }}>
-                        {opt.label}
-                      </TableCell>
-                      <TableCell align="center">
-                        <img 
-                          src={`${process.env.PUBLIC_URL}/${opt.img}`} 
-                          alt={opt.label} 
-                          style={{ width: '60px', height: 'auto' }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </RadioGroup>
-        </FormControl>
+        <div style={{ margin: "20px 0" }}>
+          <label style={{ display: 'block', fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '16px' }}>충전방식</label>
+          <div style={{ 
+            border: '1px solid #ddd', 
+            borderRadius: '8px', 
+            overflow: 'hidden',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ backgroundColor: '#f8f9fa' }}>
+                <tr>
+                  <th style={{ padding: '12px', textAlign: 'center', fontWeight: '600', borderBottom: '1px solid #ddd' }}>선택</th>
+                  <th style={{ padding: '12px', textAlign: 'center', fontWeight: '600', borderBottom: '1px solid #ddd' }}>종류</th>
+                  <th style={{ padding: '12px', textAlign: 'center', fontWeight: '600', borderBottom: '1px solid #ddd' }}>충전소켓</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CahrgerTypes.map((opt) => (
+                  <tr key={opt.id}>
+                    <td style={{ padding: '12px', textAlign: 'center', verticalAlign: 'middle', borderBottom: '1px solid #ddd' }}>
+                      <input
+                        type="radio"
+                        name="charger_socket"
+                        value={opt.id}
+                        checked={chargerInfo.charger_socket === opt.id}
+                        onChange={handleSelectChange}
+                        style={{ 
+                          accentColor: '#0033A0',
+                          transform: 'scale(1.2)'
+                        }}
+                      />
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'center', verticalAlign: 'middle', fontSize: '14px', borderBottom: '1px solid #ddd' }}>
+                      {opt.label}
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'center', verticalAlign: 'middle', borderBottom: '1px solid #ddd' }}>
+                      <img 
+                        src={`${process.env.PUBLIC_URL}/${opt.img}`} 
+                        alt={opt.label} 
+                        style={{ width: '60px', height: 'auto' }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div style={{ marginBottom: '24px' }}>
           <label htmlFor="supply_power" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>공급용량(kW)</label>
           <input 
@@ -373,7 +375,7 @@ const ChargerInfoSection: React.FC<{userId:number}> = ({userId}) => {
           />
         </div>
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: { xs: 'flex-start', sm: 'flex-end' }, mb: 3 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ minWidth: 0 }}>
             <label htmlFor="operator" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>충전사업자</label>
             <input 
               id="operator"

@@ -78,6 +78,7 @@ const Notice: React.FC = () => {
 
   return (
     <div className={styles.page}>
+      <div style={{height: '30px'}}></div>
       <div className={styles.container}>
         <h1 className={styles.noticetitle}>공지사항</h1>
 
