@@ -1,122 +1,164 @@
+/* ===== Event Page — Soft Blue BG + Green Ongoing, Clean Boxes ===== */
+:root{
+  --navy:      #0033A0;   /* 버튼/포인트 */
+  --sky:       #7da9ff;   /* 보조 포인트 */
+  --ink-900:   #0f172a;   /* 제목 */
+  --ink-800:   #1f2937;
+  --ink-700:   #334155;   /* 본문 */
+  --ink-600:   #475569;   /* 날짜/부제 */
+  --ink-500:   #64748b;   /* 보조 텍스트 */
+  --line:      #e6ebf3;   /* 보더 */
+  --row-hover: #f7faff;   /* 행 hover */
+}
+
+/* ✅ 페이지 전체 배경: FAQ/공지와 동일 */
 .container {
   width: 100%;
   min-height: 100vh;
-  background-color: #fff;
+  background: linear-gradient(90deg, #dce9ff 0%, #e8f1ff 50%, #f8fbff 100%);
   margin-top: 80px;
   padding: 2rem;
 }
 
+/* 타이틀: 단정하고 강조 */
 .title {
-  font-size: 3rem;
-  font-weight: 700;
-  color: #333;
+  font-size: 2.7rem;        
+  font-weight: 800;         
+  color: var(--ink-900);
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.4rem;    
+  letter-spacing: .01em;
+  position: relative;
+}
+.title::after{
+  content:'';
+  display:block;
+  width: 120px; height: 3px;
+  margin: 10px auto 0;
+  background: linear-gradient(90deg, var(--sky), var(--navy));
+  border-radius: 2px;
 }
 
+/* 섹션 래퍼 */
 .ongoingSection, .closedSection {
   max-width: 1000px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 2.4rem auto;
 }
 
+/* 섹션 제목: 크기 줄이고 깔끔하게 */
 .sectionTitle {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 1.5rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 1.1rem;
+  letter-spacing: .005em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sectionTitle::before{
+  content:'';
+  display:inline-block;
+  width:6px; height:18px;
+  border-radius:4px;
+  background: linear-gradient(180deg, var(--sky), var(--navy));
+  box-shadow: 0 6px 14px rgba(0,51,160,.18);
 }
 
+/* 진행 상세 카드 — 내부는 흰색 유지 */
 .ongoingDetail {
-  background: white;
+  background: #ffffff; /* ✨ 박스 안쪽에 추가 색상 없음 */
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 22px rgba(0, 25, 80, 0.12);
   overflow: hidden;
   margin-bottom: 2rem;
 }
 
+/* 헤더: 기본 흰색으로 깔끔 */
 .detailHeader {
   padding: 2rem 2rem 1rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border-bottom: 1px solid #e9ecef;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
 }
 
+/* 상태/날짜 라인: 점 제거 */
 .statusSection {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: .8rem;
+  margin-bottom: .8rem;
 }
 
+/* 진행중 배지: 초록색 그대로 유지 */
 .ongoingBadge {
   background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  min-width: 60px;
+  padding: 0.42rem 0.78rem;
+  border-radius: 16px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  min-width: 64px;
   text-align: center;
+  letter-spacing: .01em;
+  box-shadow: 0 6px 14px rgba(32, 201, 151, .22);
 }
 
+/* 날짜 */
 .eventDate {
-  font-size: 1rem;
-  color: #666;
-  font-weight: 500;
+  font-size: .96rem;
+  color: var(--ink-600);
+  font-weight: 600;
 }
 
+/* 이벤트 제목/설명 */
 .eventTitle {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 0.5rem;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin-bottom: .45rem;
   line-height: 1.3;
+  letter-spacing: .005em;
 }
-
 .eventDescription {
-  font-size: 1.1rem;
-  color: #555;
-  line-height: 1.5;
+  font-size: 1.05rem;
+  color: var(--ink-700);
+  line-height: 1.55;
   margin: 0;
 }
 
+/* 본문 영역 */
 .detailContent {
   padding: 2rem;
 }
-
-.textSection, .imageSection {
-  margin-bottom: 2rem;
-}
-
-.textSection:last-child, .imageSection:last-child {
-  margin-bottom: 0;
-}
+.textSection, .imageSection { margin-bottom: 1.8rem; }
+.textSection:last-child, .imageSection:last-child { margin-bottom: 0; }
 
 .contentTitle {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 0.5rem;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: .85rem;
+  border-bottom: 2px solid #edf2ff;
+  padding-bottom: .5rem;
 }
-
 .contentText {
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.8;
+  font-size: .98rem;
+  color: var(--ink-700);
+  line-height: 1.75;
   white-space: pre-line;
 }
 
+/* 이미지 */
 .imageContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: #f5f8ff;
   min-height: 300px;
+  border: 1px solid #ebf1ff;
 }
-
 .eventImage {
   max-width: 100%;
   max-height: 400px;
@@ -124,111 +166,87 @@
   border-radius: 10px;
 }
 
+/* 이벤트 목록 박스 */
 .eventList {
-  background: white;
+  background: #ffffff; /* ✨ 내부는 흰색만 */
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 25, 80, 0.10);
   overflow: hidden;
 }
-
 .eventItem {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 1.4rem 2rem;
+  border-bottom: 1px solid #f0f3ff;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color .18s ease, transform .12s ease;
+  background: #fff;
 }
-
 .eventItem:hover {
-  background-color: #f8f9fa;
+  background-color: var(--row-hover);
 }
-
-.eventItem:last-child {
-  border-bottom: none;
+.eventItem:active {
+  transform: translateY(1px);
 }
+.eventItem:last-child { border-bottom: none; }
 
+/* 마감된 이벤트 배지 */
 .closedBadge {
   background: linear-gradient(135deg, #6c757d, #495057);
   color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  min-width: 60px;
+  padding: 0.42rem 0.78rem;
+  border-radius: 16px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  min-width: 64px;
   text-align: center;
+  letter-spacing: .01em;
+  box-shadow: 0 6px 14px rgba(73, 80, 87, .22);
 }
 
+/* 페이지네이션 */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: .9rem;
+  margin-top: 1.8rem;
 }
-
 .pageButton {
-  background: linear-gradient(135deg, #20c997, #17a2b8);
+  background: linear-gradient(135deg, var(--navy), #2d5fff);
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 0.74rem 1.4rem;
+  border-radius: 999px;
+  font-size: .98rem;
+  font-weight: 900;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform .15s, filter .15s, box-shadow .15s, opacity .15s;
+  box-shadow: 0 6px 16px rgba(0, 51, 160, .18);
 }
-
 .pageButton:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1ba085, #138496);
+  filter: brightness(1.06);
   transform: translateY(-2px);
 }
-
 .pageButton:disabled {
-  opacity: 0.5;
+  opacity: .55;
   cursor: not-allowed;
+  background: linear-gradient(135deg, #a2b4df, #a2b4df);
 }
-
 .pageInfo {
-  font-size: 1rem;
-  color: #666;
-  font-weight: 600;
+  font-size: .98rem;
+  color: var(--ink-600);
+  font-weight: 700;
 }
 
+/* 반응형 */
 @media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-    margin-top: 70px;
-  }
-  
-  .title {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .detailHeader, .detailContent {
-    padding: 1.5rem;
-  }
-  
-  .statusSection {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .eventTitle {
-    font-size: 1.5rem;
-  }
-  
-  .eventItem {
-    padding: 1rem 1.5rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .imageContainer {
-    min-height: 250px;
-  }
+  .container { padding: 1rem; margin-top: 70px; }
+  .title { font-size: 2.2rem; margin-bottom: 1.8rem; }
+  .detailHeader, .detailContent { padding: 1.3rem; }
+  .statusSection { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .eventTitle { font-size: 1.4rem; }
+  .eventItem { padding: 1rem 1.4rem; flex-direction: column; align-items: flex-start; gap: .5rem; }
+  .imageContainer { min-height: 250px; }
 }

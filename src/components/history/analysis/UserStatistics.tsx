@@ -3,7 +3,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { MyChargingHistory, MonthlyChargingStats, StationUsageStats, TimePatternStats, DayPatternStats } from './UserStatData';
 import styles from './UserStatistics.module.css';
 
-const UserStatistics: React.FC = () => {
+const UserStatistics: React.FC<{userId:number}> = ({userId}) => {
   // 색상 팔레트
   const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1'];
 
@@ -55,7 +55,7 @@ const UserStatistics: React.FC = () => {
               <h3>총 충전 횟수</h3>
               <h2>{totalCharges}회</h2>
             </div>
-            <div className={styles.kpiIcon}>🔌</div>
+            <div className={styles.kpiIcon}></div>
           </div>
         </div>
 
@@ -65,7 +65,7 @@ const UserStatistics: React.FC = () => {
               <h3>총 충전량</h3>
               <h2>{totalKwh.toFixed(1)}kWh</h2>
             </div>
-            <div className={styles.kpiIcon}>⚡</div>
+            <div className={styles.kpiIcon}></div>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ const UserStatistics: React.FC = () => {
               <h3>총 충전 비용</h3>
               <h2>{(totalCost / 1000).toFixed(1)}천원</h2>
             </div>
-            <div className={styles.kpiIcon}>💰</div>
+            <div className={styles.kpiIcon}></div>
           </div>
         </div>
 
@@ -85,7 +85,7 @@ const UserStatistics: React.FC = () => {
               <h3>평균 충전 시간</h3>
               <h2>{avgDuration}분</h2>
             </div>
-            <div className={styles.kpiIcon}>⏰</div>
+            <div className={styles.kpiIcon}></div>
           </div>
         </div>
       </div>

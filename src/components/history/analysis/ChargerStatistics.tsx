@@ -3,7 +3,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { PersonalChargerData, ChargerReservations, MonthlyChargerStats, ChargerUsageByTime } from './UserStatData'
 import styles from './ChargerStatistics.module.css'
 
-const ChargerStatistics: React.FC = () => {
+const ChargerStatistics: React.FC<{userId:number}> = ({userId}) => {
     // 개인 충전기 정보
     const chargerInfo = PersonalChargerData[0]
     

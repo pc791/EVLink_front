@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { UserReservations } from './ReservationData';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
-import { useModal } from './GlobalModalProvider';
 
-const UserHisList: React.FC = () => {
+const UserHisList: React.FC<{userId:number}> = ({userId}) => {
     const [keyword, setKeyword] = useState('');
-    const { openModal } = useModal();
     const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
         pageSize: 10,
         page: 0,
@@ -32,18 +30,6 @@ const UserHisList: React.FC = () => {
                     {params.value ? '사용' : '미사용'}
                 </span>
             )
-        },
-        {
-            field: 'reviewId',
-            headerName: '이용후기', 
-            flex: 100,
-            align: 'center',
-            headerAlign: 'center',
-            renderCell: (params) => (
-                params.value ? 
-                    <Button variant="contained" size="small" sx={{backgroundColor: '#0033A0', margin: '10px', mt: 1.5}} onClick={(e) => {e.stopPropagation(); handleGetReview(params.value)}}>조회</Button>
-                :   <Button variant="contained" size="small" sx={{backgroundColor: '#01831dff', margin: '10px', mt: 1.5}} onClick={(e) => {e.stopPropagation(); handleGetReview(params.value)}}>등록</Button>
-            )
         }
     ];
 
@@ -51,11 +37,6 @@ const UserHisList: React.FC = () => {
         const { value } = event.target
         setKeyword(value)
     };
-
-    const handleGetReview = (reviewId:Number) => {
-        console.log(reviewId)
-        openModal("ureview", { reviewId })
-    }
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault()
@@ -68,10 +49,44 @@ const UserHisList: React.FC = () => {
             <Box sx={{ width: '90%', height: '100%' }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 2 }}>내 충전 예약</Typography>
                 <Box sx={{marginBottom:'10px'}}>
-                    <form onSubmit={handleSubmit} style={{display: 'flex', justifyContent: 'center'}}>
-                        <TextField label="검색어를 입력해주세요" name="keyword" id="outlined" size="small" value={keyword} margin="dense" 
-                                   onChange={handleInputChange} sx={{width: '300px', '& .MuiOutlinedInput-root': {'& fieldset': { borderRadius: '12px' }}}}/>
-                        <Button variant="contained" size="small" type="submit" sx={{backgroundColor: '#0033A0', margin: '10px', mt: 1.5}}>조회</Button>
+                    <form onSubmit={handleSubmit} style={{display: 'flex', justifyContent: 'center', gap: '10px'}}>
+                        <input 
+                            type="text" 
+                            placeholder="검색어를 입력해주세요" 
+                            name="keyword" 
+                            value={keyword} 
+                            onChange={handleInputChange} 
+                            style={{
+                                width: '300px',
+                                height: '40px',
+                                padding: '8px 12px',
+                                border: '1px solid #ccc',
+                                borderRadius: '12px',
+                                fontSize: '14px',
+                                outline: 'none',
+                                boxSizing: 'border-box'
+                            }}
+                        />
+                        <button 
+                            type="submit"
+                            style={{
+                                height: '40px',
+                                padding: '8px 16px',
+                                backgroundColor: '#0033A0',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                boxSizing: 'border-box',
+                                transition: 'background-color 0.2s ease'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#002080'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#0033A0'}
+                        >
+                            조회
+                        </button>
                     </form>
                 </Box>
                 <DataGrid
