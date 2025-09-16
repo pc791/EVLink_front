@@ -17,3 +17,4 @@ yarn add @tosspayments/tosspayments-sdk --save
 yarn add react-i18next
 
 yarn add antd
+yarn add react-markdown remark-gfm rehype-sanitize
