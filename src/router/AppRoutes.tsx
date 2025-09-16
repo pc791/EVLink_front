@@ -50,9 +50,9 @@ const AppRoutes: React.FC = () => {
         { path: '/reservelist', element: <ReservationTab />}, // 예약 리스트
         { path: '/success', element: <SuccessPage />},
         { path: '/fail', element: <FailPage />},
-        { path: '/board', element: <QnaList />},
-        { path: '/board/form', element: <QnaForm />},
-        { path: '/board/detail/:board_id', element: <QnaDetail />},
+        { path: '/review', element: <QnaList />},
+        { path: '/review/form', element: <QnaForm />},
+        { path: '/review/detail/:board_id', element: <QnaDetail />},
         { path: '/emoboard', element: <EmoList/>},
         { path: '/emoboard/form', element: <EmoForm />},
         { path: '/emoboard/detail/:emo_id', element: <EmoDetail />},

@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from 'auth/AuthProvider';
+
 import styles from './Login.module.css';
+import { useAuth } from 'auth/AuthProvider';
+// import { useAuth } from '../auth/AuthProvider';
+
 
 export default function Login() {
   const { isLoggedIn, loginWithProvider, logout, checkLogin, passwordless, profile } = useAuth();

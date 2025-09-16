@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './EVhome.module.css';
 import { NavLink } from 'react-router-dom';
+import ChatPanel from './ChatAI';
 // import Faq from './faq/FAQ';
 
 const EVhome: React.FC = () => {
@@ -17,8 +18,8 @@ const EVhome: React.FC = () => {
           <NavLink to='/map' className={styles.button}>충전소 찾기</NavLink>
         </div>
         <div className={styles.image}>
-          <img 
-            src="/images/main4.jpg" 
+          <img
+            src="/images/main4.jpg"
             alt="EV charging stations with green glow"
           />
         </div>
@@ -31,7 +32,7 @@ const EVhome: React.FC = () => {
             <div className={styles.icon}>⚡</div>
             <h2 className={styles.title}>EVLink의 혁신적인 충전 솔루션</h2>
             <p className={styles.description}>
-              EVLink는 사용자 친화적인 인터페이스로 어디서든 쉽게 충전소를 찾을 수 있도록 
+              EVLink는 사용자 친화적인 인터페이스로 어디서든 쉽게 충전소를 찾을 수 있도록
               전기차 충전의 새로운 기준을 제시합니다.
             </p>
             <div className={styles.buttons}>
@@ -40,8 +41,8 @@ const EVhome: React.FC = () => {
             </div>
           </div>
           <div className={styles.right}>
-            <img 
-              src="/images/main3.jpg" 
+            <img
+              src="/images/main3.jpg"
               alt="Charging station with 28% display"
             />
           </div>
@@ -56,8 +57,8 @@ const EVhome: React.FC = () => {
         <div className={styles.grid}>
           <div className={styles.card}>
             <div className={styles.image}>
-              <img 
-                src="/images/main3.jpg" 
+              <img
+                src="/images/main3.jpg"
                 alt="World map with charging station pins"
               />
             </div>
@@ -72,8 +73,8 @@ const EVhome: React.FC = () => {
 
           <div className={styles.card}>
             <div className={styles.image}>
-              <img 
-                src="/images/main9.png" 
+              <img
+                src="/images/main9.png"
                 alt="Usage history bar chart"
               />
             </div>
@@ -88,8 +89,8 @@ const EVhome: React.FC = () => {
 
           <div className={styles.card}>
             <div className={styles.image}>
-              <img 
-                src="/images/main8.jpg" 
+              <img
+                src="/images/main8.jpg"
                 alt="EV charging station in green setting"
               />
             </div>
@@ -108,10 +109,10 @@ const EVhome: React.FC = () => {
       <section className={styles.section}>
         <h2 className={styles.title}>고객 후기</h2>
         <p className={styles.subtitle}>전기차 충전의 새로운 경험을 세공합니다.</p>
-        
+
         <div className={styles.carousel}>
           <button className={styles.arrow}>‹</button>
-          
+
           <div className={styles.reviews}>
             <div className={styles.reviewCard}>
               <div className={styles.logo}>Webflow</div>

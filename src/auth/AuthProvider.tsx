@@ -1,7 +1,8 @@
 // src/auth/AuthProvider.tsx
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import  { BASE_URL } from 'auth/constants';
+import { BASE_URL } from './constants';
+
 // const BASE_URL = 'http://localhost:8080/EVLink_backend-main';
 
 //  첫 요청 전에 적용되도록 파일 최상단에서 설정
