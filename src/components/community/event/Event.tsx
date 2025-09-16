@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/pages/event/Event.tsx
+import React, { useEffect, useState } from 'react';
 import styles from './Event.module.css';
+import { BASE_URL } from '../../../auth/constants'; 
 
 interface EventItem {
   id: number;
@@ -9,61 +10,55 @@ interface EventItem {
   endDate: string;
   status: 'ongoing' | 'closed';
   description?: string;
-  image?: string;
+  imageUrl?: string;
   content?: string;
 }
 
 const Event: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  // const navigate = useNavigate();
+  const [eventData, setEventData] = useState<EventItem[]>([]);
 
-  const eventData: EventItem[] = [
-    {
-      id: 1,
-      title: "신규 EV충전소 1+1 프로모션",
-      startDate: "2025-08-24",
-      endDate: "2025-09-31",
-      status: "ongoing",
-      description: "신규 충전소 이용 시 1+1 혜택을 제공합니다.",
-      image: "/images/event2.png",
-      content: ""
-    },
-    {
-      id: 2,
-      title: "여름 시즌 특별 할인 프로모션",
-      startDate: "2025-07-01",
-      endDate: "2026-07-31",
-      status: "ongoing",
-      description: "여름 시즌 한정 특별 할인을 제공합니다.",
-      image: "/images/event1.png",
-      content: "12323544646456487ㅋㅋㅋㅋㅋ"
-    },
-    {
-      id: 3,
-      title: "신규 충전소 오픈 혜택 이벤트",
-      startDate: "2024-01-01",
-      endDate: "2024-06-30",
-      status: "ongoing",
-      description: "신규 충전소 오픈 기념 특별 혜택을 제공했습니다."
-    },
-    {
-      id: 4,
-      title: "비밀번호 변경 이벤트",
-      startDate: "2024-02-01",
-      endDate: "2024-02-28",
-      status: "closed",
-      description: "보안 강화를 위한 비밀번호 변경 이벤트를 진행했습니다."
-    },
-    {
-      id: 5,
-      title: "풍성한 가을 이벤트",
-      startDate: "2024-09-01",
-      endDate: "2024-09-30",
-      status: "closed",
-      description: "가을 시즌 특별 프로모션을 진행했습니다."
-    }
-  ];
+  useEffect(() => {
+    let aborted = false;
+    (async () => {
+      try {
+      
+        const url = `${BASE_URL.replace(/\/+$/, '')}/event/list`;
+        console.log('[EVENT] GET:', url);
 
+     
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const raw = await res.json();
+        const arr = Array.isArray(raw) ? raw : (raw?.data ?? raw?.list ?? []);
+
+        const toAbs = (u?: string | null) =>
+          !u ? undefined : /^https?:\/\//i.test(u) ? u : `${BASE_URL}${u.startsWith('/') ? '' : '/'}${u}`;
+
+        const mapped: EventItem[] = arr
+          .filter((e: any) => (e.useYn ?? e.useyn ?? 'Y') === 'Y') // useYn 있으면 'Y'만
+          .map((e: any) => ({
+            id: e.eventId ?? e.id,
+            title: e.title ?? '',
+            startDate: e.startDate ?? e.start_dt ?? '',
+            endDate: e.endDate ?? e.end_dt ?? '',
+            status: 'closed', 
+            description: e.description ?? '',
+            imageUrl: toAbs(e.imageUrl ?? e.imgUrl ?? e.img_path),
+            content: e.content ?? '',
+          }));
+
+        if (!aborted) setEventData(mapped);
+      } catch (e) {
+        console.error('이벤트 불러오기 실패:', e);
+        if (!aborted) setEventData([]);
+      }
+    })();
+    return () => { aborted = true; };
+  }, []);
+
+  // 그대로 유지: 날짜로 상태 계산
   const getEventStatus = (event: EventItem) => {
     const today = new Date();
     const startDate = new Date(event.startDate);
@@ -80,18 +75,14 @@ const Event: React.FC = () => {
   const closedEvents = processedEventData.filter(event => event.status === 'closed');
 
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(closedEvents.length / itemsPerPage);
+  const totalPages = Math.ceil(closedEvents.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentEvents = closedEvents.slice(startIndex, startIndex + itemsPerPage);
-
-//   const handleEventClick = (event: EventItem) => {
-//     navigate(`/event/${event.id}`, { state: { event } });
-//   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>EVENT</h1>
-      
+
       {ongoingEvents.length > 0 && (
         <div className={styles.ongoingSection}>
           <h2 className={styles.sectionTitle}>진행중인 이벤트</h2>
@@ -107,7 +98,7 @@ const Event: React.FC = () => {
                   <p className={styles.eventDescription}>{event.description}</p>
                 )}
               </div>
-              
+
               <div className={styles.detailContent}>
                 <div className={styles.textSection}>
                   <h4 className={styles.contentTitle}>이벤트 상세 내용</h4>
@@ -115,13 +106,14 @@ const Event: React.FC = () => {
                     {event.content || "이벤트 상세 내용이 준비 중입니다."}
                   </div>
                 </div>
-                
-                {event.image && (
+
+                {/* 진행중만 이미지 표시 */}
+                {event.imageUrl && (
                   <div className={styles.imageSection}>
                     <h4 className={styles.contentTitle}>이벤트 이미지</h4>
                     <div className={styles.imageContainer}>
-                      <img 
-                        src={event.image} 
+                      <img
+                        src={event.imageUrl}
                         alt={event.title}
                         className={styles.eventImage}
                         onError={(e) => {
@@ -152,16 +144,16 @@ const Event: React.FC = () => {
 
         {totalPages > 1 && (
           <div className={styles.pagination}>
-            <button 
-              className={styles.pageButton} 
+            <button
+              className={styles.pageButton}
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
             >
               이전
             </button>
             <span className={styles.pageInfo}>{currentPage} / {totalPages}</span>
-            <button 
-              className={styles.pageButton} 
+            <button
+              className={styles.pageButton}
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
             >

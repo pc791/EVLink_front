@@ -1,7 +1,7 @@
 // src/auth/AuthProvider.tsx
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import  { BASE_URL } from 'auth/constants';
+import  { BASE_URL } from './constants';
 // const BASE_URL = 'http://localhost:8080/EVLink_backend-main';
 
 //  첫 요청 전에 적용되도록 파일 최상단에서 설정
@@ -14,6 +14,8 @@ interface AuthVO {
   name?: string;
   provider?: string;
   profile?: string;
+  userId?: string;
+  userTp?: string;
 }
 type Provider = 'google' | 'kakao' | 'naver';
 
@@ -59,9 +61,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id,
         redirectUri: window.location.origin + '/auth/callback',
       });
-      alert('로그인 링크를 보냈습니다. 메일함을 확인하세요.');
     } catch {
-      alert('로그인 링크 요청 실패');
+      console.log('로그인 실패');
     }
   };
 

@@ -24,6 +24,10 @@ import QnaDetail from '../components/qna/QnaDetail'
 import EmoList from '../components/emoBoard/EmoList'
 import EmoForm from '../components/emoBoard/EmoForm'
 import EmoDetail from '../components/emoBoard/EmoDetail'
+import PasswordLessLogin from '../components/login/passwordLess/pages/Login/Login'
+import PasswordLessJoin from '../components/login/passwordLess/pages/Login/Join'
+import PasswordLessChangePW from '../components/login/passwordLess/pages/Login/Changepw'
+import PasswordLessMain from '../components/login/passwordLess/pages/Main'
 // import Map from '../components/map/Map';
 // import mypage from '.conts/mypage/Mypage';
 
@@ -56,6 +60,10 @@ const AppRoutes: React.FC = () => {
         { path: '/emoboard', element: <EmoList/>},
         { path: '/emoboard/form', element: <EmoForm />},
         { path: '/emoboard/detail/:emo_id', element: <EmoDetail />},
+        { path: '/passwordLess', element: <PasswordLessLogin />},
+        { path: '/passwordLess/join', element: <PasswordLessJoin />},
+        { path: '/passwordLess/changepw', element: <PasswordLessChangePW />},
+        { path: '/passwordLess/main', element: <PasswordLessMain />},
     ]
     
     

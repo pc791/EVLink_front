@@ -1,52 +1,66 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Paper, Radio, RadioGroup, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material'
-import React, { useState } from 'react'
-import { format, parse } from 'date-fns'
+import { Box, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Paper, Radio, RadioGroup, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { CahrgerTypes } from './UserInfoData';
+import dayjs, { Dayjs } from 'dayjs';
+import axios from 'axios';
+
 declare const daum: any;
+
 interface chargerInfoProp {
-  addr: string,
-  addrDetail: string,
-  chargerTel: string,
-  chargerTp:string,
-  chargerSocket: string,
-  supplyPower: string,
-  operator: string,
-  membership: string,
-  openTime: string,
-  closeTime: string,
-  payHour: string,
-  remarks: string
+  user_id?:number;
+  charger_id?:number; // 주소ID
+  addr:string; // 주소
+  addr_detail:string; // 상세주소
+  charger_tel:string; // 연락처
+  latitude:string; // 위도
+  longitude:string; // 경도
+  charger_tp:string; // 충전기타입
+  charger_socket:string; // 충전방식(소켓)
+  supply_power:string; // 공급용량(Kw)
+  operator:string; // 충전사업자
+  membership:boolean; // 충전사업자 회원여부
+  open_time:Dayjs | null; // 예약가능한 시작 시간
+  close_time:Dayjs | null; // 예약가능한 종료 시간
+  res_yn:boolean; // 예약가능여부
+  pay_hour:string; // 시간당 주차요금
+  pay_total:string; // 이용요금(충전요금+주차비)
+  remarks:string; // 특이사항
+  user_tp:string;
 }
 
-const ChargerInfoSection: React.FC = () => {
+const ChargerInfoSection: React.FC<{userId:number}> = ({userId}) => {
   const [chargerInfo, setChargerInfo] = useState<chargerInfoProp>({
-    addr: '',
-    addrDetail: '',
-    chargerTel: '',
-    chargerTp:'',
-    chargerSocket: '',
-    supplyPower: '',
-    operator: '',
-    membership: 'N',
-    openTime: '00:00:00',
-    closeTime: '23:59:59',
-    payHour: '',
-    remarks: ''
+    addr:'',
+    addr_detail:'',
+    charger_tel:'',
+    latitude:'',
+    longitude:'',
+    charger_tp:'',
+    charger_socket:'',
+    supply_power:'',
+    operator:'',
+    membership:false,
+    open_time:null,
+    close_time:null,
+    res_yn:false,
+    pay_hour:'',
+    pay_total:'',
+    remarks:'',
+    user_tp:''
   })
 
   const handleSelectChange = (event: SelectChangeEvent) => {
-    if (event.target.name == 'chargerSocket') {
-      setChargerInfo((prev) => ({
+    if(event.target.name == 'charger_socket') {
+      setChargerInfo((prev)=>({
         ...prev,
-        chargerSocket: event.target.value
+        charger_socket: event.target.value
       }))
     }
   };
 
-  const handleInputChange = (field: keyof chargerInfoProp) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (field: keyof chargerInfoProp) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = event.target
     setChargerInfo(prev => ({
       ...prev,
@@ -54,48 +68,60 @@ const ChargerInfoSection: React.FC = () => {
     }))
   };
 
-  const handleCheckboxChange = (event: React.SyntheticEvent<Element, Event>, isChecked: boolean) => {
-    setChargerInfo((prev) => ({
-      ...prev,
-      membership: isChecked ? 'Y' : 'N' // true면 'Y', false면 'N'으로 설정
+  const handleCheckboxChange = (field: keyof chargerInfoProp) => (event: React.SyntheticEvent<Element, Event>, isChecked: boolean) => {
+    setChargerInfo((prev)=>({
+        ...prev,
+        [field]: isChecked
     }))
   };
 
+  // 전송할 데이터 검증
+  const beforeValidate = () => {
+      if (!chargerInfo.open_time || !chargerInfo.close_time) {
+      alert('공유시간(시작/종료)을 모두 선택해주세요.');
+      return false;
+    }
+    return true;
+  }
+
   // 폼 제출 처리 함수
   const handleSubmit = async (event: React.FormEvent) => {
-  event.preventDefault();
+    event.preventDefault();
+    if (!beforeValidate()) return;
 
-  try {
-    const payload = {
-      ... chargerInfo,
-      //아이디 로그인한 아이디 가져와야함
-      userId: '1',
-    };
+    try {
+      let response:any = null;
+      if(chargerInfo.charger_id) {
+        response = await axios.put(`http://localhost/evlink/mypage/charger/${chargerInfo.charger_id}`, chargerInfo, {
+          headers:{"Content-Type":"application/json"},
+          withCredentials: true
+        });
+      }else{
+        response = await axios.post('http://localhost/evlink/mypage/charger/add', chargerInfo, {
+          headers: {"Content-Type":"application/json"},
+          withCredentials: true
+        });
+      }
+      // console.log(response)
 
-    const response = await fetch('http://localhost:80/evlink/api/charger/add', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      alert(result.message);
-    } else {
-      alert(`오류: ${result.message}`);
+      if (response.data.success) {
+        console.log(response.data.message);
+      } else {
+        console.log(`오류: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error('API 호출 중 오류 발생:', error);
+      alert('데이터 전송에 실패했습니다. 네트워크 연결을 확인해주세요.');
     }
-  } catch (error) {
-    console.error('API 호출 중 오류 발생:', error);
-    alert('데이터 전송에 실패했습니다. 네트워크 연결을 확인해주세요.');
-  }
-};
+  };
 
 
   // 다음 우편번호 서비스 호출 함수
   const getAddress = () => {
+    if (!(window as any).daum?.Postcode) {
+      alert('주소 검색 스크립트가 아직 로드되지 않았습니다.');
+      return;
+    }
     new daum.Postcode({
       oncomplete: function (data: any) {
         let fullAddr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
@@ -114,59 +140,205 @@ const ChargerInfoSection: React.FC = () => {
         setChargerInfo(prev => ({
           ...prev,
           addr: fullAddr + extraAddr,
-          addrDetail: '' // 주소 검색 시 상세주소는 비워줌
+          addr_detail: '' // 주소 검색 시 상세주소는 비워줌
         }));
       }
     }).open();
   };
 
+  useEffect(() => {
+    const getData = async () => {
+      const response = await axios.get(`http://localhost/evlink/mypage/charger/${userId}`, {
+        withCredentials: true
+      })
+      // console.log(response.data)
+      if(response.data) {
+        const chargerData = {
+          user_id: response.data.userId,
+          charger_id: response.data.chargerId,
+          addr: response.data.addr,
+          addr_detail: response.data.addrDetail,
+          charger_tel: response.data.chargerTel,
+          latitude: response.data.latitude,
+          longitude: response.data.longitude,
+          charger_tp: response.data.chargerTp,
+          charger_socket: response.data.chargerSocket,
+          supply_power: response.data.supplyPower,
+          operator: response.data.operator,
+          membership: response.data.membership,
+          open_time: dayjs(response.data.openTime, "HH:mm:ss"),
+          close_time: dayjs(response.data.closeTime, "HH:mm:ss"),
+          res_yn: response.data.resYn,
+          pay_hour: response.data.payHour,
+          pay_total: response.data.payTotal,
+          remarks: response.data.remarks,
+          user_tp: response.data.user_tp
+        }
+        setChargerInfo(chargerData)
+      }else{
+        setChargerInfo((prev)=>({
+          ...prev,
+          user_id: userId
+        }))
+      }
+    }
+    getData()
+  }, [])
+
   return (
-    <div>
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
       <form onSubmit={handleSubmit}>
-        <Box display="flex" alignItems="center" gap={2}>
-          <TextField label="주소" name="addr" size="small" value={chargerInfo.addr} margin="dense" variant="standard" InputProps={{ readOnly: true }} required style={{ margin: "9px", width: "350px" }} />
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: { xs: 'stretch', sm: 'flex-end' }, mb: 3 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <label htmlFor="addr" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>주소</label>
+            <input 
+              id="addr"
+              type="text"
+              name="addr" 
+              value={chargerInfo.addr} 
+              readOnly
+              required 
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                fontSize: '16px',
+                outline: 'none',
+                backgroundColor: '#f8f9fa',
+                color: '#666',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
 
-          <Button variant="contained" size="small" onClick={getAddress} sx={{ mt: 2, backgroundColor: '#0033A0' }}>검색</Button>
-
+          <Button 
+            variant="contained" 
+            size="medium" 
+            onClick={getAddress} 
+            sx={{ 
+              backgroundColor: '#0033A0',
+              minWidth: '100px',
+              height: '48px',
+              borderRadius: '8px',
+              '&:hover': {
+                backgroundColor: '#002080'
+              }
+            }}
+          >
+            검색
+          </Button>
         </Box>
-        <TextField label="상세주소" name="addrDetail" size="small" value={chargerInfo.addrDetail} margin="dense" variant="standard" onChange={handleInputChange('addrDetail')} required style={{ margin: "9px", width: "440px" }} /><br />
-        <TextField label="연락처" name="chargerTel" size="small" value={chargerInfo.chargerTel} margin="dense" variant="standard" onChange={handleInputChange('chargerTel')} required style={{ margin: "9px" }} /><br />
-        <RadioGroup
-        row
-        name="chargerTp"
-        value={chargerInfo.chargerTp}
-        onChange={handleInputChange('chargerTp')}
-    >
-        <FormControlLabel value="급속" control={<Radio />} label="급속" />
-        <FormControlLabel value="완속" control={<Radio />} label="완속" />
-    </RadioGroup>
-        <FormControl style={{ margin: "15px 8px" }}>
-          <FormLabel>충전방식</FormLabel>
-          <RadioGroup row name="chargerSocket" value={chargerInfo.chargerSocket} onChange={handleSelectChange}>
-            <TableContainer component={Paper}>
-              <Table size="small" aria-label="caption table" sx={{ borderTop: "1px solid rgba(194, 194, 194, 0.6)" }}>
-                <TableHead>
+        <div style={{ marginBottom: '24px' }}>
+          <label htmlFor="addr_detail" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>상세주소</label>
+          <input 
+            id="addr_detail"
+            type="text"
+            name="addr_detail" 
+            value={chargerInfo.addr_detail} 
+            required 
+            onChange={handleInputChange('addr_detail')}
+            style={{
+              width: '100%',
+              maxWidth: '500px',
+              padding: '12px 16px',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              fontSize: '16px',
+              outline: 'none',
+              backgroundColor: '#fff',
+              transition: 'border-color 0.2s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#0033A0'}
+            onBlur={(e) => e.target.style.borderColor = '#ddd'}
+          />
+        </div>
+        <div style={{ marginBottom: '24px' }}>
+          <label htmlFor="charger_tel" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>연락처</label>
+          <input 
+            id="charger_tel"
+            type="tel"
+            name="charger_tel" 
+            value={chargerInfo.charger_tel} 
+            required 
+            onChange={handleInputChange('charger_tel')}
+            style={{
+              width: '100%',
+              maxWidth: '300px',
+              padding: '12px 16px',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              fontSize: '16px',
+              outline: 'none',
+              backgroundColor: '#fff',
+              transition: 'border-color 0.2s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#0033A0'}
+            onBlur={(e) => e.target.style.borderColor = '#ddd'}
+          />
+        </div>
+        <Box sx={{ mb: 3 }}>
+          <FormLabel sx={{ fontSize: '16px', fontWeight: '500', color: '#333', mb: 2, display: 'block' }}>충전기 타입</FormLabel>
+          <RadioGroup 
+            row 
+            name="charger_tp" 
+            value={chargerInfo.charger_tp} 
+            onChange={handleInputChange('charger_tp')}
+            sx={{ flexWrap: 'wrap', gap: 1 }}
+          >
+            <FormControlLabel 
+              value="급속" 
+              control={<Radio sx={{ '&.Mui-checked': { color: '#0033A0' } }} />} 
+              label="급속" 
+              sx={{ mr: 3 }}
+            />
+            <FormControlLabel 
+              value="완속" 
+              control={<Radio sx={{ '&.Mui-checked': { color: '#0033A0' } }} />} 
+              label="완속" 
+            />
+          </RadioGroup>
+        </Box>
+        <FormControl sx={{ margin: "20px 0" }}>
+          <FormLabel sx={{ fontSize: '16px', fontWeight: '500', color: '#333', mb: 2 }}>충전방식</FormLabel>
+          <RadioGroup name="charger_socket" value={chargerInfo.charger_socket} onChange={handleSelectChange}>
+            <TableContainer 
+              component={Paper} 
+              sx={{ 
+                borderRadius: '8px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}
+            >
+              <Table size="medium" aria-label="charger types table">
+                <TableHead sx={{ backgroundColor: '#f8f9fa' }}>
                   <TableRow>
-                    <TableCell align="center">선택</TableCell>
-                    <TableCell align="center">종류</TableCell>
-                    <TableCell align="center">설명</TableCell>
-                    <TableCell align="center">충전소켓</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: '600' }}>선택</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: '600' }}>종류</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: '600' }}>충전소켓</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {CahrgerTypes.map((opt) => (
-                    <TableRow key={opt.id}>
+                    <TableRow key={opt.id} sx={{ '&:hover': { backgroundColor: '#f8f9fa' } }}>
                       <TableCell align="center">
-                        <FormControlLabel value={opt.id} control={<Radio />} label="" />
+                        <FormControlLabel 
+                          value={opt.id} 
+                          control={<Radio sx={{ '&.Mui-checked': { color: '#0033A0' } }} />} 
+                          label="" 
+                        />
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ fontSize: '14px' }}>
                         {opt.label}
                       </TableCell>
                       <TableCell align="center">
-                        {opt.description}
-                      </TableCell>
-                      <TableCell align="center">
-                        <img src={`${process.env.PUBLIC_URL}/${opt.img}`} alt={opt.label} width={60} />
+                        <img 
+                          src={`${process.env.PUBLIC_URL}/${opt.img}`} 
+                          alt={opt.label} 
+                          style={{ width: '60px', height: 'auto' }}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -174,48 +346,226 @@ const ChargerInfoSection: React.FC = () => {
               </Table>
             </TableContainer>
           </RadioGroup>
-        </FormControl><br />
-        <TextField label="최대출력(kW)" name="supplyPower" size="small" value={chargerInfo.supplyPower} margin="dense" variant="standard" onChange={handleInputChange('supplyPower')} required style={{ margin: "9px" }} /><br />
-        <Box display="flex" alignItems="center" gap={2}>
-          <TextField label="충전사업자" name="operator" size="small" value={chargerInfo.operator} margin="dense" variant="standard" onChange={handleInputChange('operator')} required style={{ margin: "9px" }} />
-          <FormControlLabel checked={chargerInfo.membership === 'Y'} onChange={handleCheckboxChange} control={<Checkbox />} label="회원여부" sx={{ mt: '6px' }} /> <br />
+        </FormControl>
+        <div style={{ marginBottom: '24px' }}>
+          <label htmlFor="supply_power" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>공급용량(kW)</label>
+          <input 
+            id="supply_power"
+            type="number"
+            name="supply_power" 
+            value={chargerInfo.supply_power} 
+            required 
+            onChange={handleInputChange('supply_power')}
+            style={{
+              width: '100%',
+              maxWidth: '200px',
+              padding: '12px 16px',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              fontSize: '16px',
+              outline: 'none',
+              backgroundColor: '#fff',
+              transition: 'border-color 0.2s ease',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#0033A0'}
+            onBlur={(e) => e.target.style.borderColor = '#ddd'}
+          />
+        </div>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: { xs: 'flex-start', sm: 'flex-end' }, mb: 3 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <label htmlFor="operator" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>충전사업자</label>
+            <input 
+              id="operator"
+              type="text"
+              name="operator" 
+              value={chargerInfo.operator} 
+              required 
+              onChange={handleInputChange('operator')}
+              style={{
+                width: '100%',
+                maxWidth: '300px',
+                padding: '12px 16px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                fontSize: '16px',
+                outline: 'none',
+                backgroundColor: '#fff',
+                transition: 'border-color 0.2s ease',
+                boxSizing: 'border-box'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#0033A0'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
+            />
+          </div>
+          <FormControlLabel 
+            required 
+            checked={chargerInfo.membership} 
+            onChange={handleCheckboxChange('membership')} 
+            control={<Checkbox sx={{ '&.Mui-checked': { color: '#0033A0' } }} />} 
+            label="회원여부" 
+            sx={{ mt: { xs: 1, sm: 0 } }} 
+          />
         </Box>
-        <FormControl style={{ margin: "15px 8px" }}>
-          <FormLabel>사용허가시간</FormLabel>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DemoContainer components={['TimePicker', 'TimePicker']}>
+        <FormControl sx={{ margin: "20px 0" }}>
+          <FormLabel sx={{ fontSize: '16px', fontWeight: '500', color: '#333', mb: 2 }}>공유시간</FormLabel>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Stack 
+              direction={{ xs: 'column', sm: 'row' }} 
+              spacing={2} 
+              alignItems={{ xs: 'stretch', sm: 'center' }} 
+              sx={{ mt: 1 }}
+            >
               <TimePicker
                 label="시작시간"
-                name="openTime"
-                // 문자열을 Date 객체로 변환하여 TimePicker의 value로 사용
-                value={parse(chargerInfo.openTime, 'HH:mm:ss', new Date())}
-                onChange={(newValue) => {
-                  if (newValue) {
-                    setChargerInfo((prev) => ({ ...prev, openTime: format(newValue as Date, 'HH:mm:ss') }));
+                name="open_time"
+                views={['hours']}
+                format="HH:mm"
+                ampm={true}
+                timeSteps={{minutes:60}}
+                value={chargerInfo.open_time}
+                onChange={(newValue) => setChargerInfo((prev)=>({...prev, open_time: newValue}))}
+                slotProps={{
+                  textField: {
+                    sx: {
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px'
+                      }
+                    }
+                  },
+                  layout: {
+                    sx: {
+                      '& .MuiMultiSectionDigitalClockSection-root': {
+                        scrollbarGutter: 'stable both-edges',
+                        '& .MuiList-root': { overflowY: 'scroll' }
+                      },
+                      '& .MuiDigitalClock-root .MuiList-root': {
+                        overflowY: 'scroll',
+                        scrollbarGutter: 'stable both-edges'
+                      },
+                    }
                   }
                 }}
               />
               <TimePicker
                 label="종료시간"
-                name="closeTime"
-                // 문자열을 Date 객체로 변환하여 TimePicker의 value로 사용
-                value={parse(chargerInfo.closeTime, 'HH:mm:ss', new Date())}
-                onChange={(newValue) => {
-                  if (newValue) {
-                    setChargerInfo((prev) => ({ ...prev, closeTime: format(newValue as Date, 'HH:mm:ss') }));
+                name="close_time"
+                views={['hours']}
+                format="HH:mm"
+                ampm={true}
+                timeSteps={{minutes:60}}
+                value={chargerInfo.close_time}
+                onChange={(newValue) => setChargerInfo((prev)=>({...prev, close_time: newValue}))}
+                slotProps={{
+                  textField: {
+                    sx: {
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: '8px'
+                      }
+                    }
+                  },
+                  layout: {
+                    sx: {
+                      '& .MuiMultiSectionDigitalClockSection-root': {
+                        scrollbarGutter: 'stable both-edges',
+                        '& .MuiList-root': { overflowY: 'scroll' }
+                      },
+                      '& .MuiDigitalClock-root .MuiList-root': {
+                        overflowY: 'scroll',
+                        scrollbarGutter: 'stable both-edges'
+                      },
+                    }
                   }
                 }}
               />
-            </DemoContainer>
+              <FormControlLabel 
+                required 
+                checked={chargerInfo.res_yn} 
+                onChange={handleCheckboxChange('res_yn')} 
+                control={<Checkbox sx={{ '&.Mui-checked': { color: '#0033A0' } }} />} 
+                label="공유여부" 
+                sx={{ mt: { xs: 1, sm: 0 } }} 
+              />
+            </Stack>
           </LocalizationProvider>
-        </FormControl><br />
-        <TextField label="시간당 주차 이용요금" name="payHour" size="small" value={chargerInfo.payHour} margin="dense" variant="standard" onChange={handleInputChange('payHour')} required style={{ marginLeft: "9px", marginBottom: "35px" }} /><br />
-        <FormControl fullWidth>
-          <TextField label="특이사항" name="remarks" multiline variant="outlined" value={chargerInfo.remarks} onChange={handleInputChange('remarks')} rows={5}
-            sx={{ '& .MuiInputBase-root': { overflowY: 'auto', }, '& textarea': { resize: 'none', }, }} />
         </FormControl>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-          <Button variant="contained" size="small" type="submit" sx={{ backgroundColor: '#0033A0' }}>저장</Button>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: { xs: 'flex-start', sm: 'flex-end' }, mb: 3 }}>
+          <div>
+            <label htmlFor="pay_hour" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>주차 이용요금(시간당)</label>
+            <input 
+              id="pay_hour"
+              type="number"
+              name="pay_hour" 
+              value={chargerInfo.pay_hour} 
+              required 
+              onChange={handleInputChange('pay_hour')}
+              style={{
+                width: '100%',
+                maxWidth: '200px',
+                padding: '12px 16px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                fontSize: '16px',
+                outline: 'none',
+                backgroundColor: '#fff',
+                transition: 'border-color 0.2s ease',
+                boxSizing: 'border-box'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#0033A0'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
+            />
+          </div>
+          <FormLabel sx={{ fontSize: '14px', fontWeight: '500', color: '#333', mt: { xs: 1, sm: 0 } }}>
+            예상 청구비용 : {chargerInfo.pay_total}
+          </FormLabel>
+        </Box>
+        <FormControl fullWidth sx={{ marginTop: 4 }}>
+          <div>
+            <label htmlFor="remarks" style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#333' }}>특이사항</label>
+            <textarea 
+              id="remarks"
+              name="remarks" 
+              value={chargerInfo.remarks} 
+              onChange={handleInputChange('remarks')}
+              rows={5}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                fontSize: '16px',
+                outline: 'none',
+                backgroundColor: '#fff',
+                resize: 'none',
+                overflowY: 'auto',
+                transition: 'border-color 0.2s ease',
+                boxSizing: 'border-box',
+                fontFamily: 'inherit'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#0033A0'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
+            />
+          </div>
+        </FormControl>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <Button 
+            variant="contained" 
+            size="medium" 
+            type="submit" 
+            sx={{
+              backgroundColor: '#0033A0',
+              minWidth: '120px',
+              padding: '12px 24px',
+              fontSize: '16px',
+              fontWeight: '500',
+              borderRadius: '8px',
+              '&:hover': {
+                backgroundColor: '#002080'
+              }
+            }}
+          >
+            저장
+          </Button>
         </Box>
       </form>
     </div>

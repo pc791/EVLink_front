@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from 'auth/AuthProvider';
+import { useAuth } from '../../auth/AuthProvider';
 import styles from './Login.module.css';
 
 export default function Login() {
@@ -24,7 +24,7 @@ export default function Login() {
 
           {/* 패스워드리스 */}
           <div className={styles.lane}>
-            <button className={styles.textButton} onClick={() => passwordless('')}>
+            <button className={styles.textButton} onClick={() => navigate("/passwordLess")}>
               Passwordless
             </button>
           </div>
@@ -50,7 +50,7 @@ export default function Login() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   // isLoggedIn이면 위 useEffect가 바로 이동시킴

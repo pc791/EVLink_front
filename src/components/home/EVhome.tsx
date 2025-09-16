@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './EVhome.module.css';
 import { NavLink } from 'react-router-dom';
-// import Faq from './faq/FAQ';
+
 
 const EVhome: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const EVhome: React.FC = () => {
             EVLink와 함께라면 전기차 충전이 더욱 간편해집니다. 전국 충전소 지도와 충전 예약 시스템 등
             최적화된 사용자 경험을 제공하여 여러분의 충전 여정을 지원합니다.
           </p>
-          <NavLink to='/map' className={styles.button}>충전소 찾기</NavLink>
+          <button className={styles.button}>충전소 찾기</button>
         </div>
         <div className={styles.image}>
           <img 
@@ -35,6 +35,7 @@ const EVhome: React.FC = () => {
               전기차 충전의 새로운 기준을 제시합니다.
             </p>
             <div className={styles.buttons}>
+              
               <button className={styles.button}>자세히 보기</button>
               <button className={styles.button}>가입하기</button>
             </div>
@@ -58,7 +59,7 @@ const EVhome: React.FC = () => {
             <div className={styles.image}>
               <img 
                 src="/images/main3.jpg" 
-                alt="World map with charging station pins"
+                alt="Charging station map"
               />
             </div>
             <h3 className={styles.cardTitle}>
@@ -67,7 +68,7 @@ const EVhome: React.FC = () => {
             <p className={styles.cardDescription}>
               EVLink는 전기차 충전소를 쉽게 찾고 예약할 수 있는 서비스를 제공합니다.
             </p>
-            <a href="#" className={styles.link}>자세히</a>
+            <NavLink to="/map" className={styles['link']}>자세히</NavLink>
           </div>
 
           <div className={styles.card}>
@@ -83,14 +84,14 @@ const EVhome: React.FC = () => {
             <p className={styles.cardDescription}>
               사용 내역과 예약 상세 내역을 한눈에 확인할 수 있습니다.
             </p>
-            <a href="#" className={styles.link}>확인</a>
+            <NavLink to="/history" className={styles['link']}>확인</NavLink>
           </div>
 
           <div className={styles.card}>
             <div className={styles.image}>
               <img 
                 src="/images/main8.jpg" 
-                alt="EV charging station in green setting"
+                alt="Community charging station"
               />
             </div>
             <h3 className={styles.cardTitle}>
@@ -99,7 +100,7 @@ const EVhome: React.FC = () => {
             <p className={styles.cardDescription}>
               이벤트 공지사항을 통해 최신 정보를 받아보세요.
             </p>
-            <a href="#" className={styles.link}>참여</a>
+            <NavLink to="/event" className={styles['link']}>참여</NavLink>
           </div>
         </div>
       </section>
@@ -107,34 +108,32 @@ const EVhome: React.FC = () => {
       {/* Reviews Section */}
       <section className={styles.section}>
         <h2 className={styles.title}>고객 후기</h2>
-        <p className={styles.subtitle}>전기차 충전의 새로운 경험을 세공합니다.</p>
+        <p className={styles.subtitle}>전기차 충전의 새로운 경험을 제공합니다.</p>
         
         <div className={styles.carousel}>
           <button className={styles.arrow}>‹</button>
           
           <div className={styles.reviews}>
             <div className={styles.reviewCard}>
-              <div className={styles.logo}>Webflow</div>
+              <div className={styles.logo}>EVLink</div>
               <p className={styles.quote}>
                 EVLink 덕분에 충전이 훨씬 간편해졌습니다.
               </p>
               <div className={styles.reviewer}>
-                <div className={styles.name}>김철수</div>
-                <div className={styles.job}>팀장, ABC회사</div>
+                <div className={styles.name}>테스형</div>
               </div>
-              <a href="#" className={styles.link}>Read case study</a>
             </div>
 
             <div className={styles.reviewCard}>
-              <div className={styles.logo}>Relume</div>
+              <div className={styles.logo}>EVLink
+
+              </div>
               <p className={styles.quote}>
-                EVLink는 충전소를 쉽게 찾게 해줍니다.
+                 충전소를 쉽게 찾게 해줘서 예약도 가능하니 편리합니다
               </p>
               <div className={styles.reviewer}>
-                <div className={styles.name}>이영희</div>
-                <div className={styles.job}>부장, XYZ기업</div>
+                <div className={styles.name}>테스누나</div>
               </div>
-              <a href="#" className={styles.link}>Read case study</a>
             </div>
           </div>
 

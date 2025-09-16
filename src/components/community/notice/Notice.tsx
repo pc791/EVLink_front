@@ -1,200 +1,159 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Notice.module.css';
+import { BASE_URL } from '../../../auth/constants';
+
+type Yn = 'Y' | 'N';
 
 interface NoticeItem {
-  id: number;
+  noticeId: number;
   title: string;
   content: string;
-  date: string;
-  major_yn: boolean;
+  noticeDt: string;
   hit: number;
+  majorYn: Yn;
+  useYn: Yn;
 }
 
+const normalize = (it: any): NoticeItem => ({
+  noticeId: Number(it.noticeId ?? it.notice_id),
+  title: String(it.title ?? ''),
+  content: String(it.content ?? ''),
+  noticeDt: String(it.noticeDt ?? it.notice_dt ?? ''),
+  hit: Number(it.hit ?? 0),
+  majorYn: (it.majorYn ?? it.majoryn ?? it.major_yn ?? 'N') as Yn,
+  useYn: (it.useYn ?? it.useyn ?? it.use_yn ?? 'Y') as Yn,
+});
+
 const Notice: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [noticeData, setNoticeData] = useState<NoticeItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
-  const noticeData: NoticeItem[] = [
-    {
-      id: 1,
-      title: "주요공지사항1",
-      content: "내용입니다1.",
-      date: "2025-01-10",
-      major_yn: true,
-      hit: 1
-    },
-    {
-      id: 2,
-      title: "주요공지사항2",
-      content: "내용입니다2.",
-      date: "2025-01-08",
-      major_yn: true,
-      hit: 1
-    },
-    {
-      id: 3,
-      title: "공지사항3",
-      content: "내용입니다3.",
-      date: "2025-01-05",
-      major_yn: true,
-      hit: 1
-    },
-    {
-      id: 4,
-      title: "공지사항4",
-      content: "내용입니다4.",
-      date: "2024-12-28",
-      major_yn: false,
-      hit: 1
-    },
-    {
-      id: 5,
-      title: "공지사항5",
-      content: "내용입니다5",
-      date: "2024-12-20",
-      major_yn: false,
-      hit: 1
-    },
-    {
-      id: 6,
-      title: "공지사항6",
-      content: "내용입니다6",
-      date: "2024-12-15",
-      major_yn: false,
-      hit: 1
-    },
-    {
-      id: 7,
-      title: "공지사항7",
-      content: "내용입니다7",
-      date: "2024-12-10",
-      major_yn: false,
-      hit: 1
-    },
-    {
-      id: 8,
-      title: "공지사항8",
-      content: "내용입니다8",
-      date: "2024-12-05",
-      major_yn: false,
-      hit: 1
-    },
-    {
-      id: 9,
-      title: "공지사항9",
-      content: "내용입니다9.",
-      date: "2024-11-30",
-      major_yn: false,
-      hit: 1
-    },
-    {
-      id: 10,
-      title: "공지사항10",
-      content: "내용입니다10.",
-      date: "2024-11-25",
-      major_yn: false,
-      hit: 2
+  const load = async () => {
+    try {
+      const url = `${BASE_URL.replace(/\/+$/, '')}/notice/noticeList?t=${Date.now()}`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw = await res.json();
+      const arr: any[] = Array.isArray(raw) ? raw : (raw?.list ?? raw?.data ?? raw?.result ?? []);
+      setNoticeData(arr.map(normalize));
+    } catch (e) {
+      console.error('Failed to load notices:', e);
+      setNoticeData([]);
     }
-  ];
+  };
 
-  const primaryNotices = noticeData.filter(notice => notice.major_yn);
-  const normalNotices = noticeData.filter(notice => !notice.major_yn);
+  useEffect(() => { load(); }, []);
 
-  const filteredNotices = normalNotices.filter(notice =>
-    notice.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const usable = noticeData.filter(n => n.useYn === 'Y');
+
+  const pinned = usable
+    .filter(n => n.majorYn === 'Y')
+    .sort((a, b) => b.noticeId - a.noticeId);
+
+  const normalsAll = usable
+    .filter(n => n.majorYn !== 'Y')
+    .sort((a, b) => b.noticeId - a.noticeId);
+
+  const filteredNormals = normalsAll.filter(n =>
+    (n.title ?? '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const itemsPerPage = 8;
-  const totalPages = Math.ceil(filteredNotices.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentNotices = filteredNotices.slice(startIndex, startIndex + itemsPerPage);
-
-  const handleNoticeClick = (notice: NoticeItem) => {
-    navigate(`/notice/${notice.id}`, { state: { notice } });
-  };
+  const totalPages = Math.max(1, Math.ceil(filteredNormals.length / itemsPerPage));
+  const start = (currentPage - 1) * itemsPerPage;
+  const pageNormals = filteredNormals.slice(start, start + itemsPerPage);
 
   const handleSearch = () => {
-    setSearchQuery(searchTerm);
+    setSearchQuery(searchTerm.trim());
     setCurrentPage(1);
   };
-
-  // const handleKeyPress = (e: React.KeyboardEvent) => {
-  //   if (e.key === 'Enter') {
-  //     handleSearch();
-  //   }
-  // };
+  const handleEnter = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSearch();
+  };
+  const goDetail = (n: NoticeItem) => navigate(`/notice/${n.noticeId}`);
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.noticetitle}>공지사항</h1>
-      
-      <div className={styles.searchSection}>
-        <input
-          type="text"
-          placeholder="검색창"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          // onKeyPress={handleKeyPress}
-          className={styles.searchInput}
-        />
-        <button onClick={handleSearch} className={styles.searchButton}>
-          검색
-        </button>
-      </div>
-      
-      <div className={styles.tableContainer}>
-        <table className={styles.noticeTable}>
-          <thead>
-            <tr>
-              <th>제목</th>
-              <th>등록일</th>
-              <th>조회수</th>
-            </tr>
-          </thead>
-          <tbody>
-            {primaryNotices.map((notice) => (
-              <tr key={notice.id} className={styles.primaryRow} onClick={() => handleNoticeClick(notice)}>
-                <td>
-                  <span className={styles.badge}>필독</span>
-                  {notice.title}
-                </td>
-                <td>{notice.date}</td>
-                <td>{notice.hit}</td>
-              </tr>
-            ))}
-            {currentNotices.map((notice) => (
-              <tr key={notice.id} className={styles.normalRow} onClick={() => handleNoticeClick(notice)}>
-                <td>{notice.title}</td>
-                <td>{notice.date}</td>
-                <td>{notice.hit}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <h1 className={styles.noticetitle}>공지사항</h1>
 
-      {totalPages > 1 && (
+        <div className={styles.searchSection}>
+          <input
+            type="text"
+            placeholder="검색창"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleEnter}
+            className={styles.searchInput}
+          />
+          <button onClick={handleSearch} className={styles.searchButton}>검색</button>
+        </div>
+
+        <div className={styles.tableContainer}>
+          <table className={styles.noticeTable}>
+            <thead>
+              <tr>
+                <th>등록일</th>
+                <th>제목</th>
+                <th>조회수</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* 🔴 필독: 항상 최상단 */}
+              {pinned.map(n => (
+                <tr key={`pin-${n.noticeId}`} className={styles.pinnedRow} onClick={() => goDetail(n)}>
+                  <td>{n.noticeDt}</td>
+                  <td>
+                    <span className={styles.badgePinned}>필독</span>
+                    {n.title}
+                  </td>
+                  <td>{Number.isFinite(n.hit) ? n.hit : 0}</td>
+                </tr>
+              ))}
+
+              {/* 일반 공지: 검색 + 페이징 */}
+              {pageNormals.map(n => (
+                <tr key={n.noticeId} className={styles.normalRow} onClick={() => goDetail(n)}>
+                  <td>{n.noticeDt}</td>
+                  <td>{n.title}</td>
+                  <td>{Number.isFinite(n.hit) ? n.hit : 0}</td>
+                </tr>
+              ))}
+
+              {pinned.length === 0 && filteredNormals.length === 0 && (
+                <tr>
+                  <td colSpan={3} style={{ textAlign: 'center', padding: '24px' }}>
+                    표시할 공지가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/*  페이지네이션 */}
         <div className={styles.pagination}>
-          <button 
-            className={styles.pageButton} 
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+          <button
+            className={styles.pageButton}
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
             이전
           </button>
           <span>{currentPage} / {totalPages}</span>
-          <button 
-            className={styles.pageButton} 
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+          <button
+            className={styles.pageButton}
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
             다음
           </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };

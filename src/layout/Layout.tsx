@@ -10,6 +10,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const location = useLocation();
     // 맵 페이지 경로가 '/map' 인 경우 Footer 숨김 처리
     const isMapPage = location.pathname === '/map';
+
     return (
         <div className={styles.layout}>
             <Header />
