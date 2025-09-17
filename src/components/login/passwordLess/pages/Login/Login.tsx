@@ -9,7 +9,7 @@ import { BASE_URL } from "../../../../../auth/constants";
 function Login(props: any) {
     const { checkLogin } = useAuth();
     useEffect(() => {
-		selPassword(parseInt(window.localStorage.getItem("selPasswordNo") || "1"));
+		selPassword(parseInt(window.localStorage.getItem("selPasswordNo") || "2"));
     }, []);
 
     const common = Common();
