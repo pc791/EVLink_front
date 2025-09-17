@@ -7,6 +7,8 @@ import DigitalClockValue from './Timetable';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { BASE_URL } from 'auth/constants';
 
 const getTodayDate = () => {
     const today = new Date();
@@ -46,8 +48,10 @@ const Map: React.FC = () => {
     const [timelineScale, setTimelineScale] = useState<number>(1440); // minutes: 1440 or 2880
     const location = useLocation();
     const [isModal2Visible, setIsModal2Visible] = useState(false);
+    // ✅ 예약된 시간을 저장할 새로운 상태 추가
+    const [unavailableHours, setUnavailableHours] = useState<number[]>([]);
 
-    const navigate = useNavigate(); // 추가
+    const navigate = useNavigate();
 
     const imageFileHtml = (type: string): string => {
         if (!type) return "";
@@ -283,7 +287,7 @@ const Map: React.FC = () => {
                 }
 
                 const initialStation = stations[0];
-                
+
                 // 2025.09.11 load 이슈 조치
                 const centerLocation = initialStation ? new naver.maps.LatLng(initialStation.position.lat, initialStation.position.lng) : "";
                 const map = new naver.maps.Map(mapRef.current!, {
@@ -450,9 +454,38 @@ const Map: React.FC = () => {
     const centerLabel = timelineScale === 1440 ? '12:00' : '24:00';
     const rightLabel = timelineScale === 1440 ? '24:00' : '48:00';
 
+    
+    useEffect(() => {
+        const fetchReservedHours = async () => {
+            if (!timetoselect || !selectedChargerId || !selectedDate) {
+                // 필수 데이터가 없으면 실행하지 않음
+                setUnavailableHours([]);
+                return;
+            }
+
+            try {
+                const response = await axios.get(`${BASE_URL}/api/reservation/availability?chargerId=${selectedChargerId}&date=${selectedDate}`);
+                
+                if (response.data.success) {
+                    console.log('예약된 시간 데이터:', response.data.data);
+                    // ✅ 응답 데이터를 상태에 저장
+                    setUnavailableHours(response.data.data);
+                } else {
+                    console.error('예약된 시간 조회 실패:', response.data.message);
+                    setUnavailableHours([]);
+                }
+            } catch (error) {
+                console.error('예약된 시간 조회 중 오류 발생:', error);
+                setUnavailableHours([]);
+            }
+        };
+
+        fetchReservedHours();
+    }, [timetoselect, selectedChargerId, selectedDate]);
+
     return (
         <div className="container">
-        {/* <div className="container" onMouseUp={handleDragEnd}> */}
+            {/* <div className="container" onMouseUp={handleDragEnd}> */}
             <div className="search-bar">
                 <input
                     type="text"
@@ -523,6 +556,7 @@ const Map: React.FC = () => {
                                 <DigitalClockValue
                                     onChangeStart={(time) => setStartChargeTime(time)}
                                     onChangeEnd={(time) => setEndChargeTime(time)}
+                                    unavailableHours={unavailableHours}
                                 />
                             </div>
                             <div className="time-bar-container">
@@ -573,7 +607,7 @@ const Map: React.FC = () => {
                     onClose={() => setIsModalVisible(false)}
                     reservationDetails={reservationDetails}
                 />
-            )}            
+            )}
         </div>
     );
 };
