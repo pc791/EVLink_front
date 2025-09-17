@@ -19,7 +19,7 @@ function Login(props: any) {
 	const registerKeyRef = useRef<HTMLSpanElement>(null);
 
     const [formData, setFormData] = useState<{[key: string]: string}>({});
-    const [selPasswordNo, setSelPasswordNo] = useState(parseInt(window.localStorage.getItem("selPasswordNo") || "1"));  // 1:password, 2:passwordless, 3:passwordless manage
+    const [selPasswordNo, setSelPasswordNo] = useState(parseInt(window.localStorage.getItem("selPasswordNo") || "2"));  // 1:password, 2:passwordless, 3:passwordless manage
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
     const [checkMillisec, setCheckMillisec] = useState(0);
     let passwordlessTerms = useRef(0);

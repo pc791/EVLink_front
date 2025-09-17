@@ -244,6 +244,8 @@
   animation: fadeInUp 1s ease-out 3s forwards;
   opacity: 0;
   transform: translateY(30px);
+  text-decoration: none;
+  
 }
 
 .hero .button:hover {
@@ -330,6 +332,7 @@
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .section:nth-child(2) .button:hover {

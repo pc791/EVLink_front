@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './EVhome.module.css';
 import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 const EVhome: React.FC = () => {
@@ -14,7 +15,8 @@ const EVhome: React.FC = () => {
             EVLink와 함께라면 전기차 충전이 더욱 간편해집니다. 전국 충전소 지도와 충전 예약 시스템 등
             최적화된 사용자 경험을 제공하여 여러분의 충전 여정을 지원합니다.
           </p>
-          <button className={styles.button}>충전소 찾기</button>
+          <Link to='/map' className={styles.button}>충전소 찾기</Link>
+
         </div>
         <div className={styles.image}>
           <img 
@@ -36,8 +38,9 @@ const EVhome: React.FC = () => {
             </p>
             <div className={styles.buttons}>
               
-              <button className={styles.button}>자세히 보기</button>
-              <button className={styles.button}>가입하기</button>
+            <Link to="/serviceInfo" className={styles.button}>자세히 보기</Link>
+            <Link to="/Login" className={styles.button}>가입하기</Link>
+
             </div>
           </div>
           <div className={styles.right}>

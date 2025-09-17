@@ -170,7 +170,7 @@ const handleLogout = async () => {
                   {/* 순서: 내정보(👤) → 알림(🔔) → Logout */}
                   <NavLink to="/mypage" className={styles['my-info-button']} aria-label="내 정보">👤</NavLink>
                   {/* <NavLink to="/mypage" className={styles['notification-button']} aria-label="알림">🔔</NavLink> */}
-                  <button className={styles['logout-button']} onClick={handleLogout}>Logout</button>
+                  <button className={styles['logout-button']} onClick={handleLogout}>로그아웃</button>
                 </div>
               </div>
             )}
