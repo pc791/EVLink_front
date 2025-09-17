@@ -28,6 +28,7 @@ const QnaDetail: React.FC = () => {
                     `${BASE_URL}/board/detail?board_id=${id}`
                 );
                 setUpboard(resp.data);
+                console.log(upboard?.board_id)
 
                 // 2) 감정 분석 요청 (resp.data.content 사용)
                 const response = await axios.post(`${AI_URL}/lstm/predict`, {

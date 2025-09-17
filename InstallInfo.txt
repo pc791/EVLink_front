@@ -18,3 +18,4 @@ yarn add react-i18next
 
 yarn add antd
 yarn add react-markdown remark-gfm rehype-sanitize
+yarn add -D tailwindcss postcss autoprefixer // Tailwind 적용 위한 설치

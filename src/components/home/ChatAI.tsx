@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 import styles from "./AI.module.css";
+import { useNavigate } from "react-router-dom";
 
 export type Message = {
   id: string;
@@ -26,12 +27,9 @@ const nid = (n = 6) => Math.random().toString(36).slice(2, 2 + n);
 function normalizeTextPayload(payload: any): string {
   let raw: any = payload ?? "";
 
-  // payload might already be a string (AI reply) or an object returned from API
   if (typeof raw === "object") {
-    // if it has results/text field, prefer that
     raw = raw?.results ?? raw?.text ?? raw;
   }
-
   if (Array.isArray(raw)) {
     try {
       raw = raw.join("\n");
@@ -39,7 +37,6 @@ function normalizeTextPayload(payload: any): string {
       raw = raw.map(String).join("\n");
     }
   }
-
   if (typeof raw !== "string") {
     try {
       raw = JSON.stringify(raw, null, 2);
@@ -47,18 +44,13 @@ function normalizeTextPayload(payload: any): string {
       raw = String(raw);
     }
   }
-
-  // if string contains an encoded JSON string, unwrap once
   try {
     const maybe = JSON.parse(raw);
     if (typeof maybe === "string") raw = maybe;
   } catch {
     // ignore
   }
-
-  // Convert escaped newlines to actual newlines
   raw = raw.replace(/\\n/g, "\n");
-
   return raw;
 }
 
@@ -78,6 +70,8 @@ export default function ChatPanel({
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const nav = useNavigate();
 
   useEffect(() => {
     if (!scrollRef.current) return;
@@ -230,7 +224,7 @@ export default function ChatPanel({
           </button>
 
           <button
-            onClick={() => pushMessage({ id: nid(), from: "ai", text: "지도 열기 기능은 곧 제공됩니다.", ts: Date.now() })}
+            onClick={() => {pushMessage({ id: nid(), from: "ai", text: "지도 페이지로 이동하겠습니다.", ts: Date.now() }); nav("/map"); }}
             className={styles.actionBtn}
             type="button"
           >

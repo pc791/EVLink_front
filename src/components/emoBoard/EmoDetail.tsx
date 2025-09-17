@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { EmotionVO, EmoVO } from './emoData';
 import { Legend, Pie, PieChart, ResponsiveContainer, Sector, SectorProps } from 'recharts';
-import  { BASE_URL } from '../../auth/constants';
+import  { AI_URL, BASE_URL } from '../../auth/constants';
 import style from './emo.module.css'
 import { Card, Descriptions, Typography, Button, Space, message, Divider } from 'antd';
 
@@ -118,7 +118,7 @@ const EmoDetail: React.FC = () => {
                 setUpboard(resp.data);
 
                 // 2) 감정 분석 요청 (resp.data.content 사용)
-                const response = await axios.post(`${BASE_URL}/mykobert/mytransformers`, {
+                const response = await axios.post(`${AI_URL}/mykobert/mytransformers`, {
                     text: resp.data.content,
                 },{withCredentials:false});
                 console.log(response.data);
@@ -150,12 +150,12 @@ const EmoDetail: React.FC = () => {
             message.error('삭제에 실패했습니다.');
         }
     };
+    const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#a4de6c"];
     const chartData = Object.entries(data?.probs ?? {}).map(([key, emo], idx) => ({
         name: emo.label,      // "Angry"
         value: (emo.prob * 100),   // 0.26
         fill: COLORS[idx % COLORS.length], // 색상 순환
     }));
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
     return (
         <div className={style.page}>
             <div style={{height: '30px'}}></div>

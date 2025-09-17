@@ -39,7 +39,7 @@ const EmoForm: React.FC = () => {
     try {
       await axios.post(`${BASE_URL}/emotion/insert`, data);
       message.success('글이 등록되었습니다.');
-      navigate('/board');
+      navigate('/emoboard');
     } catch (error) {
       console.error('등록 실패:', error);
       message.error('등록 중 오류가 발생했습니다.');
