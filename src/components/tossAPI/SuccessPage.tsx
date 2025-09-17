@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { BASE_URL } from "../../auth/constants";
 
 interface ReservationData {
   chargerId: string;
@@ -44,7 +45,7 @@ export function SuccessPage() {
     };
 
     try {
-      const reservationResponse = await fetch('http://localhost:80/evlink/api/reservation', {
+      const reservationResponse = await fetch(`${BASE_URL}/api/reservation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(finalPayload),

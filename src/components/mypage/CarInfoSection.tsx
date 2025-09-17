@@ -2,6 +2,7 @@ import { Box, Button, FormControl, FormControlLabel, FormHelperText, FormLabel, 
 import React, { useEffect, useState } from 'react'
 import { ManufacturerData, CahrgerTypes } from './UserInfoData'
 import axios from 'axios';
+import { BASE_URL } from '../../auth/constants';
 
 interface carInfoProp {
   user_id?:number;
@@ -76,12 +77,12 @@ const CarInfoSection: React.FC<{userId:number}> = ({userId}) => {
     try{
       let response:any = null;
       if(carInfo.car_id) {
-        response = await axios.put(`http://localhost/evlink/mypage/car/${carInfo.car_id}`, carInfo, {
+        response = await axios.put(`${BASE_URL}/mypage/car/${carInfo.car_id}`, carInfo, {
           headers:{"Content-Type":"application/json"},
           withCredentials: true
         });
       }else{
-        response = await axios.post('http://localhost/evlink/mypage/car/add', carInfo, {
+        response = await axios.post(`${BASE_URL}/mypage/car/add`, carInfo, {
           headers:{"Content-Type":"application/json"},
           withCredentials: true
         });
@@ -100,7 +101,7 @@ const CarInfoSection: React.FC<{userId:number}> = ({userId}) => {
 
   useEffect(() => {
       const getData = async () => {
-        const response = await axios.get(`http://localhost/evlink/mypage/car/${userId}`, {
+        const response = await axios.get(`${BASE_URL}/mypage/car/${userId}`, {
           withCredentials: true
         })
         // console.log(response.data)

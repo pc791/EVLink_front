@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import style from './emo.module.css'
 import { EmotionProb, EmoVO, QnaVO } from './emoData';
+import  { BASE_URL, AI_URL } from '../../auth/constants';
 
 const { Title } = Typography;
 
@@ -36,7 +37,7 @@ const EmoForm: React.FC = () => {
     data.append('emotion', emotion);
 
     try {
-      await axios.post('http://192.168.0.133:80/evlink/emotion/insert', data);
+      await axios.post(`${BASE_URL}/emotion/insert`, data);
       message.success('글이 등록되었습니다.');
       navigate('/board');
     } catch (error) {
@@ -135,7 +136,7 @@ const EmoForm: React.FC = () => {
   }
   const fetchAI = async () => {
     try {
-      const response = await axios.post("http://3.34.69.170:9000/mykobert/mytransformers", {
+      const response = await axios.post(`${AI_URL}/mykobert/mytransformers`, {
         text: formData.content,
       },{withCredentials:false});
       console.log(response);

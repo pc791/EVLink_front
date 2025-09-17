@@ -5,6 +5,7 @@ import { EmotionVO } from './emoData';
 import style from './emo.module.css'
 import { Input, Button, Select, Pagination, Space } from 'antd';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import  { BASE_URL, AI_URL } from '../../auth/constants';
 
 // const { Title } = Typography;
 const { Option } = Select;
@@ -21,7 +22,7 @@ const EmoList: React.FC = () => {
 
   const fetchUpboardList = async (page: number) => {
     try {
-      const response = await axios.get('http://192.168.0.133:80/evlink/emotion/list', {
+      const response = await axios.get(`${BASE_URL}/emotion/list`, {
         params: {
           cPage: page,
           searchType,

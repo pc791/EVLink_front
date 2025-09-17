@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Common } from "../Common";
 import qs from 'qs';
 import { useAuth } from "../../../../../auth/AuthProvider";
+import { BASE_URL } from "../../../../../auth/constants";
 
 function Login(props: any) {
     const { checkLogin } = useAuth();
@@ -107,7 +108,7 @@ function Login(props: any) {
 		return false;
 		}
 		const method = "post";
-		const url = "http://localhost/evlink/api/PLogin/loginCheck";
+		const url = `${BASE_URL}/api/PLogin/loginCheck`;
 		const data = qs.stringify(formData);
 		const config = {
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -170,7 +171,7 @@ function Login(props: any) {
 	const getTokenForOneTime = async () => {
 		let ret_val = "";
 		const method = "post";
-		const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+		const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 		const reqeustData = {
 			url: "getTokenForOneTimeUrl",
 			params: "userId=" + formData.id
@@ -197,7 +198,7 @@ function Login(props: any) {
 const passwordlessCheckID = async (QRReg: string) => {
 	let ret_val = "";
 	const method = "post";
-	const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+	const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 	const reqeustData = {
 		url: "isApUrl",
 		params: "userId=" + formData.id + "&QRReg=" + QRReg
@@ -232,7 +233,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 
 	const loginPasswordlessStart = async (token: string) => {
 		const method = "post";
-		const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+		const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 		let reqeustData = {
 			url: "getSpUrl",
 			params: "userId=" + formData.id + "&token=" + token
@@ -272,7 +273,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 			
 			if(sessionId !== undefined && sessionId != null && sessionId !== "") {
 				const method = "post";
-				const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+				const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 				reqeustData = {
 					url: "cancelUrl",
 					params: "userId=" + formData.id + "&sessionId=" + sessionId
@@ -421,7 +422,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 		sessionId = sessionId = window.localStorage.getItem('session_id') || "";
 		if(gap_millisec < passwordlessTerms.current * 1000 - 1000) {
 			const method = "post";
-				const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+				const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 				var reqeustData = {
 					url: "resultUrl",
 					params: "userId=" + formData.id + "&sessionId=" + sessionId
@@ -501,7 +502,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 			}
 
 	const method = "post";
-    const url = "http://localhost/evlink/api/PLogin/passwordlessManageCheck";
+    const url = `${BASE_URL}/api/PLogin/passwordlessManageCheck`;
     var reqeustData = {
       id: formData.id,
       pw: formData.pw
@@ -538,7 +539,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 
 		const id = formData.id;
 		const method = "post";
-		const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+		const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 		const reqeustData = {
 			url: "joinApUrl",
 			params: "userId=" + id + "&token=" + PasswordlessToken
@@ -660,7 +661,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 		if(window.confirm("Passwordless 서비스를 해지하시겠습니까?")) {
 			var id = formData.id;
 			const method = "post";
-			const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+			const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 			var reqeustData = {
 				url: "withdrawalApUrl",
 				params: "userId=" + id + "&token=" + PasswordlessToken
@@ -770,7 +771,7 @@ const passwordlessCheckID = async (QRReg: string) => {
 		var id = formData.id;
 		sessionId = window.localStorage.getItem('session_id') || "";
 		const method = "post";
-		const url = "http://localhost/evlink/api/PLogin/passwordlessCallApi";
+		const url = `${BASE_URL}/api/PLogin/passwordlessCallApi`;
 		var reqeustData = {
 			url: "cancelUrl",
 			params: "userId=" + id + "&sessionId=" + sessionId

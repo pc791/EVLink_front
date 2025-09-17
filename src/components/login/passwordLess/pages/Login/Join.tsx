@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Common } from "../Common";
 import qs from 'qs';
+import { BASE_URL } from "../../../../../auth/constants";
 
 function Join(props: any) {
     const common = Common();
@@ -56,7 +57,7 @@ function Join(props: any) {
       return false;
     }
     const method = "post";
-    const url = "http://localhost/evlink/api/PLogin/join";
+    const url = `${BASE_URL}/api/PLogin/join`;
     var reqeustData = {
       id: formData.id,
       pw: formData.pw,

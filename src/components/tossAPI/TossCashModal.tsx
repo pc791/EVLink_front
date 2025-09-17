@@ -1,6 +1,7 @@
 import React from 'react';
 import '../map/ReservationModal.css'; // 모달 스타일을 위한 CSS 파일
 import { CheckoutPage } from './Checkout';
+import { BASE_URL } from '../../auth/constants';
 
 interface TossCashModalProps {
   onClose: () => void;
@@ -47,7 +48,7 @@ const TossCashModal: React.FC<TossCashModalProps> = ({ onClose, reservationDetai
         paymentKey: paymentData.paymentKey,
         orderId: paymentData.orderId,
       };
-      const response = await fetch('http://localhost:80/evlink/api/reservation', {
+      const response = await fetch(`${BASE_URL}/api/reservation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

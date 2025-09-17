@@ -3,7 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { EmotionVO, EmoVO } from './emoData';
 import { Legend, Pie, PieChart, ResponsiveContainer, Sector, SectorProps } from 'recharts';
-
+import  { BASE_URL } from '../../auth/constants';
 import style from './emo.module.css'
 import { Card, Descriptions, Typography, Button, Space, message, Divider } from 'antd';
 
@@ -113,12 +113,12 @@ const EmoDetail: React.FC = () => {
             try {
                 // 1) 상세 데이터 불러오기
                 const resp = await axios.get<EmotionVO>(
-                    `http://192.168.0.133:80/evlink/emotion/detail?emo_id=${id}`
+                    `${BASE_URL}/emotion/detail?emo_id=${id}`
                 );
                 setUpboard(resp.data);
 
                 // 2) 감정 분석 요청 (resp.data.content 사용)
-                const response = await axios.post("http://3.34.69.170:9000/mykobert/mytransformers", {
+                const response = await axios.post(`${BASE_URL}/mykobert/mytransformers`, {
                     text: resp.data.content,
                 },{withCredentials:false});
                 console.log(response.data);
@@ -142,7 +142,7 @@ const EmoDetail: React.FC = () => {
             console.log("사용자가 취소 눌렀음");
         }
         try {
-            await axios.get(`http://192.168.0.133:80/evlink/emotion/delete?emo_id=${id}`);
+            await axios.get(`${BASE_URL}/emotion/delete?emo_id=${id}`);
             message.success('삭제되었습니다.');
             navigate('/emoboard');
         } catch (error) {

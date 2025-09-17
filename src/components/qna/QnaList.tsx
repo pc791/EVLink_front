@@ -5,6 +5,7 @@ import { QnaVO } from './qnaData';
 import style from './qna.module.css'
 import { Input, Button, Select, Pagination, Space } from 'antd';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { BASE_URL } from '../../auth/constants';
 
 // const { Title } = Typography;
 const { Option } = Select;
@@ -21,7 +22,7 @@ const QnaList: React.FC = () => {
 
   const fetchUpboardList = async (page: number) => {
     try {
-      const response = await axios.get('http://192.168.0.133:81/EvLink/board/list', {
+      const response = await axios.get(`${BASE_URL}/board/list`, {
         params: {
           cPage: page,
           searchType,

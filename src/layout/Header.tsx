@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import ChatPanel from '../components/home/ChatAI';
 import AssistantIcon from '@mui/icons-material/Assistant';
+import  { BASE_URL, AI_URL } from '../auth/constants';
 
 const Header: React.FC = () => {
   const { isLoggedIn, logout } = useAuth();
@@ -63,7 +64,7 @@ const handleLogout = async () => {
   // 예시: 실제 AI 백엔드 호출 함수 (정규화된 문자열을 반환)
   const handleAiSend = async (text: string) => {
     try {
-      const res = await fetch("http://3.34.69.170:9000/myGemini/geminiSercive", {
+      const res = await fetch(`${AI_URL}/myGemini/geminiSercive`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: text }),

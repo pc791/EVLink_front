@@ -1,6 +1,7 @@
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, SelectChangeEvent } from '@mui/material'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { BASE_URL } from '../../auth/constants';
 
 interface commonInfoProp {
   user_id?:number;
@@ -39,7 +40,7 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
     event.preventDefault()
     if (!beforeValidate()) return;
     try{
-      const response = await axios.post('http://localhost/evlink/mypage/common/save', commonParams, {
+      const response = await axios.post(`${BASE_URL}/mypage/common/save`, commonParams, {
         headers:{"Content-Type":"application/json"},
         withCredentials: true
       });
@@ -57,7 +58,7 @@ const CommonInfoSection: React.FC<{userId:number}> = ({userId}) => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get(`http://localhost/evlink/mypage/common/${userId}`, {
+      const response = await axios.get(`${BASE_URL}/mypage/common/${userId}`, {
         withCredentials: true
       })
       // console.log(response.data)

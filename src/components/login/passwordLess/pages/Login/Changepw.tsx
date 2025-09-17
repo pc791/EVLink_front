@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Common } from "../Common";
 import qs from 'qs';
+import { BASE_URL } from "../../../../../auth/constants";
 
 function Changepw(props: any) {
     const common = Common();
@@ -54,7 +55,7 @@ function Changepw(props: any) {
       return false;
     }
     const method = "post";
-    const url = "http://localhost/evlink/api/PLogin/changepw";
+    const url = `${BASE_URL}/api/PLogin/changepw`;
     var reqeustData = {
       id: formData.id,
       pw: formData.pw

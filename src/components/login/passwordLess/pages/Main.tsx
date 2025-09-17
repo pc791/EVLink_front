@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
 import { Common } from "./Common";
+import { BASE_URL } from "../../../../auth/constants";
 
 function Main(props: any) {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ function Main(props: any) {
 
     const logout = async () =>  {
         const method = "post";
-        const url = "http://localhost/evlink/api/PLogin/logout";
+        const url = `${BASE_URL}/api/PLogin/logout`;
         const data = "";
         const config = "";
         const response = await common.apiRequest(method, url, data, config);
@@ -51,7 +52,7 @@ function Main(props: any) {
         
         if(window.confirm("사용자 정보가 모두 삭제됩니다.\n탈퇴하시겠습니까?")) {
             const method = "post";
-            const url = "http://localhost/evlink/api/PLogin/withdraw";
+            const url = `${BASE_URL}/api/PLogin/withdraw`;
             const data = "";
             const config = "";
             const response = await common.apiRequest(method, url, data, config);

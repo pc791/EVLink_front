@@ -5,6 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { CahrgerTypes } from './UserInfoData';
 import dayjs, { Dayjs } from 'dayjs';
 import axios from 'axios';
+import { BASE_URL } from '../../auth/constants';
 
 declare const daum: any;
 
@@ -92,12 +93,12 @@ const ChargerInfoSection: React.FC<{userId:number}> = ({userId}) => {
     try {
       let response:any = null;
       if(chargerInfo.charger_id) {
-        response = await axios.put(`http://localhost/evlink/mypage/charger/${chargerInfo.charger_id}`, chargerInfo, {
+        response = await axios.put(`${BASE_URL}/mypage/charger/${chargerInfo.charger_id}`, chargerInfo, {
           headers:{"Content-Type":"application/json"},
           withCredentials: true
         });
       }else{
-        response = await axios.post('http://localhost/evlink/mypage/charger/add', chargerInfo, {
+        response = await axios.post(`${BASE_URL}/mypage/charger/add`, chargerInfo, {
           headers: {"Content-Type":"application/json"},
           withCredentials: true
         });
@@ -148,7 +149,7 @@ const ChargerInfoSection: React.FC<{userId:number}> = ({userId}) => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get(`http://localhost/evlink/mypage/charger/${userId}`, {
+      const response = await axios.get(`${BASE_URL}/mypage/charger/${userId}`, {
         withCredentials: true
       })
       // console.log(response.data)

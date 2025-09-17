@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import style from './qna.module.css'
 import { QnaVO, VO } from './qnaData';
+import { AI_URL, BASE_URL } from '../../auth/constants';
 
 
 
@@ -37,7 +38,7 @@ const QnaForm: React.FC = () => {
     data.append('score', score?.toString());
 
     try {
-      await axios.post('http://192.168.0.133:81/EvLink/board/insert', data);
+      await axios.post(`${BASE_URL}/board/insert`, data);
       message.success('글이 등록되었습니다.');
       navigate('/review');
     } catch (error) {
@@ -48,7 +49,7 @@ const QnaForm: React.FC = () => {
 
   const fetchAI = async () => {
     try {
-      const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
+      const response = await axios.post(`${AI_URL}/lstm/predict`, {
         text: formData.content,
       },{withCredentials:false});
       console.log(response);

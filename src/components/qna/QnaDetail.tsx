@@ -6,6 +6,7 @@ import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
 
 import style from './qna.module.css'
 import { Card, Descriptions, Typography, Button, Space, message, Divider } from 'antd';
+import { AI_URL, BASE_URL } from '../../auth/constants';
 
 
 
@@ -24,12 +25,12 @@ const QnaDetail: React.FC = () => {
             try {
                 // 1) 상세 데이터 불러오기
                 const resp = await axios.get<QnaVO>(
-                    `http://192.168.0.133:81/EvLink/board/detail?board_id=${id}`
+                    `${BASE_URL}/board/detail?board_id=${id}`
                 );
                 setUpboard(resp.data);
 
                 // 2) 감정 분석 요청 (resp.data.content 사용)
-                const response = await axios.post("http://3.34.69.170:9000/lstm/predict", {
+                const response = await axios.post(`${AI_URL}/lstm/predict`, {
                     text: resp.data.content,
                 },{withCredentials:false});
                 console.log(response.data);
@@ -53,7 +54,7 @@ const QnaDetail: React.FC = () => {
             console.log("사용자가 취소 눌렀음");
         }
         try {
-            await axios.get(`http://192.168.0.133:81/EvLink/board/delete?board_id=${id}`);
+            await axios.get(`${BASE_URL}/board/delete?board_id=${id}`);
             message.success('삭제되었습니다.');
             navigate('/review');
         } catch (error) {
